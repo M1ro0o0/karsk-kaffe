@@ -1,0 +1,217 @@
+require('dotenv').config();
+
+import { createClient } from "@supabase/supabase-js";
+import { supabase } from "./supabaseClient.js";
+
+const nodemailer = require("nodemailer");
+const express = require('express');
+const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
+const app = express();
+app.use(express.json());
+
+/*******************
+      Database
+********************/
+
+//Clent creations
+export const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+)
+
+//Validation
+app.post("/api/discount/validate", async (req, res) => {
+  const { code } = req.body;
+
+  if (!code) {
+    return res.json({ valid: false, error: "EMPTY_CODE" });
+  }
+
+  const { data, error } = await supabase
+    .from("discount_codes")
+    .select("*")
+    .eq("code", code)
+    .single();
+
+  if (error || !data) {
+    return res.json({ valid: false, error: "NOT_FOUND" });
+  }
+
+  // expired check (if you have it)
+  if (data.expires_at && new Date(data.expires_at) < new Date()) {
+    return res.json({ valid: false, error: "EXPIRED" });
+  }
+
+  // single-use check
+  if (data.type === "single" && data.used) {
+    return res.json({ valid: false, error: "ALREADY_USED" });
+  }
+
+  return res.json({
+    valid: true,
+    discount: data.discount
+  });
+});
+
+//Redeem
+app.post("/api/discount/redeem", async (req, res) => {
+  const { code, invoice } = req.body;
+
+  const { data } = await supabase
+    .from("discount_codes")
+    .select("*")
+    .eq("code", code)
+    .single();
+
+  if (!data) {
+    return res.status(400).send("Invalid code");
+  }
+
+  if (data.type === "single" && data.used) {
+    return res.status(400).send("Already used");
+  }
+
+  const { error } = await supabase
+    .from("discount_codes")
+    .update({
+      used: true,
+      used_at: new Date().toISOString(),
+      invoice: invoice
+    })
+    .eq("code", code);
+
+  if (error) {
+    return res.status(500).send(error.message);
+  }
+
+  res.send({ success: true });
+});
+
+
+//Email bullshit
+
+/*console.log("Step 1: after imports");
+
+const { getLocale } = require('./locales');
+
+console.log("Step 2: locales loaded");
+
+app.use(cors({
+  origin: "*", // for testing
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"]
+}));
+
+app.use(express.json());
+
+const productsPath = path.join(__dirname,'data', 'products.json');
+
+console.log("Step 3: path set");
+
+function getProducts()
+{
+    const rawData = fs.readFileSync(productsPath);
+    return JSON.parse(rawData);
+}
+
+function escapeHtml(text) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function getRecipient(type){
+    switch (type)
+    {
+        case "orders":
+            return "return@karskkaffe.dk";
+        case "wholesale":
+            return "business@karskkaffe.dk";
+        case "general":
+        case "support":
+            return "info@karskkaffe.dk";
+        default:
+            return "info@karskkaffe.dk";
+    }
+}
+
+function getFooter(email) {
+  return `
+    <br><br>
+
+    <p>Med venlig hilsen | Kind Regards</p>
+
+    <p>
+      <strong>Automatic Reply</strong><br>
+      Customer Service | Karsk Kaffe<br>
+      Slovak-roasted specialty coffee for Denmark
+    </p>
+
+    <img src="cid:logo" style="max-width:200px; margin:10px 0;" />
+
+    <p>
+      📧 ${email}<br>
+      🌍 www.karskkaffe.dk<br>
+      📱 +45 XX XX XX XX
+    </p>
+
+    <p>CVR: 46 27 60 43</p>
+  `;
+}
+
+
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+console.log("Step 4: transporter created");
+
+app.post("/api/contact", async (req, res) => {
+  console.log("Sending test email...");
+
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
+      subject: "Test",
+      text: "Test"
+    });
+
+    console.log("Email sent");
+
+    res.json({ success: true });
+
+  } catch (err) {
+    console.error("EMAIL ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
+});*/
+
+//Product giving
+app.get('/api/products', (req, res) => {
+    res.json(getProducts());
+});
+
+app.get("/api/products/:id", (req, res) => {
+    const product = getProducts().find(p => p.id === Number(req.params.id));
+
+    if (!product) {
+    return res.status(404).json({ error: "Product not found" });
+  
+} 
+res.json(product);
+});
+
+
+const PORT = 3000;
+
+app.listen(PORT, () => {});

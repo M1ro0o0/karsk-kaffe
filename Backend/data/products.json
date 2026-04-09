@@ -1,0 +1,278 @@
+[
+  {
+  "id": 1,
+  "type": "coffee",
+  "tags": ["coffee", "arabica"],
+  "price": [30, 70, 230, 400],
+  "discount": 0.8,
+  "image": "/images/products/1.jpg",
+  "translations": {
+    "en": {
+      "name": "Brazil Diamant - 100% Arabica",
+      "description": {
+        "tasteProfile": "Nuts, Chocolate, Caramel",
+        "origin": "Brazil",
+        "region": "Minas Gerais",
+        "subregion": "Cerrado Mineiro & Sul de Minas",
+        "harvest": "2024",
+        "processingFarm": "A variety of small farmers",
+        "owner": "A variety of small farmers",
+        "variety": "100% Arabica",
+        "processing": "Natural",
+        "roastingDegree": "Espresso"
+      },
+      "availableRoasts": ["Dark Espresso"],
+      "availableGrinds": ["Whole Beans", "Espresso"]
+    },
+    "da": {
+      "name": "Brasilien Diamant - 100% Arabica",
+      "description": {
+        "tasteProfile": "Nødder, Chokolade, Karamel",
+        "origin": "Brasilien",
+        "region": "Minas Gerais",
+        "subregion": "Cerrado Mineiro & Sul de Minas",
+        "harvest": "2024",
+        "processingFarm": "En række småbønder",
+        "owner": "En række småbønder",
+        "variety": "100% Arabica",
+        "processing": "Naturlig",
+        "roastingDegree": "Espresso"
+      },
+      "availableRoasts": ["Mørk Espresso"],
+      "availableGrinds": ["Hele bønner", "Espresso"]
+    },
+    "sk": {
+      "name": "Brazília Diamant - 100% Arabica",
+      "description": {
+        "tasteProfile": "Orechy, Čokoláda, Karamel",
+        "origin": "Brazília",
+        "region": "Minas Gerais",
+        "subregion": "Cerrado Mineiro & Sul de Minas",
+        "harvest": "2024",
+        "processingFarm": "Rôzni malí farmári",
+        "owner": "Rôzni malí farmári",
+        "variety": "100% Arabica",
+        "processing": "Natural",
+        "roastingDegree": "Espresso"
+      },
+      "availableRoasts": ["Tmavé Espresso"],
+      "availableGrinds": ["Celé zrná", "Espresso"]
+    }
+  }
+},
+{
+  "id": 2,
+  "type": "coffee",
+  "tags": ["coffee", "arabica"],
+  "price": [30, 70, 230, 400],
+  "discount": 0.5,
+  "image": "/images/products/2.jpg",
+  "translations": {
+    "en": {
+      "name": "Espresso Blend Detvianska Natura",
+      "description": {
+        "general": "Carefully balanced coffee blend with smooth body and rich aroma."
+      },
+      "availableRoasts": ["Espresso"],
+      "availableGrinds": ["Whole Beans", "Espresso"]
+    },
+    "da": {
+      "name": "Espresso Blanding Detvianska Natura",
+      "description": {
+        "general": "Omhyggeligt afbalanceret kaffeblanding med fyldig krop og rig aroma."
+      },
+      "availableRoasts": ["Espresso"],
+      "availableGrinds": ["Hele bønner", "Espresso"]
+    },
+    "sk": {
+      "name": "Espresso zmes Detvianska Natura",
+      "description": {
+        "general": "Starostlivo vyvážená kávová zmes s plným telom a bohatou arómou."
+      },
+      "availableRoasts": ["Espresso"],
+      "availableGrinds": ["Celé zrná", "Espresso"]
+    }
+  }
+},
+{
+  "id": 3,
+  "type": "coffee",
+  "tags": ["coffee", "robusta"],
+  "price": [30, 70, 230, 400],
+  "discount": 1,
+  "image": "/images/products/3.jpg",
+  "translations": {
+    "en": {
+      "name": "Vietnam Cu M'gar - 100% Robusta",
+      "description": {
+        "tasteProfile": "Earthy, Roasted Almonds",
+        "origin": "Vietnam",
+        "region": "Cu M'gar & Dak Lak",
+        "elevation": "600 - 800 meters above sea level",
+        "harvest": "2024/25",
+        "variety": "Robusta Se-TR4",
+        "processing": "Natural",
+        "roastingDegree": "Espresso"
+      },
+      "availableRoasts": ["Espresso"],
+      "availableGrinds": ["Whole Beans", "Espresso"]
+    },
+    "da": {
+      "name": "Vietnam Cu M'gar - 100% Robusta",
+      "description": {
+        "tasteProfile": "Jordagtig, ristede mandler",
+        "origin": "Vietnam",
+        "region": "Cu M'gar & Dak Lak",
+        "elevation": "600 - 800 meter over havets overflade",
+        "harvest": "2024/25",
+        "variety": "Robusta Se-TR4",
+        "processing": "Naturlig",
+        "roastingDegree": "Espresso"
+      },
+      "availableRoasts": ["Espresso"],
+      "availableGrinds": ["Hele bønner", "Espresso"]
+    },
+    "sk": {
+      "name": "Vietnam Cu M'gar - 100% Robusta",
+      "description": {
+        "tasteProfile": "Zemitá, pražené mandle",
+        "origin": "Vietnam",
+        "region": "Cu M'gar & Dak Lak",
+        "elevation": "600 - 800 metrov nad morom",
+        "harvest": "2024/25",
+        "variety": "Robusta Se-TR4",
+        "processing": "Natural",
+        "roastingDegree": "Espresso"
+      },
+      "availableRoasts": ["Espresso"],
+      "availableGrinds": ["Celé zrná", "Espresso"]
+    }
+  }
+},
+{
+  "id": 4,
+  "type": "coffee",
+  "tags": ["coffee", "arabica"],
+  "price": [30, 70, 230, 400],
+  "discount": 1,
+  "image": "/images/products/4.jpg",
+  "translations": {
+    "en": {
+      "name": "Arabica Blend Kalamarka",
+      "description": {
+        "tasteProfile": "Almonds, Chocolate, Lemon",
+        "origin": "Brazil 80% & Honduras 20%",
+        "processing": "Natural",
+        "roastingDegree": "Dark Espresso"
+      },
+      "availableRoasts": ["Dark Espresso"],
+      "availableGrinds": ["Whole Beans", "Espresso"]
+    },
+    "da": {
+      "name": "Arabica Blanding Kalamarka",
+      "description": {
+        "tasteProfile": "Mandler, Chokolade, Citron",
+        "origin": "Brasilien 80% & Honduras 20%",
+        "processing": "Naturlig",
+        "roastingDegree": "Mørk Espresso"
+      },
+      "availableRoasts": ["Mørk Espresso"],
+      "availableGrinds": ["Hele bønner", "Espresso"]
+    },
+    "sk": {
+      "name": "Arabica zmes Kalamarka",
+      "description": {
+        "tasteProfile": "Mandle, Čokoláda, Citrón",
+        "origin": "Brazília 80% & Honduras 20%",
+        "processing": "Natural",
+        "roastingDegree": "Tmavé Espresso"
+      },
+      "availableRoasts": ["Tmavé Espresso"],
+      "availableGrinds": ["Celé zrná", "Espresso"]
+    }
+  }
+},
+{
+  "id": 5,
+  "type": "box",
+  "tags": ["coffee", "box", "selection"],
+  "price": 399,
+  "discount": 1,
+  "image": "/images/products/5.jpg",
+
+  "translations": {
+    "en": {
+      "name": "Premium Espresso Selection Box",
+      "shortDescription": "A rich selection of our finest espresso-roasted coffees.",
+      "Selection included": [
+        "Kalamarka Arabica Blend - 70% Brazil, 30% Honduras, Espresso Roast",
+        "Ethiopia Mundaryo, 100% Arabica, Natural Process, Modern Espresso Roast",
+        "Detvianska Natura Blend, 80% Arabica Brazil, 20% Robusta India, Dark Espresso Roast",
+        "Brazil, 100% Arabica, Natural Process, Modern Espresso Roast",
+        "Vietnam Zanya, 100% Arabica, Double Washed Process, Modern Espresso Roast",
+        "Vietnam Zanya, 100% Arabica, Natural Process, Modern Espresso Roast",
+        "Colombia La Promesa, 100% Arabica, Natural Process, Modern Espresso Roast",
+        "Ethiopia Chelichelle, 100% Arabica, Washed Process, Modern Espresso Roast"
+      ]
+    },
+
+    "da": {
+      "name": "Premium Espresso Udvalgsboks",
+      "shortDescription": "Et rigt udvalg af vores fineste espresso-ristede kaffer.",
+      "Udvalg inkluderet": [
+        "Kalamarka arabica-blanding - 70% Brasilien, 30% Honduras, Espresso-ristning",
+        "Etiopien Mundaryo, 100% arabica, naturlig forarbejdning, Moderne espresso-ristning",
+        "Detvianska natura-blanding, 80% arabica Brasilien, 20% robusta Indien, Mørk espresso-ristning",
+        "Brasilien, 100% arabica, naturlig forarbejdning, Moderne espresso-ristning",
+        "Vietnam Zanya, 100% arabica, dobbeltvasket forarbejdning, Moderne espresso-ristning",
+        "Vietnam Zanya, 100% arabica, naturlig forarbejdning, Moderne espresso-ristning",
+        "Columbia La Promesa, 100% arabica, naturlig forarbejdning, Moderne espresso-ristning",
+        "Etiopien Chelichelle, 100% arabica, vasket forarbejdning, Moderne espresso-ristning"
+      ]
+    },
+
+    "sk": {
+      "name": "Prémiový espresso výberový box",
+      "shortDescription": "Bohatý výber našich najlepších espresso pražených káv.",
+      "Výber obsahuje": [
+        "Kalamarka arabica zmes - 70% Brazília, 30% Honduras, Espresso praženie",
+        "Etiópia Mundaryo, 100% arabica, naturálne spracovanie, Moderné espresso praženie",
+        "Detvianska natura zmes, 80% arabica Brazília, 20% robusta India, Tmavé espresso praženie",
+        "Brazília, 100% arabica, naturálne spracovanie, Moderné espresso praženie",
+        "Vietnam Zanya, 100% arabica, dvojito premyté spracovanie, Moderné espresso praženie",
+        "Vietnam Zanya, 100% arabica, naturálne spracovanie, Moderné espresso praženie",
+        "Kolumbia La Promesa, 100% arabica, naturálne spracovanie, Moderné espresso praženie",
+        "Etiópia Chelichelle, 100% arabica, premyté spracovanie, Moderné espresso praženie"
+      ]
+    }
+  }
+},
+{
+  "id": 6,
+  "type": "simple",
+  "tags": ["mug", "gift"],
+  "price": 150,
+  "discount": 0.95,
+  "image": "/images/products/6.jpg",
+  "translations": {
+    "en": {
+      "name": "Ceramic Mug",
+      "description": {
+        "design": "Ceramic mug inspired by elements of Slovak folklore heritage."
+      }
+    },
+    "da": {
+      "name": "Keramisk Krus",
+      "description": {
+        "design": "Keramisk krus inspireret af elementer fra slovakisk folklore."
+      }
+    },
+    "sk": {
+      "name": "Keramický hrnček",
+      "description": {
+        "design": "Keramický hrnček inšpirovaný prvkami slovenskej folklórnej tradície."
+      }
+    }
+  }
+}
+]

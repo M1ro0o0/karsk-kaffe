@@ -1,0 +1,97 @@
+import { createContext, useContext, useEffect, useState } from "react";
+
+const CartContext = createContext();
+
+export function CartProvider({ children }) {
+  const [cart, setCart] = useState(() => {
+    const saved = localStorage.getItem("cart");
+    const savedTime = localStorage.getItem("cartTime");
+
+    if (!saved || !savedTime) return [];
+
+    const age = Date.now() - Number(savedTime);
+    const DAY = 24 * 60 * 60 * 1000;
+
+    if (age > DAY) {
+      localStorage.removeItem("cart");
+      localStorage.removeItem("cartTime");
+      return [];
+    }
+
+    return JSON.parse(saved);
+  });
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem("cartTime", Date.now().toString());
+  }, [cart]);
+
+  const addToCart = (newItem) => {
+    setCart((prevCart) => {
+      const existingIndex = prevCart.findIndex(
+        (item) =>
+          item.id === newItem.id &&
+          isSameOptions(item.options, newItem.options),
+      );
+
+      if (existingIndex !== -1) {
+        return prevCart.map((item, index) =>
+          index === existingIndex
+            ? { ...item, quantity: item.quantity + newItem.quantity }
+            : item,
+        );
+      }
+
+      return [...prevCart, newItem];
+    });
+  };
+
+  const updateQuantity = (index, quantity) => {
+    setCart((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, quantity } : item)),
+    );
+  };
+
+  const removeFromCart = (index) => {
+    setCart((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const clearCart = () => setCart([]);
+
+  const isSameOptions = (a = {}, b = {}) =>
+    JSON.stringify(
+      Object.keys(a)
+        .sort()
+        .reduce((r, k) => ((r[k] = a[k]), r), {}),
+    ) ===
+    JSON.stringify(
+      Object.keys(b)
+        .sort()
+        .reduce((r, k) => ((r[k] = b[k]), r), {}),
+    );
+
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+
+  return (
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        updateQuantity,
+        removeFromCart,
+        clearCart,
+        totalItems,
+        totalPrice,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
+}
+
+export const useCart = () => useContext(CartContext);

@@ -1,0 +1,227 @@
+/* ================= NAVBAR ================= */
+.navbar {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 5%;
+  background: linear-gradient(to right, #ffffff, #f8f4f2);
+  border-bottom: 3px solid #C7A9A2;
+  backdrop-filter: blur(8px);
+  font-family: 'Montserrat', sans-serif;
+  z-index: 10000;
+}
+
+/* ================= LEFT SIDE ================= */
+.logo {
+  transition: 0.3s ease;
+}
+
+.logo img {
+  height: 100px;
+  width: auto;
+}
+
+.logo:hover {
+  opacity: 0.8;
+}
+
+/* ================= NAV GROUPS ================= */
+.nav-group {
+  display: flex;
+  align-items: center;
+  gap: 45px; /* smaller gap between items in same group */
+}
+
+/* Main links */
+.nav-group.main-links a,
+.nav-links a {
+  color: #8f5445;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 5px 8px;
+  position: relative;
+  transition: 0.3s ease;
+}
+
+.nav-group.main-links a::after,
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background-color: #C7A9A2;
+  transition: width 0.3s ease;
+}
+
+.nav-group.main-links a:hover::after,
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.nav-group.main-links a:hover,
+.nav-links a:hover {
+  opacity: 0.7;
+}
+
+/* ================= DROPDOWN ================= */
+.dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.dropdown-trigger,
+.dropbtn {
+  background: none;
+  border: none;
+  color: #8f5445;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+  position: relative;
+  transition: 0.3s ease;
+}
+
+.dropdown-trigger::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background-color: #C7A9A2;
+  transition: width 0.3s ease;
+}
+
+.dropdown:hover .dropdown-trigger::after {
+  width: 100%;
+}
+
+.arrow {
+  margin-left: 6px;
+  font-size: 12px;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #ffffff;
+  min-width: 180px;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(5px);
+  transition: 0.2s ease;
+  z-index: 9999;
+}
+
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item,
+.dropdown-menu button {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+  padding: 12px 18px;
+  display: block;
+  transition: 0.2s ease;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-item:hover,
+.dropdown-menu button:hover {
+  background-color: #f3f3f3;
+  padding-left: 22px;
+}
+
+/* ================= RIGHT SIDE ================= */
+.nav-group.nav-right,
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* spacing for right group */
+}
+
+/* Language buttons */
+.nav-right button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  color: #8f5445;
+  opacity: 0.6;
+  transition: 0.2s ease;
+}
+
+.nav-right button:hover {
+  opacity: 0.8;
+}
+
+.nav-right button.active {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* ================= CART ================= */
+.cart-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: #000000;
+  transition: 0.2s ease;
+}
+
+.cart-icon:hover {
+  opacity: 0.7;
+}
+
+.cart-icon svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.cart-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #8f5445;
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 50%;
+  z-index: 10;
+  line-height: 1;
+}
+
+/* Cart bounce animation */
+@keyframes bounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.cart-icon.bounce {
+  animation: bounce 0.3s ease;
+}

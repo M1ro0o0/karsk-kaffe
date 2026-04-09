@@ -1,0 +1,95 @@
+/* Container */
+.contact-container {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  font-family: Arial, sans-serif;
+}
+
+/* Title */
+.contact-container h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 28px;
+  color: #222;
+}
+
+/* Form */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Inputs, select, textarea */
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+/* Focus effect */
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+  border-color: #6b8cff;
+  box-shadow: 0 0 0 2px rgba(107, 140, 255, 0.2);
+}
+
+/* Textarea */
+.contact-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Button */
+.contact-form button {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #8f5445;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Button hover */
+.contact-form button:hover {
+  background: #C7A9A2;
+}
+
+/* Status messages */
+.contact-form p {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Success */
+.contact-form p:has(+ *) {
+  color: #28a745;
+}
+
+/* Fallback (better support) */
+.contact-form p {
+  color: #333;
+}
+
+.contact-form p:nth-of-type(1) {
+  color: #28a745;
+}
+
+.contact-form p:nth-of-type(2) {
+  color: #dc3545;
+}

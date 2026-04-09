@@ -1,0 +1,12 @@
+.random-products-container {
+  display: flex;               /* horizontal layout */
+  justify-content: center;     /* center the row */
+  align-items: flex-start;     /* top-align cards */
+  flex-wrap: wrap;             /* wrap if screen too small */
+  gap: 20px;                   /* space between cards */
+  margin: 30px 0;              /* vertical spacing */
+}
+
+.random-products-container .product-card {
+  flex: 0 0 220px;             /* fixed card width */
+}
