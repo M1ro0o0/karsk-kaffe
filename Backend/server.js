@@ -6,7 +6,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-app.use(express.json());
+const app = express();
 
 /*******************
       Database
