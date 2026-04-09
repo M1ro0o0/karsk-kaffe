@@ -1,22 +1,18 @@
 require('dotenv').config();
 
-import { createClient } from "@supabase/supabase-js";
-import { supabase } from "./supabaseClient.js";
-
+const { createClient } = require("@supabase/supabase-js");
 const nodemailer = require("nodemailer");
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const app = express();
-app.use(express.json());
 
 /*******************
       Database
 ********************/
 
 //Clent creations
-export const supabase = createClient(
+const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
@@ -89,6 +85,12 @@ app.post("/api/discount/redeem", async (req, res) => {
   res.send({ success: true });
 });
 
+function getProducts()
+{
+    const rawData = fs.readFileSync(productsPath);
+    return JSON.parse(rawData);
+}
+
 
 //Email bullshit
 
@@ -110,11 +112,7 @@ const productsPath = path.join(__dirname,'data', 'products.json');
 
 console.log("Step 3: path set");
 
-function getProducts()
-{
-    const rawData = fs.readFileSync(productsPath);
-    return JSON.parse(rawData);
-}
+
 
 function escapeHtml(text) {
   return text
