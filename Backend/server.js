@@ -26,7 +26,7 @@ app.post("/api/discount/validate", async (req, res) => {
   }
 
   const { data, error } = await supabase
-    .from("discount_codes")
+    .from("DiscountCodes")
     .select("*")
     .eq("code", code)
     .single();
