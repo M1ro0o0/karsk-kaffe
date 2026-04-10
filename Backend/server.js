@@ -198,11 +198,12 @@ app.post("/api/contact", async (req, res) => {
   }
 });*/
 
-//Product giving
+//Product retrieving
 app.get('/api/products', (req, res) => {
     res.json(getProducts());
 });
 
+//particular product retrieve
 app.get("/api/products/:id", (req, res) => {
     const product = getProducts().find(p => p.id === Number(req.params.id));
 
@@ -214,6 +215,5 @@ res.json(product);
 });
 
 
-const PORT = 3000;
-
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {});
