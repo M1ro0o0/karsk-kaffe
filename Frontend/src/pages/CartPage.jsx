@@ -9,14 +9,16 @@ import { useState } from "react";
 
 export default function CartPage() {
   const { t } = useLanguage();
-  const { cart, updateQuantity, removeFromCart, clearCart, totalPrice } =
-    useCart();
-
+  const { cart, updateQuantity, removeFromCart, clearCart, totalPrice } = useCart();
+  
   const navigate = useNavigate();
-
+  
   const [code, setCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [error, setError] = useState("");
+  
+  const finalprice = totalPrice - getVATAmount(totalPrice, discount/100);
+
 
   const applyCode = async () => {
     try {
@@ -139,13 +141,13 @@ export default function CartPage() {
           {t.cart.apply}
         </button>
       </div>
-      
+
         {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="cart-summary">
-        {discount > 0 && <p>{t.cart.discount}: {discount}% (-{getVATAmount(totalPrice, 0.1)} kr)</p>}   
+        {discount > 0 && <p>{t.cart.discount}: {discount}% (-{getVATAmount(totalPrice, discount/100)} kr)</p>}   
         <h2 className="total-price">
-          {t.cart.total} {totalPrice} kr
+          {t.cart.total} {finalprice}
         </h2>
 
         <h4 className="vat">

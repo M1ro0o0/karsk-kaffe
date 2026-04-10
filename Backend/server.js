@@ -8,14 +8,10 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://karsk-kaffe.onrender.com", // 👈 ADD THIS
-  ],
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type"]
-}));
+const cors = require("cors");
+
+app.use(cors());
+app.options('*', cors());
 app.use(express.json());
 
 /*--------------------
