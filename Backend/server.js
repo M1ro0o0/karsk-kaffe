@@ -8,6 +8,9 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
+app.use(cors());
+app.use(express.json());
+
 /*******************
       Database
 ********************/

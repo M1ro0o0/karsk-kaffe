@@ -7,8 +7,8 @@ import { getVATAmount } from "../utils/pricing.js";
 import { useLanguage } from "../context/LanguageContext";
 import { useState } from "react";
 
-const applyCode = async () => {
-  const res = await fetch("/api/discount/validate", {
+const applyCode = async (code) => {
+  const res = await fetch("https://karsk-kaffe.onrender.com/api/discount/validate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ code }),
@@ -120,7 +120,7 @@ export default function CartPage() {
           onChange={(e) => setCode(e.target.value)}
           placeholder="Discount code"
         />
-        <button className="discount-code-button" onClick={applyCode}>
+        <button className="discount-code-button" onClick={() => applyCode(code)}>
           Apply
         </button>
 
