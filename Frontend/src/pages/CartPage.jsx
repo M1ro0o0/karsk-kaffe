@@ -7,36 +7,48 @@ import { getVATAmount } from "../utils/pricing.js";
 import { useLanguage } from "../context/LanguageContext";
 import { useState } from "react";
 
-const applyCode = async (code) => {
-  const res = await fetch("https://karsk-kaffe.onrender.com/api/discount/validate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ code }),
-  });
-
-  const data = await res.json();
-
-  if (!data.valid) {
-    if (data.error === "NOT_FOUND") setError("Code does not exist");
-    if (data.error === "ALREADY_USED") setError("Code already used");
-    if (data.error === "EXPIRED") setError("Code expired");
-    if (data.error === "EMPTY_CODE") setError("Enter a code");
-    return;
-  }
-
-  setDiscount(data.discount);
-  setError("");
-};
-
 export default function CartPage() {
   const { t } = useLanguage();
+  const { cart, updateQuantity, removeFromCart, clearCart, totalPrice } =
+    useCart();
+
+  const navigate = useNavigate();
 
   const [code, setCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [error, setError] = useState("");
 
-  const { cart, updateQuantity, removeFromCart, clearCart, totalPrice } =
-    useCart();
+  const applyCode = async () => {
+    try {
+      const res = await fetch(
+        "https://karsk-kaffe.onrender.com/api/discount/validate",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!data.valid) {
+        if (data.error === "NOT_FOUND") setError(t.cart.errCode1);
+        else if (data.error === "ALREADY_USED") setError(t.cart.errCode2);
+        else if (data.error === "EXPIRED") setError(t.cart.errCode3);
+        else if (data.error === "EMPTY_CODE") setError(t.cart.errCode4);
+        else setError(t.cart.errCode5);
+
+        setDiscount(0);
+        return;
+      }
+
+      setError("");
+      setDiscount(data.discount);
+    } catch (err) {
+      console.error(err);
+      setError(t.cart.errCode0);
+    }
+  };
 
   if (cart.length === 0) {
     return (
@@ -46,8 +58,6 @@ export default function CartPage() {
       </div>
     );
   }
-
-  const navigate = useNavigate();
 
   return (
     <div className="cart-page">
@@ -93,6 +103,7 @@ export default function CartPage() {
             <p className="cart-price">
               {item.price * item.quantity} kr ({t.cart.pPerPcs} {item.price} kr)
             </p>
+
             <h6>
               {t.cart.VAT}(25%): {getVATAmount(item.price) * item.quantity}
             </h6>
@@ -103,7 +114,9 @@ export default function CartPage() {
               type="number"
               min="1"
               value={item.quantity}
-              onChange={(e) => updateQuantity(index, Number(e.target.value))}
+              onChange={(e) =>
+                updateQuantity(index, Number(e.target.value))
+              }
             />
 
             <button onClick={() => removeFromCart(index)}>
@@ -113,6 +126,7 @@ export default function CartPage() {
         </div>
       ))}
 
+      {/* DISCOUNT SECTION */}
       <div className="discount-code">
         <input
           className="discount-code-input"
@@ -120,18 +134,20 @@ export default function CartPage() {
           onChange={(e) => setCode(e.target.value)}
           placeholder="Discount code"
         />
-        <button className="discount-code-button" onClick={() => applyCode(code)}>
-          Apply
-        </button>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {discount > 0 && <p>Discount: {discount}%</p>}
+        <button className="discount-code-button" onClick={applyCode}>
+          {t.cart.apply}
+        </button>
       </div>
+      
+        {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="cart-summary">
+        {discount > 0 && <p>{t.cart.discount}: {discount}% (-{getVATAmount(totalPrice, 0.1)} kr)</p>}   
         <h2 className="total-price">
           {t.cart.total} {totalPrice} kr
         </h2>
+
         <h4 className="vat">
           {t.cart.VAT}(25%): {getVATAmount(totalPrice)} kr
         </h4>

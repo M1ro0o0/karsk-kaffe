@@ -54,6 +54,14 @@ const en = {
     total: "Total",
     clear: "Clear cart",
     proceed: "Proceed to checkout",
+    apply: "Apply",
+    discount: "Discount",
+    errCode0: "Server error",
+    errCode1: "Code does not exist",
+    errCode2: "Code already used",
+    errCode3: "Code expired",
+    errCode4: "Enter a code",
+    errCode5: "Invalid code",
   },
 
   checkout: {

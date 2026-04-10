@@ -1,11 +1,11 @@
 const sk = {
-   navbar: {
+  navbar: {
     home: "Domov",
     prod: "Produkty",
     coffee: "Káva",
     gift: "Darčeky",
     discounted: "Zľavnené",
-    about: "O nás"
+    about: "O nás",
   },
 
   footer: {
@@ -54,6 +54,14 @@ const sk = {
     total: "Spolu",
     clear: "Vyprázdniť košík",
     proceed: "Pokračovať k pokladni",
+    apply: "Použiť",
+    discount: "Zľava",
+    errCode0: "Chyba servera",
+    errCode1: "Kód neexistuje",
+    errCode2: "Kód už bol použitý",
+    errCode3: "Kód vypršal",
+    errCode4: "Zadajte kód",
+    errCode5: "Neplatný kód",
   },
 
   checkout: {
@@ -104,11 +112,15 @@ const sk = {
       "Sme oficiálnym distribútorom značky Frišná Káva pre Dánsko pod názvom Karsk Kaffe.",
     ourRole:
       "Našou úlohou je zabezpečiť, aby sa táto vysokokvalitná slovenská pražená káva dostala k dánskym zákazníkom čerstvá, bezpečne zabalená a pripravená na vychutnanie.",
-    whyNoEco: "Prečo naša káva nenesie označenia ako „Ekologická“ alebo „Organická“?",
-    farmers: "Naše kávové zrná pochádzajú od malých farmárov – ľudí, ktorí pestujú kávu s vášňou, nie pre masový zisk.",
+    whyNoEco:
+      "Prečo naša káva nenesie označenia ako „Ekologická“ alebo „Organická“?",
+    farmers:
+      "Naše kávové zrná pochádzajú od malých farmárov – ľudí, ktorí pestujú kávu s vášňou, nie pre masový zisk.",
     fees: "Mnohí z nich dodržiavajú udržateľné a zodpovedné poľnohospodárske postupy, ktoré by spĺňali podmienky pre certifikácie ako „Organická“ alebo „Ekologická“. Získanie týchto označení si však vyžaduje formálny proces podania žiadosti, kontroly a priebežné certifikačné poplatky.",
-    invest: "Pre malých farmárov môžu byť tieto certifikácie výraznou finančnou záťažou. Namiesto investovania do drahých označení sa rozhodnú investovať do toho, na čom skutočne záleží: kvality, starostlivosti o pôdu a férových pracovných podmienok.",
-    ourBelieve: "Veríme, že skvelá káva by mala byť definovaná transparentnosťou, vzťahmi a zodpovednosťou — nielen logami na obale.",
+    invest:
+      "Pre malých farmárov môžu byť tieto certifikácie výraznou finančnou záťažou. Namiesto investovania do drahých označení sa rozhodnú investovať do toho, na čom skutočne záleží: kvality, starostlivosti o pôdu a férových pracovných podmienok.",
+    ourBelieve:
+      "Veríme, že skvelá káva by mala byť definovaná transparentnosťou, vzťahmi a zodpovednosťou — nielen logami na obale.",
     whyDK: "Prečo Dánsko",
     DKDes:
       "Dánsko patrí medzi krajiny s najväčšou spotrebou kávy na svete. Vidíme veľkú príležitosť predstaviť niečo jedinečné – kávu praženú na Slovensku s hlbokým rešpektom k pôvodu, udržateľnosti a chuti.",
@@ -118,9 +130,11 @@ const sk = {
     quality: "Vysokú kvalitu praženia",
     rich: "Bohaté a vyvážené chuťové profily",
     ourMission: "Naša misia",
-    mission:"Našou misiou je budovať most medzi slovenským pražiarskym remeslom a dánskou kávovou kultúrou – ponúkať kávu, ktorá rozpráva príbeh od farmy až po šálku.",
+    mission:
+      "Našou misiou je budovať most medzi slovenským pražiarskym remeslom a dánskou kávovou kultúrou – ponúkať kávu, ktorá rozpráva príbeh od farmy až po šálku.",
     contact: "Kontaktujte nás",
-    contText: "Máte otázky? Potrebujete poradiť? Navštívte našu kontaktnú stránku – radi vám pomôžeme.",
+    contText:
+      "Máte otázky? Potrebujete poradiť? Navštívte našu kontaktnú stránku – radi vám pomôžeme.",
   },
 };
 

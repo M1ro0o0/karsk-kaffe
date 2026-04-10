@@ -5,7 +5,7 @@ const da = {
     coffee: "Kaffe",
     gift: "Gaver",
     discounted: "Nedsat",
-    about: "Om os"
+    about: "Om os",
   },
 
   footer: {
@@ -54,6 +54,14 @@ const da = {
     total: "I Alt",
     clear: "Rudde Kurv",
     proceed: "Fortsæt til kassen",
+    apply: "Anvend",
+    discount: "Rabat",
+    errCode0: "Serverfejl",
+    errCode1: "Koden findes ikke",
+    errCode2: "Koden er allerede brugt",
+    errCode3: "Koden er udløbet",
+    errCode4: "Indtast en kode",
+    errCode5: "Ugyldig kode",
   },
 
   checkout: {
@@ -104,12 +112,16 @@ const da = {
       "Vi er den officielle distributør af Frišná Káva i Danmark under navnet Karsk Kaffe.",
     ourRole:
       "Vores rolle er at sikre, at denne slovakiskristede kaffe af høj kvalitet når danske kunder frisk, sikkert emballeret og klar til at blive nydt.",
-    whyNoEco: "Hvorfor har vores kaffe ikke mærkninger som “Økologisk” eller “Miljøvenlig”?",
-farmers: "Vores kaffebønner kommer fra små landmænd – mennesker, der dyrker kaffe med passion og ikke med fokus på masseproduktion eller maksimal profit.",
-fees: "Mange af dem følger bæredygtige og ansvarlige dyrkningsmetoder, som i praksis ville kunne kvalificere dem til certificeringer som “Økologisk” eller “Miljøvenlig”. Dog kræver sådanne mærkninger en formel ansøgningsproces, inspektioner og løbende certificeringsgebyrer.",
-invest: "For små producenter kan disse certificeringer være en betydelig økonomisk byrde. I stedet for at investere i dyre mærkninger vælger de at investere i det, der virkelig betyder noget: kvalitet, omsorg for jorden og ordentlige arbejdsforhold.",
-ourBelieve: "Vi mener, at god kaffe bør defineres af gennemsigtighed, relationer og ansvarlighed — ikke kun af logoer på emballagen.",
-      whyDK: "Hvorfor Danmark",
+    whyNoEco:
+      "Hvorfor har vores kaffe ikke mærkninger som “Økologisk” eller “Miljøvenlig”?",
+    farmers:
+      "Vores kaffebønner kommer fra små landmænd – mennesker, der dyrker kaffe med passion og ikke med fokus på masseproduktion eller maksimal profit.",
+    fees: "Mange af dem følger bæredygtige og ansvarlige dyrkningsmetoder, som i praksis ville kunne kvalificere dem til certificeringer som “Økologisk” eller “Miljøvenlig”. Dog kræver sådanne mærkninger en formel ansøgningsproces, inspektioner og løbende certificeringsgebyrer.",
+    invest:
+      "For små producenter kan disse certificeringer være en betydelig økonomisk byrde. I stedet for at investere i dyre mærkninger vælger de at investere i det, der virkelig betyder noget: kvalitet, omsorg for jorden og ordentlige arbejdsforhold.",
+    ourBelieve:
+      "Vi mener, at god kaffe bør defineres af gennemsigtighed, relationer og ansvarlighed — ikke kun af logoer på emballagen.",
+    whyDK: "Hvorfor Danmark",
     DKDes:
       "Danmark er et af de mest kaffeglade lande i verden. Vi ser en stor mulighed for at introducere noget unikt – kaffe ristet i Slovakiet med dyb respekt for oprindelse, bæredygtighed og smag",
     weBelieve: "Vi tror, at danske kaffeentusiaster vil sætte pris på",

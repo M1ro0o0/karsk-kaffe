@@ -8,12 +8,19 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://karsk-kaffe.onrender.com", // 👈 ADD THIS
+  ],
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"]
+}));
 app.use(express.json());
 
-/*******************
+/*--------------------
       Database
-********************/
+--------------------*/
 
 //Clent creations
 const supabase = createClient(
@@ -216,4 +223,6 @@ res.json(product);
 
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {});
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
