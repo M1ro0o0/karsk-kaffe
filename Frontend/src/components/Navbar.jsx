@@ -58,9 +58,10 @@ function Navbar() {
           </button>
           {langOpen && (
             <div className="dropdown-menu">
-              <button onClick={() => setLang("en")}>EN</button>
               <button onClick={() => setLang("da")}>DA</button>
+              <button onClick={() => setLang("en")}>EN</button>
               <button onClick={() => setLang("sk")}>SK</button>
+              <button onClick={() => setLang("pl")}>PL</button>
             </div>
           )}
         </div>

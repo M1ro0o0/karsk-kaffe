@@ -288,14 +288,35 @@ app.get("/api/products", async (req, res) => {
 });
 
 //particular product retrieve
-app.get("/api/products/:id", (req, res) => {
-    const product = getProducts().find(p => p.id === Number(req.params.id));
+app.get("/api/products/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
 
-    if (!product) {
-    return res.status(404).json({ error: "Product not found" });
-  
-} 
-res.json(product);
+    const { data, error } = await supabase
+      .from("products")
+      .select(`
+        *,
+        product_prices(*),
+        product_translations(*),
+        product_options(*),
+        product_tags(
+          tags(name)
+        )
+      `)
+      .eq("id", id)
+      .limit(1);
+
+    if (error) throw error;
+
+    if (!data) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch product" });
+  }
 });
 
 
