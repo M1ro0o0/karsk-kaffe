@@ -9,16 +9,18 @@ import { useState } from "react";
 
 export default function CartPage() {
   const { t } = useLanguage();
-  const { cart, updateQuantity, removeFromCart, clearCart, totalPrice } = useCart();
-  
-  const navigate = useNavigate();
-  
-  const [code, setCode] = useState("");
-  const [discount, setDiscount] = useState(0);
-  const [error, setError] = useState("");
-  
-  const finalprice = totalPrice - getVATAmount(totalPrice, discount/100);
+  const { cart, updateQuantity, removeFromCart, clearCart, totalPrice } =
+    useCart();
 
+  const navigate = useNavigate();
+
+  const [code, setCode] = useState(localStorage.getItem("discountCode") || "");
+  const [discount, setDiscount] = useState(
+    Number(localStorage.getItem("discountValue")) || 0,
+  );
+  const [error, setError] = useState("");
+
+  const finalprice = totalPrice * (1 - discount / 100);
 
   const applyCode = async () => {
     try {
@@ -28,7 +30,7 @@ export default function CartPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code }),
-        }
+        },
       );
 
       const data = await res.json();
@@ -46,6 +48,11 @@ export default function CartPage() {
 
       setError("");
       setDiscount(data.discount);
+
+      localStorage.setItem("discountCode", code);
+      localStorage.setItem("discountValue", data.discount);
+
+      setCode("");
     } catch (err) {
       console.error(err);
       setError(t.cart.errCode0);
@@ -116,9 +123,7 @@ export default function CartPage() {
               type="number"
               min="1"
               value={item.quantity}
-              onChange={(e) =>
-                updateQuantity(index, Number(e.target.value))
-              }
+              onChange={(e) => updateQuantity(index, Number(e.target.value))}
             />
 
             <button onClick={() => removeFromCart(index)}>
@@ -135,23 +140,42 @@ export default function CartPage() {
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder="Discount code"
+          disabled={discount > 0}
         />
 
-        <button className="discount-code-button" onClick={applyCode}>
+        <button className="discount-code-button" onClick={applyCode}  disabled={discount > 0}>
           {t.cart.apply}
         </button>
       </div>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="cart-summary">
-        {discount > 0 && <p>{t.cart.discount}: {discount}% (-{getVATAmount(totalPrice, discount/100)} kr)</p>}   
+        {discount > 0 && (
+          <div className="discount-code-message">
+            <p>[{localStorage.getItem("discountCode")}]</p>
+            <p>
+              {t.cart.discount}: {discount}% (-
+              {getVATAmount(totalPrice, discount / 100)} kr)
+            </p>
+            <button
+              onClick={() => {
+                setDiscount(0);
+                setCode("");
+                localStorage.removeItem("discountCode");
+                localStorage.removeItem("discountValue");
+              }}
+            >
+              X
+            </button>
+          </div>
+        )}
         <h2 className="total-price">
           {t.cart.total} {finalprice}
         </h2>
 
         <h4 className="vat">
-          {t.cart.VAT}(25%): {getVATAmount(totalPrice)} kr
+          {t.cart.VAT}(25%): {getVATAmount(finalprice)} kr
         </h4>
 
         <button

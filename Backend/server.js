@@ -21,6 +21,58 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
+/*---------------------
+      Functions
+---------------------*/
+
+function formatOptions(optionsArray) {
+  const grouped = {};
+
+  (optionsArray || []).forEach(opt => {
+    if (!grouped[opt.type]) {
+      grouped[opt.type] = [];
+    }
+
+    grouped[opt.type].push(opt.value);
+  });
+
+  return grouped;
+}
+
+function formatProduct(product) {
+  const translations = {};
+
+  product.product_translations.forEach((t) => {
+    translations[t.language] = {
+      name: t.name,
+      description: t.description,
+      shortDescription: t.short_description,
+    };
+  });
+
+  return {
+    id: product.id,
+    type: product.type,
+    image: product.image,
+    discount: product.base_discount,
+
+    prices: product.product_prices.map(p => ({
+      label: p.label,
+      price: p.price
+    })),
+
+    tags: product.product_tags.map(t => t.tags.name),
+
+    translations,
+
+    options: formatOptions(product.product_options)
+  };
+}
+
+/*--------------
+      APIs
+--------------*/
+
 //Validation
 app.post("/api/discount/validate", async (req, res) => {
   const { code } = req.body;
@@ -199,8 +251,40 @@ app.post("/api/contact", async (req, res) => {
 });*/
 
 //Product retrieving
-app.get('/api/products', (req, res) => {
-    res.json(getProducts());
+app.get("/api/products", async (req, res) => {
+  try {
+    const { tag } = req.query;
+
+    let query = supabase.from("products").select(`
+      *,
+      product_prices(*),
+      product_translations(*),
+      product_options(*),
+      product_tags(
+        tags(name)
+      )
+    `);
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    let products = data;
+
+    //filter by tag in backend
+    if (tag) {
+      products = products.filter(product =>
+        product.product_tags?.some(pt =>
+          pt.tags?.name?.toLowerCase() === tag.toLowerCase()
+        )
+      );
+    }
+
+    res.json(products);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
 });
 
 //particular product retrieve

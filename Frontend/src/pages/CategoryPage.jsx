@@ -12,7 +12,9 @@ function CategoryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://karsk-kaffe.onrender.com/api/products`) 
+    setLoading(true);
+
+    fetch(`https://karsk-kaffe.onrender.com/api/products?tag=${tag}`)
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
@@ -22,13 +24,7 @@ function CategoryPage() {
         console.error(err);
         setLoading(false);
       });
-  }, []);
-
-  const filteredProducts = products.filter((product) =>
-    product.tags?.some(
-      (item) => item.toLowerCase() === tag.toLowerCase()
-    )
-  );
+  }, [tag]);
 
   if (loading) return <p className="loading">{t.product.loading}...</p>;
 
@@ -39,8 +35,8 @@ function CategoryPage() {
       </h1>
 
       <div className="category-grid">
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
+        {products.length > 0 ? (
+          products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))
         ) : (

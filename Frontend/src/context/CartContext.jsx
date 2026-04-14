@@ -27,24 +27,30 @@ export function CartProvider({ children }) {
   }, [cart]);
 
   const addToCart = (newItem) => {
-    setCart((prevCart) => {
-      const existingIndex = prevCart.findIndex(
-        (item) =>
-          item.id === newItem.id &&
-          isSameOptions(item.options, newItem.options),
+  setCart((prevCart) => {
+    const existingIndex = prevCart.findIndex(
+      (item) =>
+        item.id === newItem.id &&
+        isSameOptions(item.options, newItem.options)
+    );
+
+    const itemToAdd = {
+      ...newItem,
+      basePrice: newItem.basePrice ?? newItem.price,
+      selectedPrice: newItem.selectedPrice ?? newItem.price,
+    };
+
+    if (existingIndex !== -1) {
+      return prevCart.map((item, index) =>
+        index === existingIndex
+          ? { ...item, quantity: item.quantity + newItem.quantity }
+          : item
       );
+    }
 
-      if (existingIndex !== -1) {
-        return prevCart.map((item, index) =>
-          index === existingIndex
-            ? { ...item, quantity: item.quantity + newItem.quantity }
-            : item,
-        );
-      }
-
-      return [...prevCart, newItem];
-    });
-  };
+    return [...prevCart, itemToAdd];
+  });
+};
 
   const updateQuantity = (index, quantity) => {
     setCart((prev) =>
@@ -58,24 +64,16 @@ export function CartProvider({ children }) {
 
   const clearCart = () => setCart([]);
 
-  const isSameOptions = (a = {}, b = {}) =>
-    JSON.stringify(
-      Object.keys(a)
-        .sort()
-        .reduce((r, k) => ((r[k] = a[k]), r), {}),
-    ) ===
-    JSON.stringify(
-      Object.keys(b)
-        .sort()
-        .reduce((r, k) => ((r[k] = b[k]), r), {}),
-    );
+  const isSameOptions = (a = {}, b = {}) => {
+  return JSON.stringify(a) === JSON.stringify(b);
+};
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  const totalPrice = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
+ const totalPrice = cart.reduce(
+  (sum, item) => sum + (item.selectedPrice || item.price) * item.quantity,
+  0
+);
 
   return (
     <CartContext.Provider

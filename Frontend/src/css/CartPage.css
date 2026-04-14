@@ -216,3 +216,21 @@ width: 80px;
   color: #000;
   transition: 0.2s;
 }
+
+.discount-code-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.discount-code-message p {
+  margin: 0;
+}
+
+.discount-code-message button {
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
+  background-color: #e00000;
+}

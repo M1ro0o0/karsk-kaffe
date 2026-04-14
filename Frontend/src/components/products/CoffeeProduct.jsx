@@ -2,47 +2,46 @@ import "../../css/CoffeeProduct.css";
 
 import { useState } from "react";
 import { useCart } from "../../context/CartContext";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { getDiscountedPrice, getDiscountPercent } from "../../utils/pricing";
 import { useLanguage } from "../../context/LanguageContext";
 
-function PriceIndex(size) {
-  if (!size) return null;
-
-  switch (size) {
-    case "100g":
-      return 0;
-    case "250g":
-      return 1;
-    case "500g":
-      return 2;
-    case "1000g":
-      return 3;
-    default:
-      return null;
-  }
-}
-
 function CoffeeProduct({ product }) {
   const { addToCart } = useCart();
-  const { lang, t } = useLanguage();
+  const { t } = useLanguage();
   const location = useLocation();
-  const cartOptions = location.state?.options;
+  const cartOptions = location.state?.options || {};
 
   const [quantity, setQuantity] = useState(1);
-  const [size, setSize] = useState(cartOptions?.size || "");
-  const [grind, setGrind] = useState(cartOptions?.grind || "");
-  const [roast, setRoast] = useState(cartOptions?.roast || "");
 
-  const allOptionsSelected = size && grind && roast && quantity > 0;
+  // ✅ dynamic options state
+  const [selectedOptions, setSelectedOptions] = useState({
+    ...cartOptions,
+    size: cartOptions.size || "",
+  });
+
+  const allOptionsSelected =
+    Object.values(selectedOptions).every(v => v) && quantity > 0;
+
+  // ✅ find selected price
+  const selectedPriceObj = product.prices.find(
+    p => p.label === selectedOptions.size
+  );
+
+  const basePrice = selectedPriceObj?.price || 0;
+  const finalPrice = getDiscountedPrice(basePrice, product.discount);
 
   return (
     <div className="product-page">
-      <img src={product.image} alt={product.translations[lang].name} className="product-image" />
+      <img
+        src={product.image}
+        alt={product.translation?.name}
+        className="product-image"
+      />
 
       <div className="product-info">
         <div className="title">
-          <h1>{product.translations[lang].name}</h1>
+          <h1>{product.translation?.name}</h1>
 
           {product.discount < 1 && (
             <div className="discount-product">
@@ -51,68 +50,81 @@ function CoffeeProduct({ product }) {
           )}
         </div>
 
+        {/* PRICE ESTIMATE */}
         <strong className="price-estimate">
           {product.discount < 1
             ? `${t.product.newPriceFrom} ${getDiscountedPrice(
-                product.price[0],
-                product.discount,
+                product.prices?.[0]?.price || 0,
+                product.discount
               )} kr`
-            : `${t.product.priceFrom} ${product.price[0]} kr`}
+            : `${t.product.priceFrom} ${product.prices?.[0]?.price || 0} kr`}
         </strong>
 
+        {/* DESCRIPTION */}
         <div className="description">
           <h3>{t.product.description}</h3>
           <ul>
-            {Object.entries(product.translations[lang].description).map(([key, value]) => (
-              <li key={key}>
-                <strong>{t.labels[key]}:</strong> {value}
-              </li>
-            ))}
+            {Object.entries(product.translation?.description || {}).map(
+              ([key, value]) => (
+                <li key={key}>
+                  <strong>{t.labels[key]}:</strong> {value}
+                </li>
+              )
+            )}
           </ul>
         </div>
 
-        {/* OPTIONS */}
+        {/* OPTIONS (DYNAMIC) */}
         <div className="product-options">
-          <label>
-            {t.product.grind}:
-            <select value={grind} onChange={(e) => setGrind(e.target.value)}>
-              <option value="">
-                {t.product.select} {t.product.grind}
-              </option>
-              {product.translations[lang].availableGrinds.map((g, index) => (
-                <option key={index} value={g}>
-                  {g}
-                </option>
-              ))}
-            </select>
-          </label>
-
+          {/* SIZE (from prices) */}
           <label>
             {t.product.size}:
-            <select value={size} onChange={(e) => setSize(e.target.value)}>
+            <select
+              value={selectedOptions.size || ""}
+              onChange={(e) =>
+                setSelectedOptions(prev => ({
+                  ...prev,
+                  size: e.target.value,
+                }))
+              }
+            >
               <option value="">
                 {t.product.select} {t.product.size}
               </option>
-              <option value="100g">100g</option>
-              <option value="250g">250g</option>
-              <option value="500g">500g</option>
-              <option value="1000g">1000g</option>
-            </select>
-          </label>
 
-          <label>
-            {t.product.roast}:
-            <select value={roast} onChange={(e) => setRoast(e.target.value)}>
-              <option value="">
-                {t.product.select} {t.product.roast}
-              </option>
-              {product.translations[lang].availableRoasts.map((r, index) => (
-                <option key={index} value={r}>
-                  {r}
+              {product.prices.map((p, index) => (
+                <option key={index} value={p.label}>
+                  {p.label}
                 </option>
               ))}
             </select>
           </label>
+
+          {/* OTHER OPTIONS (dynamic) */}
+          {Object.entries(product.options || {}).map(([type, values]) => (
+            <label key={type}>
+              {t.product[type] || type}:
+              <select
+                value={selectedOptions[type] || ""}
+                onChange={(e) =>
+                  setSelectedOptions(prev => ({
+                    ...prev,
+                    [type]: e.target.value,
+                  }))
+                }
+              >
+                <option value="">
+                  {t.product.select} {t.product[type] || type}
+                </option>
+
+                {values.map((v, index) => (
+                  <option key={index} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ))}
         </div>
 
         {/* PRICE */}
@@ -120,27 +132,17 @@ function CoffeeProduct({ product }) {
           <div className="price-box">
             {product.discount < 1 ? (
               <>
-                <span className="price-old">
-                  {product.price[PriceIndex(size)]} kr
-                </span>
-                <span className="price">
-                  {getDiscountedPrice(
-                    product.price[PriceIndex(size)],
-                    product.discount,
-                  )}{" "}
-                  kr
-                </span>
+                <span className="price-old">{basePrice} kr</span>
+                <span className="price">{finalPrice} kr</span>
               </>
             ) : (
-              <span className="price">
-                {product.price[PriceIndex(size)]} kr
-              </span>
+              <span className="price">{basePrice} kr</span>
             )}
             <p>*{t.product.VAT}</p>
           </div>
         )}
 
-        {/* QUANTITY + CART */}
+        {/* CART */}
         <div className="quantity-selector">
           <input
             type="number"
@@ -155,16 +157,10 @@ function CoffeeProduct({ product }) {
             onClick={() =>
               addToCart({
                 id: product.id,
-                name: product.translations[lang].name,
-                price: getDiscountedPrice(
-                  product.price[PriceIndex(size)],
-                  product.discount,
-                ),
-                options: {
-                  grind,
-                  roast,
-                  size,
-                },
+                name: product.translation?.name,
+                price: finalPrice,
+                selectedPrice: selectedPriceObj,
+                options: selectedOptions,
                 quantity,
                 image: product.image,
               })
