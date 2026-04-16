@@ -11,17 +11,19 @@ function Home() {
   const { language } = useLanguage();
 
   useEffect(() => {
-    fetch("https://karsk-kaffe.onrender.com/api/products")
-      .then(res => res.json())
-      .then(data => {
-        const mapped = data.map(product => ({
-          ...product,
-          translation: product.translations?.[language] || product.translations?.en
-        }));
+  fetch("https://karsk-kaffe.onrender.com/api/products")
+    .then(res => res.json())
+    .then(data => {
+      if (!Array.isArray(data)) {
+        console.error("API error:", data);
+        setProducts([]);
+        return;
+      }
 
-        setProducts(mapped);
-      });
-  }, [language]);
+      setProducts(data);
+    })
+    .catch(err => console.error(err));
+}, []);
 
   return (
     <div>

@@ -206,7 +206,7 @@ width: 80px;
     align-items: center;
     justify-content: center;
     color: #fff;
-  background-color: #8f5445;
+  background-color: hsl(12, 35%, 42%);
   font-size: 1rem;
 }
 

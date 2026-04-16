@@ -253,37 +253,19 @@ app.post("/api/contact", async (req, res) => {
 //Product retrieving
 app.get("/api/products", async (req, res) => {
   try {
-    const { tag } = req.query;
+    const { data, error } = await supabase
+      .from("products")
+      .select("*");
 
-    let query = supabase.from("products").select(`
-      *,
-      product_prices(*),
-      product_translations(*),
-      product_options(*),
-      product_tags(
-        tags(name)
-      )
-    `);
-
-    const { data, error } = await query;
-
-    if (error) throw error;
-
-    let products = data;
-
-    //filter by tag in backend
-    if (tag) {
-      products = products.filter(product =>
-        product.product_tags?.some(pt =>
-          pt.tags?.name?.toLowerCase() === tag.toLowerCase()
-        )
-      );
+    if (error) {
+      console.error("DB ERROR:", error);
+      return res.status(500).json(error);
     }
 
-    res.json(products);
+    res.json(data);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch products" });
+    console.error("SERVER ERROR:", err);
+    res.status(500).json({ error: "Server crash" });
   }
 });
 
