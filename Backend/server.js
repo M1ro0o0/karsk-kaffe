@@ -252,35 +252,23 @@ app.post("/api/contact", async (req, res) => {
 
 //Product retrieving
 app.get("/api/products", async (req, res) => {
+  const lang = req.query.lang || "en";
+
   try {
-    const { tag } = req.query;
-
-    let query = supabase.from("Products").select(`
-      *,
-      ProductPrices(*),
-      ProductTranslations(*),
-      ProductOptions(*),
-      ProductTags(
-        Tags(name)
-      )
-    `);
-
-    const { data, error } = await query;
+    const { data, error } = await supabase
+      .from("products")
+      .select(`
+        id,
+        image,
+        baseDiscount,
+        ProductPrices(price),
+        ProductTranslations!inner(name, language)
+      `)
+      .eq("ProductTranslations.language", lang);
 
     if (error) throw error;
 
-    let products = data;
-
-    //filter by tag in backend
-    if (tag) {
-      products = products.filter(product =>
-        product.product_tags?.some(pt =>
-          pt.tags?.name?.toLowerCase() === tag.toLowerCase()
-        )
-      );
-    }
-
-    res.json(products);
+    res.json(data);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch products" });
