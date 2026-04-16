@@ -252,26 +252,20 @@ app.post("/api/contact", async (req, res) => {
 
 //Product retrieving
 app.get("/api/products", async (req, res) => {
-  const lang = req.query.lang || "en";
-
   try {
     const { data, error } = await supabase
       .from("Products")
-      .select(`
-        id,
-        image,
-        baseDiscount,
-        ProductPrices(price),
-        ProductTranslations!inner(name, language)
-      `)
-      .eq("ProductTranslations.language", lang);
+      .select(`id, image, baseDiscount`);
 
-    if (error) throw error;
+    if (error) {
+      console.error("DB ERROR:", error);
+      return res.status(500).json(error);
+    }
 
     res.json(data);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch products" });
+    console.error("SERVER ERROR:", err);
+    res.status(500).json({ error: "Server crash" });
   }
 });
 
