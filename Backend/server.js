@@ -268,6 +268,7 @@ app.post("/api/contact", async (req, res) => {
 
 //Product retrieving
 app.get("/api/products", async (req, res) => {
+  console.log("🔥 /api/products HIT");
   const lang = req.query.lang || "en";
 
   try {
@@ -280,9 +281,13 @@ app.get("/api/products", async (req, res) => {
     ProductPrices(price),
     ProductTranslation(name, language)
   `);
+
+  if (!data) {
+      console.log("NO RESULT OBJECT");
+    }
   
-  console.log("RAW DATA:", data);
-  
+   console.log("RAW DATA:", data);
+
     if (error) {
       console.error("SUPABASE ERROR:", error);
       return res.status(500).json(error);
