@@ -8,10 +8,10 @@ import { useLanguage } from "../context/LanguageContext";
 
 function Home() {
   const [products, setProducts] = useState([]);
-  const { language } = useLanguage();
+  const { lang } = useLanguage();
 
   useEffect(() => {
-  fetch("https://karsk-kaffe.onrender.com/api/products")
+  fetch(`https://karsk-kaffe.onrender.com/api/products?lang=${lang}`)
     .then(res => res.json())
     .then(data => {
       if (!Array.isArray(data)) {

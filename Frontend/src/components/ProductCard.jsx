@@ -6,19 +6,16 @@ import { useLanguage } from "../context/LanguageContext";
 
 function ProductCard({ product }) {
   const { t } = useLanguage();
+  console.log(product);
 
-  // ✅ get first price safely
-  const firstPrice = product.prices?.[0]?.price || 0;
-  const hasMultiplePrices = product.prices?.length > 1;
-
-  const finalPrice = getDiscountedPrice(firstPrice, product.discount);
+  const finalPrice = getDiscountedPrice(product.Price, product.discount);
 
   return (
     <Link to={`/product/${product.id}`} className="product-link">
       <div className="product-card">
         
         <div className="product-image-wrapper">
-          <img src={product.image} alt={product.translation?.name} />
+          <img src={product.image} alt={product.name} />
 
           {product.discount < 1 && (
             <span className="discount">
@@ -28,11 +25,11 @@ function ProductCard({ product }) {
         </div>
 
         {/* ✅ NAME */}
-        <h3>{product.translation?.name}</h3>
+        <h3>{product.name}</h3>
 
         {/* ✅ PRICE */}
         <strong className="price-estimate">
-          {hasMultiplePrices ? (
+          {product.isMultiprice ? (
             <>
               {product.discount < 1
                 ? t.product.newPriceFrom
