@@ -8,6 +8,8 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
+console.log("🔥 SERVER FILE LOADED");
+
 app.use(cors());
 app.use(express.json());
 
