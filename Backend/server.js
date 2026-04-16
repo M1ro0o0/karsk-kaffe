@@ -1,11 +1,11 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const { createClient } = require("@supabase/supabase-js");
 const nodemailer = require("nodemailer");
-const express = require('express');
-const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
+const express = require("express");
+const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
 const app = express();
 
 app.use(cors());
@@ -18,8 +18,8 @@ app.use(express.json());
 //Clent creations
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-)
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+);
 
 /*---------------------
       Functions
@@ -28,7 +28,7 @@ const supabase = createClient(
 function formatOptions(optionsArray) {
   const grouped = {};
 
-  (optionsArray || []).forEach(opt => {
+  (optionsArray || []).forEach((opt) => {
     if (!grouped[opt.type]) {
       grouped[opt.type] = [];
     }
@@ -39,42 +39,32 @@ function formatOptions(optionsArray) {
   return grouped;
 }
 
-function formatProduct(product) {
-  const translations = {};
+function formatProduct(product, lang = "en") {
+  const translations = product.ProductTranslation || [];
 
-  product.product_translations.forEach((t) => {
-    translations[t.language] = {
-      name: t.name,
-      description: t.description,
-      shortDescription: t.short_description,
-    };
-  });
+  const translation = translations.find((t) => t.language === lang);
+
+  const selections = product.ProductContent || [];
+
+  const selection =
+    selections.find((t) => t.language === lang) || selections[0];
 
   return {
     id: product.id,
-    type: product.type,
     image: product.image,
-    discount: product.base_discount,
-
-    prices: product.product_prices.map(p => ({
-      label: p.label,
-      price: p.price
-    })),
-
-    tags: product.product_tags.map(t => t.tags.name),
-
-    translations,
-
-    options: formatOptions(product.product_options)
+    discount: product.baseDiscount,
+    prices: product.ProductPrices || [],
+    name: translation?.name,
+    description: translation?.description,
+    items: selection?.items?.products || [],
+    options: formatOptions(product.ProductOptions || [])
   };
 }
 
 function formatProductCard(product, lang = "en") {
   const translations = product.ProductTranslation || [];
 
-  const translation = translations.find(
-    (t) => t.language === lang
-  );
+  const translation = translations.find((t) => t.language === lang);
 
   return {
     id: product.id,
@@ -120,7 +110,7 @@ app.post("/api/discount/validate", async (req, res) => {
 
   return res.json({
     valid: true,
-    discount: data.discount
+    discount: data.discount,
   });
 });
 
@@ -147,7 +137,7 @@ app.post("/api/discount/redeem", async (req, res) => {
     .update({
       used: true,
       used_at: new Date().toISOString(),
-      invoice: invoice
+      invoice: invoice,
     })
     .eq("code", code);
 
@@ -158,137 +148,30 @@ app.post("/api/discount/redeem", async (req, res) => {
   res.send({ success: true });
 });
 
-function getProducts()
-{
-    const rawData = fs.readFileSync(productsPath);
-    return JSON.parse(rawData);
-}
-
-
-//Email bullshit
-
-/*console.log("Step 1: after imports");
-
-const { getLocale } = require('./locales');
-
-console.log("Step 2: locales loaded");
-
-app.use(cors({
-  origin: "*", // for testing
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type"]
-}));
-
-app.use(express.json());
-
-const productsPath = path.join(__dirname,'data', 'products.json');
-
-console.log("Step 3: path set");
-
-
-
-function escapeHtml(text) {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
-
-function getRecipient(type){
-    switch (type)
-    {
-        case "orders":
-            return "return@karskkaffe.dk";
-        case "wholesale":
-            return "business@karskkaffe.dk";
-        case "general":
-        case "support":
-            return "info@karskkaffe.dk";
-        default:
-            return "info@karskkaffe.dk";
-    }
-}
-
-function getFooter(email) {
-  return `
-    <br><br>
-
-    <p>Med venlig hilsen | Kind Regards</p>
-
-    <p>
-      <strong>Automatic Reply</strong><br>
-      Customer Service | Karsk Kaffe<br>
-      Slovak-roasted specialty coffee for Denmark
-    </p>
-
-    <img src="cid:logo" style="max-width:200px; margin:10px 0;" />
-
-    <p>
-      📧 ${email}<br>
-      🌍 www.karskkaffe.dk<br>
-      📱 +45 XX XX XX XX
-    </p>
-
-    <p>CVR: 46 27 60 43</p>
-  `;
-}
-
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-
-console.log("Step 4: transporter created");
-
-app.post("/api/contact", async (req, res) => {
-  console.log("Sending test email...");
-
-  try {
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER,
-      subject: "Test",
-      text: "Test"
-    });
-
-    console.log("Email sent");
-
-    res.json({ success: true });
-
-  } catch (err) {
-    console.error("EMAIL ERROR:", err);
-    res.status(500).json({ error: err.message });
-  }
-});*/
-
 //Product retrieving
 app.get("/api/products", async (req, res) => {
-    const lang = req.query.lang || "en";
+  const lang = req.query.lang || "en";
 
   try {
     const { data, error } = await supabase
-  .from("Products")
-  .select(`
+      .from("Products")
+      .select(
+        `
     id,
     image,
     baseDiscount,
     ProductPrices(price),
     ProductTranslation(name, language)
-  `)
-  .eq("active", true);
+  `,
+      )
+      .eq("active", true);
 
     if (error) {
       console.error("SUPABASE ERROR:", error);
       return res.status(500).json(error);
     }
 
-    const formatted = data.map(p => formatProductCard(p, lang));
+    const formatted = data.map((p) => formatProductCard(p, lang));
 
     res.json(formatted);
   } catch (err) {
@@ -301,22 +184,22 @@ app.get("/api/products", async (req, res) => {
 app.get("/api/products/:id", async (req, res) => {
   try {
     const { id } = req.params;
+    const lang = req.query.lang || "en";
 
     const { data, error } = await supabase
-  .from("Products")
-  .select(`
+      .from("Products")
+      .select(
+        `
     id,
     image,
     baseDiscount,
     ProductPrices(price),
     ProductTranslation(name, language, description),
-    ProductContent(
-      id,
-      language,
-      items
-    )
-  `)
-  .eq("active", true);
+    ProductOptons(type, value),
+    ProductContent(language, items)
+  `,
+      )
+      .eq("active", true);
 
     if (error) throw error;
 
@@ -326,13 +209,17 @@ app.get("/api/products/:id", async (req, res) => {
 
     console.log(JSON.stringify(data, null, 2));
 
-    res.json(data);
+    const formatted = data.map((p) => formatProduct(p, lang));
+
+    console.log("formatted")
+    console.log(JSON.stringify(formatted, null, 2));
+
+    res.json(formatted);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch product" });
   }
 });
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

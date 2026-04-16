@@ -20,16 +20,10 @@ function ProductPage() {
   const { lang, t } = useLanguage();
 
   useEffect(() => {
-    fetch(`/api/products/${id}`)
+    fetch(`/api/products/${id}?lang=${lang}`)
       .then((res) => res.json())
       .then((data) => {
-        const mapped = {
-          ...data,
-          translation:
-            data.translations?.[lang] || data.translations?.en,
-        };
-
-        setProduct(mapped);
+        setProduct(data);
       });
   }, [id, lang]);
 
