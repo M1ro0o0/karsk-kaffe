@@ -70,19 +70,18 @@ function formatProduct(product) {
 }
 
 function formatProductCard(product, lang = "en") {
-  const translation = product.product_translations.find(
+  const translations = product.ProductTranslation || [];
+
+  const translation = translations.find(
     (t) => t.language === lang
   );
 
   return {
     id: product.id,
     image: product.image,
-    discount: product.base_discount,
-
+    discount: product.baseDiscount,
     name: translation?.name || "No name",
-
-    // get cheapest or first price
-    price: product.product_prices[0]?.price || 0,
+    price: product.ProductPrices?.[0]?.price || 0,
   };
 }
 
@@ -273,14 +272,14 @@ app.get("/api/products", async (req, res) => {
 
   try {
     const { data, error } = await supabase
-      .from("Products")
-      .select(`
-        id,
-        image,
-        baseDiscount,
-        ProductPrices(price),
-        ProductTranslation(name, language)
-      `);
+  .from("Products")
+  .select(`
+    id,
+    image,
+    baseDiscount,
+    ProductPrices(price),
+    ProductTranslation(name, language)
+  `);
 
     if (error) {
       console.error("SUPABASE ERROR:", error);
