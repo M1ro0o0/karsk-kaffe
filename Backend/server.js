@@ -279,7 +279,7 @@ app.get("/api/products", async (req, res) => {
         image,
         baseDiscount,
         ProductPrices(price),
-        ProductTranslations(name, language)
+        ProductTranslation(name, language)
       `);
 
     if (error) {
