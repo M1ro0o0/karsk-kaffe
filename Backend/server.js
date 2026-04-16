@@ -69,6 +69,23 @@ function formatProduct(product) {
   };
 }
 
+function formatProductCard(product, lang = "en") {
+  const translation = product.product_translations.find(
+    (t) => t.language === lang
+  );
+
+  return {
+    id: product.id,
+    image: product.image,
+    discount: product.base_discount,
+
+    name: translation?.name || "No name",
+
+    // get cheapest or first price
+    price: product.product_prices[0]?.price || 0,
+  };
+}
+
 /*--------------
       APIs
 --------------*/
@@ -254,15 +271,16 @@ app.post("/api/contact", async (req, res) => {
 app.get("/api/products", async (req, res) => {
   try {
     const { data, error } = await supabase
-      .from("Products")
-      .select(`id, image, baseDiscount`);
+  .from("Products")
+  .select(`
+    id,
+    image,
+    baseDiscount,
+    ProductTranslations(name, lang),
+    ProductPrices(price)
+  `);
 
-    if (error) {
-      console.error("DB ERROR:", error);
-      return res.status(500).json(error);
-    }
-
-    const formatted = formatProduct(data);
+    const formatted = data.map(p => formatProductCard(p, lang));
 
     res.json(formatted);
   } catch (err) {
