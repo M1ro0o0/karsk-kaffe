@@ -8,7 +8,7 @@ function ProductCard({ product }) {
   const { t } = useLanguage();
   console.log(product);
 
-  const finalPrice = getDiscountedPrice(product.Price, product.discount);
+  const finalPrice = getDiscountedPrice(product.price, product.discount);
 
   return (
     <Link to={`/product/${product.id}`} className="product-link">

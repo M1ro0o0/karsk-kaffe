@@ -71,7 +71,6 @@ function formatProduct(product) {
 
 function formatProductCard(product, lang = "en") {
   const translations = product.ProductTranslation || [];
-  console.log(lang);
 
   const translation = translations.find(
     (t) => t.language === lang
@@ -83,7 +82,7 @@ function formatProductCard(product, lang = "en") {
     discount: product.baseDiscount,
     name: translation?.name || "No name",
     price: product.ProductPrices?.[0]?.price || 0,
-    isMultiprice: (product.ProductPrices?.length || 0) > 1
+    isMultiprice: (product.ProductPrices?.length || 0) > 1,
   };
 }
 
@@ -282,8 +281,6 @@ app.get("/api/products", async (req, res) => {
     ProductPrices(price),
     ProductTranslation(name, language)
   `);
-  
-   console.log(JSON.stringify(data, null, 2));
 
     if (error) {
       console.error("SUPABASE ERROR:", error);
