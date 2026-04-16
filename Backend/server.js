@@ -8,8 +8,6 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
-console.log("🔥 SERVER FILE LOADED");
-
 app.use(cors());
 app.use(express.json());
 
@@ -283,12 +281,8 @@ app.get("/api/products", async (req, res) => {
     ProductPrices(price),
     ProductTranslation(name, language)
   `);
-
-  if (!data) {
-      console.log("NO RESULT OBJECT");
-    }
   
-   console.log("RAW DATA:", data);
+   console.log(JSON.stringify(product, null, 2));
 
     if (error) {
       console.error("SUPABASE ERROR:", error);
