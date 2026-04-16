@@ -280,13 +280,14 @@ app.get("/api/products", async (req, res) => {
     ProductPrices(price),
     ProductTranslation(name, language)
   `);
-
+  
+  console.log("RAW DATA:", data);
+  
     if (error) {
       console.error("SUPABASE ERROR:", error);
       return res.status(500).json(error);
     }
 
-    console.log("RAW DATA:", JSON.stringify(data, null, 2));
 
     const formatted = data.map(p => formatProductCard(p, lang));
 
