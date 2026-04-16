@@ -269,23 +269,32 @@ app.post("/api/contact", async (req, res) => {
 
 //Product retrieving
 app.get("/api/products", async (req, res) => {
+  const lang = req.query.lang || "en";
+
   try {
     const { data, error } = await supabase
-  .from("Products")
-  .select(`
-    id,
-    image,
-    baseDiscount,
-    ProductTranslations(name, lang),
-    ProductPrices(price)
-  `);
+      .from("products")
+      .select(`
+        id,
+        image,
+        baseDiscount,
+        ProductPrices(price),
+        ProductTranslations(name, language)
+      `);
+
+    if (error) {
+      console.error("SUPABASE ERROR:", error);
+      return res.status(500).json(error);
+    }
+
+    console.log("RAW DATA:", JSON.stringify(data, null, 2));
 
     const formatted = data.map(p => formatProductCard(p, lang));
 
     res.json(formatted);
   } catch (err) {
-    console.error("SERVER ERROR:", err);
-    res.status(500).json({ error: "Server crash" });
+    console.error("SERVER CRASH:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 
