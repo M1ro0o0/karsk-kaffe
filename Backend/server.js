@@ -282,7 +282,7 @@ app.get("/api/products", async (req, res) => {
     ProductTranslation(name, language)
   `);
   
-   console.log(JSON.stringify(product, null, 2));
+   console.log(JSON.stringify(data, null, 2));
 
     if (error) {
       console.error("SUPABASE ERROR:", error);
