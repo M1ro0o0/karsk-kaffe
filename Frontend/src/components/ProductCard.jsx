@@ -6,7 +6,6 @@ import { useLanguage } from "../context/LanguageContext";
 
 function ProductCard({ product }) {
   const { t } = useLanguage();
-  console.log(product);
 
   const finalPrice = getDiscountedPrice(product.price, product.discount);
 

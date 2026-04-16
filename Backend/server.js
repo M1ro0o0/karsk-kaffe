@@ -195,7 +195,7 @@ app.get("/api/products/:id", async (req, res) => {
     baseDiscount,
     ProductPrices(price),
     ProductTranslation(name, language, description),
-    ProductOptons(type, value),
+    ProductOptions(type, value),
     ProductContent(language, items)
   `,
       )
