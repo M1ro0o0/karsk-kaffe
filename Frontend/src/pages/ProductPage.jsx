@@ -17,7 +17,7 @@ function ProductPage() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
 
-  const { language, t } = useLanguage();
+  const { lang, t } = useLanguage();
 
   useEffect(() => {
     fetch(`/api/products/${id}`)
@@ -26,12 +26,12 @@ function ProductPage() {
         const mapped = {
           ...data,
           translation:
-            data.translations?.[language] || data.translations?.en,
+            data.translations?.[lang] || data.translations?.en,
         };
 
         setProduct(mapped);
       });
-  }, [id, language]);
+  }, [id, lang]);
 
   if (!product)
     return <p style={{ textAlign: "center" }}>{t.product.loading}...</p>;

@@ -23,7 +23,7 @@ function Home() {
       setProducts(data);
     })
     .catch(err => console.error(err));
-}, []);
+}, [lang]);
 
   return (
     <div>

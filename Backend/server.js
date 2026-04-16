@@ -280,13 +280,13 @@ app.get("/api/products", async (req, res) => {
     baseDiscount,
     ProductPrices(price),
     ProductTranslation(name, language)
-  `);
+  `)
+  .eq("active", true);
 
     if (error) {
       console.error("SUPABASE ERROR:", error);
       return res.status(500).json(error);
     }
-
 
     const formatted = data.map(p => formatProductCard(p, lang));
 
@@ -303,24 +303,28 @@ app.get("/api/products/:id", async (req, res) => {
     const { id } = req.params;
 
     const { data, error } = await supabase
-      .from("products")
-      .select(`
-        *,
-        product_prices(*),
-        product_translations(*),
-        product_options(*),
-        product_tags(
-          tags(name)
-        )
-      `)
-      .eq("id", id)
-      .limit(1);
+  .from("Products")
+  .select(`
+    id,
+    image,
+    baseDiscount,
+    ProductPrices(price),
+    ProductTranslation(name, language, description),
+    ProductContent(
+      id,
+      language,
+      items
+    )
+  `)
+  .eq("active", true);
 
     if (error) throw error;
 
     if (!data) {
       return res.status(404).json({ error: "Product not found" });
     }
+
+    console.log(JSON.stringify(data, null, 2));
 
     res.json(data);
   } catch (err) {
