@@ -269,7 +269,7 @@ app.post("/api/contact", async (req, res) => {
 });*/
 
 //Product retrieving
-app.get("/api/products?lang=${language}", async (req, res) => {
+app.get("/api/products", async (req, res) => {
     const lang = req.query.lang || "en";
 
   try {
