@@ -262,7 +262,9 @@ app.get("/api/products", async (req, res) => {
       return res.status(500).json(error);
     }
 
-    res.json(data);
+    const formatted = formatProduct(data);
+
+    res.json(formatted);
   } catch (err) {
     console.error("SERVER ERROR:", err);
     res.status(500).json({ error: "Server crash" });
