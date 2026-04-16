@@ -199,7 +199,8 @@ app.get("/api/products/:id", async (req, res) => {
     ProductContent(language, items)
   `,
       )
-      .eq("active", true);
+      .eq("active", true)
+      .eq("id", id)
 
     if (error) throw error;
 
