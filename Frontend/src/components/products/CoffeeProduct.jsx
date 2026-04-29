@@ -5,6 +5,7 @@ import { useCart } from "../../context/CartContext";
 import { useLocation } from "react-router-dom";
 import { getDiscountedPrice, getDiscountPercent } from "../../utils/pricing";
 import { useLanguage } from "../../context/LanguageContext";
+import ReactMarkdown from "react-markdown";
 
 function CoffeeProduct({ product }) {
   console.log("Test");
@@ -66,9 +67,9 @@ function CoffeeProduct({ product }) {
         {/* DESCRIPTION */}
         <div className="description">
           <h3>{t.product.description}</h3>
-          <p>
+          <ReactMarkdown>
             {product.description}
-          </p>
+          </ReactMarkdown>
         </div>
 
         {/* OPTIONS (DYNAMIC) */}
