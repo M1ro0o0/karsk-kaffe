@@ -58,7 +58,7 @@ function formatProduct(product, lang = "en") {
     name: translation?.name,
     description: translation?.description,
     items: selection?.items?.products || [],
-    options: formatOptions(product.ProductOptions || [])
+    options: formatOptions(product.ProductOptions || []),
   };
 }
 
@@ -202,7 +202,7 @@ app.get("/api/products/:id", async (req, res) => {
   `,
       )
       .eq("active", true)
-      .eq("id", id)
+      .eq("id", id);
 
     if (error) throw error;
 
@@ -210,9 +210,9 @@ app.get("/api/products/:id", async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    const formatted = data.map((p) => formatProduct(p, lang));
-
+    const formatted = formatProduct(data, lang);
     res.json(formatted);
+
     console.log(data);
   } catch (err) {
     console.error(err);
