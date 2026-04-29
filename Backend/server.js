@@ -202,7 +202,8 @@ app.get("/api/products/:id", async (req, res) => {
   `,
       )
       .eq("active", true)
-      .eq("id", id);
+      .eq("id", id)
+      .single();
 
     if (error) throw error;
 
@@ -211,7 +212,7 @@ app.get("/api/products/:id", async (req, res) => {
     }
 
     const formatted = formatProduct(data, lang);
-    res.json(formatted);
+res.json(formatted);
 
     console.log(data);
   } catch (err) {
