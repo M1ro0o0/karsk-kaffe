@@ -22,6 +22,7 @@ const sk = {
     priceFrom: "Od",
     newPriceFrom: "Teraz od",
     description: "Popis",
+    include: "Obsahuje",
     grind: "Mletie",
     size: "Veľkosť",
     roast: "Praženie",

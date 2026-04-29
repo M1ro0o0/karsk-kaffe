@@ -22,6 +22,7 @@ const pl = {
     priceFrom: "Od",
     newPriceFrom: "Teraz od",
     description: "Opis",
+    include: "Zawiera",
     grind: "Mielenie",
     size: "Rozmiar",
     roast: "Stopień palenia",

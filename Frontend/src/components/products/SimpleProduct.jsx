@@ -37,7 +37,7 @@ function SimpleProduct({ product }) {
         <div className="description">
           <h3>{t.product.description}</h3>
           <ul>
-            {Object.entries(product.translation?.description || {}).map(
+            {Object.entries(product.description || {}).map(
               ([key, value]) => (
                 <li key={key}>
                   <strong>{t.labels[key]}:</strong> {value}
@@ -74,7 +74,7 @@ function SimpleProduct({ product }) {
             onClick={() =>
               addToCart({
                 id: product.id,
-                name: product.translation?.name,
+                name: product.name,
                 price: finalPrice,
                 options: {}, 
                 quantity,

@@ -22,6 +22,7 @@ const en = {
     priceFrom: "From",
     newPriceFrom: "Now from",
     description: "Description",
+    include: "Contains",
     grind: "Grind",
     size: "Size",
     roast: "Roast",

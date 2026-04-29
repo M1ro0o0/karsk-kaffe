@@ -22,6 +22,7 @@ const da = {
     priceFrom: "Fra",
     newPriceFrom: "Nu fra",
     description: "Beskrivelse",
+    include: "Indeholder",
     grind: "Male",
     size: "Størrelse",
     roast: "Stege",
