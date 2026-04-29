@@ -51,6 +51,7 @@ function formatProduct(product, lang = "en") {
 
   return {
     id: product.id,
+    type: product.type,
     image: product.image,
     discount: product.baseDiscount,
     prices: product.ProductPrices || [],
@@ -192,8 +193,9 @@ app.get("/api/products/:id", async (req, res) => {
         `
     id,
     image,
+    type,
     baseDiscount,
-    ProductPrices(price),
+    ProductPrices(label, price),
     ProductTranslation(name, language, description),
     ProductOptions(type, value),
     ProductContent(language, items)
@@ -208,12 +210,7 @@ app.get("/api/products/:id", async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    console.log(JSON.stringify(data, null, 2));
-
     const formatted = data.map((p) => formatProduct(p, lang));
-
-    console.log("formatted")
-    console.log(JSON.stringify(formatted, null, 2));
 
     res.json(formatted);
   } catch (err) {

@@ -7,6 +7,8 @@ import { getDiscountedPrice, getDiscountPercent } from "../../utils/pricing";
 import { useLanguage } from "../../context/LanguageContext";
 
 function CoffeeProduct({ product }) {
+  console.log("Test");
+  console.log(product);
   const { addToCart } = useCart();
   const { t } = useLanguage();
   const location = useLocation();
@@ -31,17 +33,18 @@ function CoffeeProduct({ product }) {
   const basePrice = selectedPriceObj?.price || 0;
   const finalPrice = getDiscountedPrice(basePrice, product.discount);
 
+  console.log("Image: ", product?.image);
   return (
     <div className="product-page">
       <img
         src={product.image}
-        alt={product.translation?.name}
+        alt={product.name}
         className="product-image"
       />
 
       <div className="product-info">
         <div className="title">
-          <h1>{product.translation?.name}</h1>
+          <h1>{product.name}</h1>
 
           {product.discount < 1 && (
             <div className="discount-product">
@@ -63,15 +66,9 @@ function CoffeeProduct({ product }) {
         {/* DESCRIPTION */}
         <div className="description">
           <h3>{t.product.description}</h3>
-          <ul>
-            {Object.entries(product.translation?.description || {}).map(
-              ([key, value]) => (
-                <li key={key}>
-                  <strong>{t.labels[key]}:</strong> {value}
-                </li>
-              )
-            )}
-          </ul>
+          <p>
+            {product.description}
+          </p>
         </div>
 
         {/* OPTIONS (DYNAMIC) */}
@@ -157,7 +154,7 @@ function CoffeeProduct({ product }) {
             onClick={() =>
               addToCart({
                 id: product.id,
-                name: product.translation?.name,
+                name: product.name,
                 price: finalPrice,
                 selectedPrice: selectedPriceObj,
                 options: selectedOptions,
