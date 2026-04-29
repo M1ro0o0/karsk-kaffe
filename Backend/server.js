@@ -213,6 +213,7 @@ app.get("/api/products/:id", async (req, res) => {
     const formatted = data.map((p) => formatProduct(p, lang));
 
     res.json(formatted);
+    console.log(data);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch product" });
