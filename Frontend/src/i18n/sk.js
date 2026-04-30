@@ -88,51 +88,49 @@ const sk = {
     city: "Mesto",
   },
 
-  about: {
-    hero: "Zo Slovenska do Dánska — zo srdca do šálky.",
-    aboutKarsk: "O Karsk Kaffe",
-    founded:
-      "Karsk Kaffe bolo založené s jednoduchým cieľom – priniesť výnimočnú slovenskú praženú kávu do Dánska.",
-    believe:
-      "Veríme, že skvelá káva si zaslúži cestovať. Preto spolupracujeme s dôveryhodnou slovenskou rodinnou pražiarňou a predstavujeme ich starostlivo pripravenú kávu na dánskom trhu.",
-    rostaryPartner: "Náš partnerský pražiar",
-    rostaryPart1:
-      "Káva sa praží v rodinnej pražiarni v srdci Slovenska. Obklopená krásnou prírodou a bohatými folklórnymi tradíciami spája pražiareň vášeň, precíznosť a rešpekt ku kávovému remeslu.",
-    rostaryPart2:
-      "Ponúkajú praženú, starostlivo vyberanú kávu z celého sveta. Ich výber je starostlivo vyvážený v chuti a aróme, zahŕňa prémiové zrná z Južnej a Severnej Ameriky, Ázie a Afriky – z niektorých z najuznávanejších kávových regiónov.",
-    rostaryPart3:
-      "Pri výbere dodávateľov surových kávových zŕn sa zameriavajú na tých, ktorí pestujú, spracovávajú a predávajú kávu za férových podmienok. Udržateľnosť a zodpovedné získavanie surovín sú základnými hodnotami. Osobitná pozornosť sa venuje farmám a plantážam, ktoré nepoužívajú chemické pesticídy.",
-    assortment: "Ich sortiment zahŕňa",
-    arabica: "100 % Arabica",
-    robusta: "100 % Robusta",
-    blends: "Starostlivo vytvorené zmesi",
-    afterWordsRoast:
-      "Každá dávka je pražená s precíznosťou, aby sa zabezpečil bohatý chuťový profil a konzistentná kvalita.",
-    officialDist: "Oficiálna distribúcia v Dánsku",
-    offer:
-      "Sme oficiálnym distribútorom značky Frišná Káva pre Dánsko pod názvom Karsk Kaffe.",
-    ourRole:
-      "Našou úlohou je zabezpečiť, aby sa táto vysokokvalitná slovenská pražená káva dostala k dánskym zákazníkom čerstvá, bezpečne zabalená a pripravená na vychutnanie.",
-    whyNoEco:
-      "Prečo naša káva nenesie označenia ako „Ekologická“ alebo „Organická“?",
-    farmers:
-      "Naše kávové zrná pochádzajú od malých farmárov – ľudí, ktorí pestujú kávu s vášňou, nie pre masový zisk.",
-    fees: "Mnohí z nich dodržiavajú udržateľné a zodpovedné poľnohospodárske postupy, ktoré by spĺňali podmienky pre certifikácie ako „Organická“ alebo „Ekologická“. Získanie týchto označení si však vyžaduje formálny proces podania žiadosti, kontroly a priebežné certifikačné poplatky.",
-    invest:
-      "Pre malých farmárov môžu byť tieto certifikácie výraznou finančnou záťažou. Namiesto investovania do drahých označení sa rozhodnú investovať do toho, na čom skutočne záleží: kvality, starostlivosti o pôdu a férových pracovných podmienok.",
-    ourBelieve:
-      "Veríme, že skvelá káva by mala byť definovaná transparentnosťou, vzťahmi a zodpovednosťou — nielen logami na obale.",
-    whyDK: "Prečo Dánsko",
-    DKDes:
-      "Dánsko patrí medzi krajiny s najväčšou spotrebou kávy na svete. Vidíme veľkú príležitosť predstaviť niečo jedinečné – kávu praženú na Slovensku s hlbokým rešpektom k pôvodu, udržateľnosti a chuti.",
-    weBelieve: "Veríme, že dánski milovníci kávy ocenia",
-    transparent: "Transparentný pôvod",
-    fair: "Princípy férového obchodu",
-    quality: "Vysokú kvalitu praženia",
-    rich: "Bohaté a vyvážené chuťové profily",
-    ourMission: "Naša misia",
-    mission:
-      "Našou misiou je budovať most medzi slovenským pražiarskym remeslom a dánskou kávovou kultúrou – ponúkať kávu, ktorá rozpráva príbeh od farmy až po šálku.",
+ about: {
+    slogan: "Zo Slovenska do Dánska — zo srdca do šálky",
+    subtitle1: "O Karsk Kaffe",
+    text11:
+      "Karsk Kaffe bolo založené s jediným cieľom – priniesť do Dánska výnimočnú kávu praženú na Slovensku.",
+    text12:
+      "Veríme, že dobrá káva si zaslúži cestovať. Preto spolupracujeme s dôveryhodnou rodinnou pražiarňou zo Slovenska a prinášame ich starostlivo pripravenú kávu na dánsky trh.",
+    subtitle2: "Náš pražiaci partner",
+    text21:
+      "Káva sa praží v rodinnej pražiarni v srdci Slovenska. Obklopená krásnou prírodou a bohatými folklórnymi tradíciami. Pražiareň spája vášeň, precíznosť a rešpekt k remeslu praženia kávy.",
+    text22:
+      "Ponúkajú praženú a starostlivo vybranú kávu z celého sveta. Ich sortiment je dôkladne vyvážený v chuti a aróme a obsahuje prémiové zrná z Južnej a Severnej Ameriky, Ázie a Afriky – z niektorých z najuznávanejších pestovateľských oblastí kávy.",
+    text23:
+      "Pri výbere dodávateľov surovej kávy sa zameriavajú na tých, ktorí pestujú, spracúvajú a predávajú kávu za férových podmienok. Udržateľnosť a zodpovedné získavanie surovín sú kľúčovými hodnotami. Osobitný dôraz sa kladie na farmy a plantáže, ktoré sa vyhýbajú používaniu chemických pesticídov.",
+    subtitle3: "Ich sortiment zahŕňa",
+    text31: "100% Arabica",
+    text32: "100% Robusta",
+    text33: "Starostlivo vyvinuté zmesi",
+    text34:
+      "Každá dávka je pražená s maximálnou precíznosťou, aby sa zabezpečil bohatý chuťový profil a konzistentná kvalita.",
+    subtitle4: "Spoznajte Frišnú Kávu",
+    text41: "Malý tím s veľkou vášňou a ešte väčším srdcom pre kávu. Zoznámte sa (zľava doprava) s Aďom, Aťou, Simou, Parikom a Janou – ľuďmi, ktorí stoja za tými pariacimi sa šálkami kávy. Už päť rokov sa venujú tomuto remeslu a neustále sa zlepšujú. Začínali v malom a postupne rástli, od prvých niekoľkých starostlivo pripravených zmesí až po dnešných 12 rôznych druhov kávy. Vždy prinášajú niečo nové na stôl.",
+    text42: "Ich remeselná práca prináša výsledky. Po účasti na Slovak Roasting Masters 2025, kde získali čestné štvrté miesto, sa v roku 2026 stali víťazmi a získali titul Golden Roasting Master na Slovak Roasting Masters 2026. Tento výsledok svedčí o výnimočnej kvalite ich práce.",
+    text43: "Aj po takomto veľkom úspechu nezaspali na vavrínoch a neustále sa posúvajú vpred. Zúčastňujú sa gastronomických festivalov po celom Slovensku a ukazujú, čo dokáže malý tím, keď miluje to, čo robí.",
+    text44: "Nie je to len o káve, ale aj o vzťahoch a priateľstvách. Na fotografii môžete vidieť Frišnú Kávu spolu s miestnym farmárom z farmy Finca El Jardín v Kolumbii, ktorý je jedným z ich dodávateľov.",
+    text45: "V roku 2025 navštívili túto farmu v Kolumbii a zúčastnili sa zberu kávových čerešní, aby sa hlbšie prepojili s celým procesom vzniku kávy. Pochopili, že káva nie je len o zalievaní mletej kávy horúcou vodou, ale že rastie, dozrieva a musí byť zberaná, väčšinou ručne. Od malého výhonku až po tú lahodnú šálku horúceho hnedého zlata.",
+    text46: "Skutočné pochopenie pôvodu kávy im pomáha prispôsobiť proces praženia tak, aby zvýraznili jej jedinečnosť a vyzdvihli charakteristické chuťové tóny. Podmienky, v ktorých káva rastie, ovplyvňujú jej chuť, a preto neexistujú dve kávy, ktoré by chutili rovnako.",
+    subtitle5:
+      "Prečo naša káva nemá označenia ako „Bio“ alebo „Ekologická“?",
+    text51:
+      "Naše kávové zrná pochádzajú od malých farmárov – ľudí, ktorí pestujú kávu s vášňou, nie s dôrazom na masovú produkciu alebo maximálny zisk.",
+    text52:
+      "Mnohí z nich dodržiavajú udržateľné a zodpovedné pestovateľské postupy, ktoré by ich v praxi mohli kvalifikovať na certifikácie ako „Bio“ alebo „Ekologická“. Takéto označenia si však vyžadujú formálny proces žiadostí, kontroly a priebežné certifikačné poplatky.",
+    text53:
+      "Pre malých producentov môžu byť tieto certifikácie výraznou finančnou záťažou. Namiesto investovania do drahých označení sa rozhodujú investovať do toho, na čom skutočne záleží: kvality, starostlivosti o pôdu a férových pracovných podmienok.",
+    text54:
+      "Veríme, že dobrá káva by mala byť definovaná transparentnosťou, vzťahmi a zodpovednosťou — nielen logami na obale.",
+    subtitle6: "Prečo Dánsko",
+    text61:
+      "Dánsko patrí medzi krajiny s najvyššou spotrebou kávy na svete. Vidíme veľkú príležitosť predstaviť niečo jedinečné – kávu praženú na Slovensku s hlbokým rešpektom k jej pôvodu, udržateľnosti a chuti.",
+    subtitle7: "Naša misia",
+    text71:
+      "Našou misiou je prepojiť slovenské pražiarske remeslo s dánskou kávovou kultúrou – a ponúkať kávu, ktorá rozpráva príbeh od farmy až po šálku.",
     contact: "Kontaktujte nás",
     contText:
       "Máte otázky? Potrebujete poradiť? Navštívte našu kontaktnú stránku – radi vám pomôžeme.",

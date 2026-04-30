@@ -19,6 +19,7 @@ export default function CartPage() {
     Number(localStorage.getItem("discountValue")) || 0,
   );
   const [error, setError] = useState("");
+  console.log(totalPrice);
 
   const finalprice = totalPrice * (1 - discount / 100);
 

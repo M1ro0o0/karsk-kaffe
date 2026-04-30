@@ -89,48 +89,51 @@ const en = {
   },
 
   about: {
-    hero: "From Slovakia to Denmark — From heart to cup.",
-    aboutKarsk: "About Karsk Kaffe",
-    founded:
-      "Karsk Kaffe was founded with a simple goal - to bring exceptional Slovak-roasted coffee to Denmark.",
-    believe:
-      "We believe great coffee deserves to travel. That is why we collaborate with a trusted Slovak family-owned roastery and introduce their carefully crafted coffee to the Danish market.",
-    rostaryPartner: "Our Roastery Partner",
-    rostaryPart1:
-      "Coffee is roasted in a family-owned roastery in the heart of Slovakia. Surrounded by beautiful nature and rich folklore traditions, the roastery combines passion, precision, and respect for coffee craftsmanship.",
-    rostaryPart2:
-      "They offer roasted, selected coffee from around the world. Their selection is carefully balanced in taste and aroma, featuring premium beans from South and North America, Asia, and Africa - from some of the most respected coffee-growing regions.",
-    rostaryPart3:
-      "When selecting suppliers of raw coffee beans, they focus on those who grow, process, and sell coffee under fair conditions. Sustainability and responsible sourcing are essential values. Special attention is given to farms and plantations that avoid the use of chemical pesticides.",
-    assortment: "Their assortment includes",
-    arabica: "100% Arabica",
-    robusta: "100% Robusta",
-    blends: "Carefully developed blends",
-    afterWordsRoast:
-      "Each batch is roasted with precision to ensure a rich flavour profile and consistent quality.",
-    officialDist: "Official Distribution in Denmark",
-    offer:
-      "We are the official distributor of Frišná Káva for Denmark under the name of Karsk Kaffe.",
-    ourRole:
-      "Our role is to ensure that this high-quality Slovak-roasted coffee reaches Danish customers fresh, safely packaged, and ready to enjoy.",
-    whyNoEco: "Why does not our coffee carry labels like “Eco-friendly” or “Organic”?",
-    farmers: "Our coffee beans come from small farmers - people who grow coffee with passion, not for mass profit.",
-    fees: "Many of them follow sustainable and responsible farming practices that would qualify for certifications such as “Organic” or “Eco-friendly.” However, obtaining these labels requires a formal application process, inspections, and ongoing certification fees.",
-    invest: "For small-scale farmers, these certifications can be a significant financial burden. Instead of investing in expensive labels, they choose to invest in what truly matters: quality, care for their land, and fair working conditions.",
-    ourBelieve: "We believe great coffee should be defined by transparency, relationships, and responsibility — not only by logos on a package.",
-    whyDK: "Why Denmark",
-    DKDes:
-      "Denmark is one of the most coffee-loving countries in the world. We see a great opportunity to introduce something unique - coffee roasted in Slovakia with deep respect for origin, sustainability, and flavour",
-    weBelieve: "We believe Danish coffee enthusiasts will appreciate",
-    transparent: "Transparent sourcing",
-    fair: "Fair-trade principles",
-    quality: "High-quality roasting craftsmanship",
-    rich: "Rich and balanced flavour profiles",
-    ourMission: "Our Mission",
-    mission:"Our mission is to build a bridge between Slovak roasting craftsmanship and Danish coffee culture - offering coffee that tells a story from farm to cup.",
+    slogan: "From Slovakia to Denmark — from heart to cup",
+    subtitle1: "About Karsk Kaffe",
+    text11:
+      "Karsk Kaffe was founded with a single goal – to bring exceptional coffee roasted in Slovakia to Denmark.",
+    text12:
+      "We believe that good coffee deserves to travel. That is why we collaborate with a trusted Slovak family-owned roastery and introduce their carefully crafted coffee to the Danish market.",
+    subtitle2: "Our Roasting Partner",
+    text21:
+      "The coffee is roasted in a family-owned roastery in the heart of Slovakia. Surrounded by beautiful nature and rich folkloric traditions, the roastery combines passion, precision, and respect for the craft of coffee roasting.",
+    text22:
+      "They offer roasted and carefully selected coffee from all around the world. Their selection is thoughtfully balanced in taste and aroma and includes premium beans from South and North America, Asia, and Africa – from some of the most renowned coffee-growing regions.",
+    text23:
+      "When selecting suppliers of green coffee beans, they focus on those who grow, process, and sell coffee under fair conditions. Sustainability and responsible sourcing are core values. Special attention is given to farms and plantations that avoid the use of chemical pesticides.",
+    subtitle3: "Their Selection Includes",
+    text31: "100% Arabica",
+    text32: "100% Robusta",
+    text33: "Carefully developed blends",
+    text34:
+      "Each batch is roasted with precision to ensure a rich flavor profile and consistent quality.",
+    subtitle4: "Meet Frišná Káva",
+    text41: "A small team with great passion and an even bigger heart for coffee. Meet (from left to right) Aďo, Aťa, Sima, Parik, and Jana – the people behind those steaming cups of coffee. With five years of experience in the craft, they continue to improve every day. Starting small, they gradually expanded from a few carefully crafted blends to offering 12 different types of coffee today. They always bring something new to the table.",
+    text42: "Their craftsmanship is paying off. After participating in Slovak Roasting Masters 2025, they achieved an honorable fourth place. In 2026, they won the Golden Roasting Master title at Slovak Roasting Masters 2026. This result speaks to the exceptional quality of their work.",
+    text43: "Even after such a major achievement, they do not slow down and continue moving forward. They take part in food festivals across Slovakia, demonstrating what a small team can achieve when they truly love what they do.",
+    text44: "It is not only about coffee, but also about connections and friendships. In the picture, you can see Frišná Káva together with a local farmer from Finca El Jardín in Colombia, one of their suppliers.",
+    text45: "In 2025, they visited the farm in Colombia and took part in the harvesting of coffee cherries to deeply connect with the entire coffee process. They learned that coffee is not just about pouring hot water over ground beans, but that it grows, ripens, and must be harvested, often by hand. From a small sprout to a delicious cup of coffee.",
+    text46: "A true understanding of the origin of coffee helps them adjust the roasting process to enhance its uniqueness and highlight its distinctive flavor notes. The conditions in which coffee is grown influence its taste, which is why no two coffees taste exactly the same.",
+    subtitle5:
+      "Why does our coffee not carry labels such as “Organic” or “Eco-friendly”?",
+    text51:
+      "Our coffee beans come from small farmers – people who grow coffee with passion, not with a focus on mass production or maximum profit.",
+    text52:
+      "Many of them follow sustainable and responsible farming practices that could, in practice, qualify them for certifications such as “Organic” or “Eco-friendly”. However, such labels require formal application processes, inspections, and ongoing certification fees.",
+    text53:
+      "For small producers, these certifications can be a significant financial burden. Instead of investing in expensive labels, they choose to invest in what truly matters: quality, care for the land, and fair working conditions.",
+    text54:
+      "We believe that good coffee should be defined by transparency, relationships, and responsibility — not just by logos on packaging.",
+    subtitle6: "Why Denmark",
+    text61:
+      "Denmark is one of the most coffee-consuming countries in the world. We see a great opportunity to introduce something unique – coffee roasted in Slovakia with deep respect for origin, sustainability, and flavor.",
+    subtitle7: "Our Mission",
+    text71:
+      "Our mission is to build a bridge between Slovak roasting craftsmanship and Danish coffee culture – offering coffee that tells a story from farm to cup.",
     contact: "Contact Us",
-    contText: "Have questions? Need advice? Visit our contact page - we're happy to help.",
-
+    contText:
+      "Do you have questions? Need advice? Visit our contact page – we are happy to help.",
   },
 };
 

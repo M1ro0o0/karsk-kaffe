@@ -11,17 +11,16 @@ function About() {
 
       {/* HERO */}
       <section className="about-hero">
-        <h1>{t.about.aboutUs}</h1>
-        <p className="hero-sub">{t.about.hero}</p>
+        <p className="hero-sub">{t.about.slogan}</p>
       </section>
 
       <div className="about-container">
 
         {/* OUR STORY */}
         <section className="about-section centered">
-          <h2>{t.about.aboutKarsk}</h2>
-          <p>{t.about.founded}</p>
-          <p>{t.about.believe}</p>
+          <h2>{t.about.subtitle1}</h2>
+          <p>{t.about.text11}</p>
+          <p>{t.about.text12}</p>
         </section>
 
         {/* ROASTERY - 2 COLUMN */}
@@ -38,47 +37,62 @@ function About() {
 
           {/* Right Text */}
           <div className="about-text">
-            <h2>{t.about.rostaryPartner}</h2>
-            <p>{t.about.rostaryPart1}</p>
-            <p>{t.about.rostaryPart2}</p>
-            <p>{t.about.rostaryPart3}</p>
+            <h2>{t.about.subtitle2}</h2>
+            <p>{t.about.text21}</p>
+            <p>{t.about.text22}</p>
+            <p>{t.about.text23}</p>
 
+            <h3>{t.about.subtitle3}</h3>
             <div className="card-grid">
-              <div className="info-card">{t.about.arabica}</div>
-              <div className="info-card">{t.about.robusta}</div>
-              <div className="info-card">{t.about.blends}</div>
+              <div className="info-card">{t.about.text31}</div>
+              <div className="info-card">{t.about.text32}</div>
+              <div className="info-card">{t.about.text33}</div>
             </div>
 
-            <p>{t.about.afterWordsRoast}</p>
+            <p>{t.about.text34}</p>
           </div>
+        </section>
+
+        <section className="about-section about-roastery">
+          {/* Left Images */}
+          <div className="about-images">
+            <img src="/images/Frisna.jpg" alt="Frisna Kava Team" className="roastery" />
+            <img src="/images/Master.jpg" alt="Rasting Master" className="roastery" />
+            <img src="/images/Colombia.jpg" alt="Colombia" className="roastery" />
+          </div>
+
+          {/* Right Text */}
+          <div className="about-text">
+            <h2>{t.about.subtitle4}</h2>
+            <p>{t.about.text41}</p>
+            <p>{t.about.text42}</p>
+            <p>{t.about.text43}</p>
+            <p>{t.about.text44}</p>
+            <p>{t.about.text45}</p>
+            <p>{t.about.text46}</p>
+          </div>
+
         </section>
 
         {/* WHY NOT Eco */}
         <section className="about-section centered">
-          <h2>{t.about.whyNoEco}</h2>
-          <p>{t.about.farmers}</p>
-          <p>{t.about.fees}</p>
-          <p>{t.about.invest}</p>
-          <p>{t.about.ourBelieve}</p>
+          <h2>{t.about.subtitle5}</h2>
+          <p>{t.about.text51}</p>
+          <p>{t.about.text52}</p>
+          <p>{t.about.text53}</p>
+          <p>{t.about.text54}</p>
         </section>
 
         {/* WHY DENMARK - VALUE CARDS */}
         <section className="about-section centered">
-          <h2>{t.about.whyDK}</h2>
-          <p>{t.about.DKDes}</p>
-
-          <div className="card-grid">
-            <div className="value-card">{t.about.transparent}</div>
-            <div className="value-card">{t.about.fair}</div>
-            <div className="value-card">{t.about.quality}</div>
-            <div className="value-card">{t.about.rich}</div>
-          </div>
+          <h2>{t.about.subtitle6}</h2>
+          <p>{t.about.text61}</p>
         </section>
 
         {/* MISSION */}
         <section className="mission">
-          <h2>{t.about.ourMission}</h2>
-          <p>{t.about.mission}</p>
+          <h2>{t.about.subtitle7}</h2>
+          <p>{t.about.text71}</p>
         </section>
 
         {/* CTA */}
