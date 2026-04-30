@@ -53,6 +53,7 @@ function About() {
           </div>
         </section>
 
+        {/*FREISNA KAVA*/}
         <section className="about-section about-roastery">
           {/* Left Images */}
           <div className="about-images">

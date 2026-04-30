@@ -109,11 +109,11 @@ const pl = {
     text34:
       "Każda partia jest palona z precyzją, aby zapewnić bogaty profil smakowy i stałą jakość.",
     subtitle4: "Poznaj Frišná Káva",
-    text41: "Mały zespół z wielką pasją i jeszcze większym sercem do kawy. Poznaj (od lewej do prawej) Aďo, Aťa, Simę, Parika i Janę — osoby stojące za tymi parującymi filiżankami kawy. Pięć lat doświadczenia i ciągły rozwój. Zaczynali od kilku starannie przygotowanych mieszanek, dziś oferują już 12 rodzajów kawy. Zawsze wnoszą coś nowego.",
+    text41: "Mały zespół z wielką pasją i jeszcze większym sercem do kawy. Poznaj (od lewej do prawej) Aďo, Aťa, Simę, Parika i Janę — osoby stojące za tymi parującymi filiżankami kawy. Sześć lat doświadczenia i ciągły rozwój. Zaczynali od kilku starannie przygotowanych mieszanek, dziś oferują już 12 rodzajów kawy. Zawsze wnoszą coś nowego.",
     text42: "Ich rzemiosło przynosi efekty. Po udziale w Slovak Roasting Masters 2025 zajęli zaszczytne czwarte miejsce. W 2026 roku zdobyli tytuł Golden Roasting Master na Slovak Roasting Masters 2026. Ten wynik świadczy o wyjątkowej jakości ich pracy.",
     text43: "Mimo tak dużego osiągnięcia nie zwalniają tempa i stale idą naprzód. Biorą udział w festiwalach kulinarnych na całej Słowacji, pokazując, co może osiągnąć mały zespół, gdy kocha to, co robi.",
     text44: "To nie tylko kawa, ale także relacje i przyjaźnie. Na zdjęciu można zobaczyć Frišná Káva oraz lokalnego rolnika z farmy Finca El Jardín w Kolumbii — jednego z ich dostawców.",
-    text45: "W 2025 roku odwiedzili farmę w Kolumbii i brali udział w zbiorze owoców kawowca, aby lepiej zrozumieć cały proces powstawania kawy. Zrozumieli, że kawa to nie tylko zalanie mielonych ziaren gorącą wodą — rośnie, dojrzewa i musi być zbierana, najczęściej ręcznie.",
+    text45: "W 2025 roku odwiedzili tę farmę, a także farmę La Promesa oraz farmę Caroliny Hurtado w Kolumbii i wzięli udział w zbiorze owoców kawowca, aby lepiej zrozumieć cały proces powstawania kawy. Zrozumieli, że kawa to nie tylko zalewanie mielonej kawy gorącą wodą, ale że rośnie, dojrzewa i musi być zbierana, najczęściej ręcznie. Od małego kiełka aż po tę pyszną filiżankę gorącego brązowego złota.",
     text46: "Dogłębne zrozumienie pochodzenia kawy pomaga im dostosować proces palenia, aby podkreślić jej unikalność i wydobyć charakterystyczne nuty. Warunki, w których rośnie kawa, wpływają na jej smak, dlatego nie ma dwóch identycznych kaw.",
     subtitle5:
       "Dlaczego nasza kawa nie posiada oznaczeń takich jak „Ekologiczna” czy „Przyjazna dla środowiska”?",
