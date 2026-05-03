@@ -79,7 +79,8 @@ function BoxProduct({ product }) {
             <>
               <span className="price-old">{product.prices[0].price} kr</span>
               <span className="price">
-                {getDiscountedPrice(product.prices[0].price, product.discount)} kr
+                {getDiscountedPrice(product.prices[0].price, product.discount)}{" "}
+                kr
               </span>
             </>
           ) : (
@@ -94,7 +95,10 @@ function BoxProduct({ product }) {
             type="number"
             min="1"
             value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              setQuantity(value > 0 ? value : 1);
+            }}
           />
 
           <button
@@ -102,8 +106,8 @@ function BoxProduct({ product }) {
             onClick={() =>
               addToCart({
                 id: product.id,
-                name: product.translations[lang].name,
-                price: product.prices[0].price,
+                name: product.name,
+                price: product.prices?.[0]?.price,
                 options: {
                   message,
                 },

@@ -27,30 +27,35 @@ export function CartProvider({ children }) {
   }, [cart]);
 
   const addToCart = (newItem) => {
-  setCart((prevCart) => {
-    const existingIndex = prevCart.findIndex(
-      (item) =>
-        item.id === newItem.id &&
-        isSameOptions(item.options, newItem.options)
-    );
-
- const itemToAdd = {
-  ...newItem,
-  price: newItem.price,
-  quantity: newItem.quantity ?? 1,
-};
-
-    if (existingIndex !== -1) {
-      return prevCart.map((item, index) =>
-        index === existingIndex
-          ? { ...item, quantity: item.quantity + newItem.quantity }
-          : item
+    setCart((prevCart) => {
+      const existingIndex = prevCart.findIndex(
+        (item) =>
+          item.id === newItem.id &&
+          isSameOptions(item.options, newItem.options),
       );
-    }
 
-    return [...prevCart, itemToAdd];
-  });
-};
+      const itemToAdd = {
+        ...newItem,
+        price: newItem.price,
+        quantity: newItem.quantity ?? 1,
+      };
+
+      if (existingIndex !== -1) {
+        return prevCart.map((item, index) =>
+          index === existingIndex
+            ? {
+                ...item,
+                quantity:
+                  (Number(item.quantity) || 0) +
+                  (Number(newItem.quantity) || 1),
+              }
+            : item,
+        );
+      }
+
+      return [...prevCart, itemToAdd];
+    });
+  };
 
   const updateQuantity = (index, quantity) => {
     setCart((prev) =>
@@ -65,19 +70,19 @@ export function CartProvider({ children }) {
   const clearCart = () => setCart([]);
 
   const isSameOptions = (a = {}, b = {}) => {
-  return JSON.stringify(a) === JSON.stringify(b);
-};
+    return JSON.stringify(a) === JSON.stringify(b);
+  };
 
-const totalItems = cart.reduce(
-  (sum, item) => sum + (Number(item.quantity) || 0),
-  0
-);
+  const totalItems = cart.reduce(
+    (sum, item) => sum + (Number(item.quantity) || 0),
+    0,
+  );
 
-const totalPrice = cart.reduce((sum, item) => {
-  const price = Number(item.price) || 0;
-  const quantity = Number(item.quantity) || 0;
-  return sum + price * quantity;
-}, 0);
+  const totalPrice = cart.reduce((sum, item) => {
+    const price = Number(item.price) || 0;
+    const quantity = Number(item.quantity) || 0;
+    return sum + price * quantity;
+  }, 0);
 
   return (
     <CartContext.Provider
