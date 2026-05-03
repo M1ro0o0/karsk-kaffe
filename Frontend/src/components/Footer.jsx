@@ -28,7 +28,7 @@ const Footer = () => {
         <div>
           <h5>Karsk Kaffe</h5>
           <h6>CVR: 46 27 60 43</h6>
-          <p>Perlegade 85, 6400 Sønderborg</p>
+          <p>Ellegårdvej 18, 6400 Sønderborg</p>
           <p>+45 32 33 11 88</p>
           <p>info@karskkaffe.dk</p>
         </div>
