@@ -166,6 +166,27 @@ function CoffeeProduct({ product }) {
           >
             {t.product.addToCart}
           </button>
+
+            <button
+  onClick={async () => {
+    const res = await fetch("https://karsk-kaffe.onrender.com/debug/sku", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        productId: product.id,
+        selectedOptions: selectedOptions
+      })
+    });
+
+    const data = await res.json();
+    console.log("DEBUG SKU RESULT:", data);
+  }}
+>
+  Test SKU
+</button>
+
         </div>
       </div>
     </div>

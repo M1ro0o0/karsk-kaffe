@@ -96,6 +96,20 @@ async function getZohoAccessToken() {
   return data.access_token;
 }
 
+function buildSku(productId, selectedOptions, optionsFromDb) {
+  const getCode = (type, value) => {
+    return optionsFromDb.find(
+      opt => opt.type === type && opt.value === value
+    )?.code;
+  };
+
+  const weight = getCode("weight", selectedOptions.weight);
+  const roast = getCode("roast", selectedOptions.roast);
+  const grind = getCode("grind", selectedOptions.grind);
+
+  return `${productId}-${weight}-${roast}:${grind}`;
+}
+
 async function getItem(itemId) {
   const token = await getZohoAccessToken();
 
@@ -184,6 +198,18 @@ app.post("/api/discount/redeem", async (req, res) => {
   res.send({ success: true });
 });
 
+app.post("/api/resolve-sku", async (req, res) => {
+  const { productId, selectedOptions } = req.body;
+
+  const { data: optionsFromDb } = await supabase
+    .from("ProductOptions")
+    .select("type, value, code");
+
+  const sku = buildSku(productId, selectedOptions, optionsFromDb);
+
+  res.json({ sku });
+});
+
 //Product retrieving
 app.get("/api/products", async (req, res) => {
   const lang = req.query.lang || "en";
@@ -256,90 +282,56 @@ app.get("/api/products/:id", async (req, res) => {
   }
 });
 
-app.get("/api/stock/:id", async (req, res) => {
-  try {
-    const item = await getItem(req.params.id);
-    res.json({ stock: item.available_stock });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+app.get("/api/stock/:sku", async (req, res) => {
+  const { sku } = req.params;
 
-app.get("/debug/zoho-items", async (req, res) => {
-  try {
-    const token = await getZohoAccessToken();
+  // 1. get zoho_item_id from DB
+  const { data: product } = await supabase
+    .from("ZohoInventory")
+    .select("ZohoID")
+    .eq("ProductSKU", sku)
+    .single();
 
-    const response = await fetch(
-  `https://www.zohoapis.eu/inventory/v1/items?organization_id=${process.env.ZOHO_ORG_ID}&per_page=200&page=1`,
-  {
-    headers: {
-      Authorization: `Zoho-oauthtoken ${token}`
-    }
-  }
-);
-    const data = await response.json();
-
-    console.log("ITEM IDS:", data.items.map(i => ({
-  id: i.item_id,
-  sku: i.sku,
-  name: i.name
-})));
-
-    res.json({
-      count: data.items?.length || 0,
-      message: "Check server logs for full item list"
-    });
-
-  } catch (err) {
-    console.error("DEBUG ERROR:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-/*app.get("/zoho/callback", async (req, res) => {
-  const code = req.query.code;
-
-  if (!code) {
-    return res.status(400).send("Missing code");
+  if (!product) {
+    return res.status(404).json({ error: "Product not found" });
   }
 
-  console.log("CLIENT_ID:", process.env.ZOHO_CLIENT_ID);
-  console.log("SECRET EXISTS:", !!process.env.ZOHO_CLIENT_SECRET);
+  // 2. get Zoho token
+  const token = await getZohoAccessToken();
 
-  try {
-    const response = await fetch("https://accounts.zoho.eu/oauth/v2/token", {
-      method: "POST",
+  // 3. call Zoho
+  const response = await fetch(
+    `https://www.zohoapis.eu/inventory/v1/items/${product.ZohoID}?organization_id=${process.env.ZOHO_ORG_ID}`,
+    {
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        grant_type: "authorization_code",
-        client_id: process.env.ZOHO_CLIENT_ID,
-        client_secret: process.env.ZOHO_CLIENT_SECRET,
-        redirect_uri: "https://karsk-kaffe.onrender.com/zoho/callback",
-        code: code,
-      }),
-    });
-
-    const data = await response.json();
-
-    console.log("ZOHO RESPONSE:", data);
-
-    if (!response.ok) {
-      return res.status(500).json(data);
+        Authorization: `Zoho-oauthtoken ${token}`
+      }
     }
+  );
 
-    res.send("Tokens received, check logs");
-  } catch (err) {
-    console.error("FULL ERROR:", err);
-    console.error("STACK:", err?.stack);
+  const data = await response.json();
 
-    res.status(500).json({
-      message: err.message,
-      stack: err.stack,
-    });
-  }
-});*/
+  // 4. return only stock
+  res.json({
+    sku,
+    stock: data.item?.available_stock ?? 0
+  });
+});
+
+app.post("/debug/sku", async (req, res) => {
+  const { productId, selectedOptions } = req.body;
+
+  const { data: optionsFromDb } = await supabase
+    .from("ProductOptions")
+    .select("type, value, code");
+
+  const sku = buildSku(productId, selectedOptions, optionsFromDb);
+
+  console.log("INPUT:", { productId, selectedOptions });
+  console.log("OUTPUT SKU:", sku);
+
+  res.json({ sku });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
