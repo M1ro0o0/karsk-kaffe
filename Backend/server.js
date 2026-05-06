@@ -254,9 +254,14 @@ app.get("/zoho/callback", async (req, res) => {
 
     res.send("Tokens received, check logs");
   } catch (err) {
-    console.error("ERROR:", err);
-    res.status(500).send("Something broke");
-  }
+  console.error("FULL ERROR:", err);
+  console.error("STACK:", err?.stack);
+
+  res.status(500).json({
+    message: err.message,
+    stack: err.stack
+  });
+}
 });
 
 const PORT = process.env.PORT || 3000;
