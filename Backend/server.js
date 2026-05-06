@@ -96,6 +96,22 @@ async function getZohoAccessToken() {
   return data.access_token;
 }
 
+async function getItem(itemId) {
+  const token = await getZohoAccessToken();
+
+  const res = await fetch(
+    `https://www.zohoapis.eu/inventory/v1/items/${itemId}?organization_id=${process.env.ZOHO_ORG_ID}`,
+    {
+      headers: {
+        Authorization: `Zoho-oauthtoken ${token}`
+      }
+    }
+  );
+
+  const data = await res.json();
+  return data.item;
+}
+
 /*--------------
       APIs
 --------------*/
@@ -240,7 +256,46 @@ app.get("/api/products/:id", async (req, res) => {
   }
 });
 
-app.get("/zoho/callback", async (req, res) => {
+app.get("/api/stock/:id", async (req, res) => {
+  try {
+    const item = await getItem(req.params.id);
+    res.json({ stock: item.available_stock });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/debug/zoho-items", async (req, res) => {
+  try {
+    const token = await getZohoAccessToken();
+
+    const response = await fetch(
+      `https://www.zohoapis.eu/inventory/v1/items?organization_id=${process.env.ZOHO_ORG_ID}`,
+      {
+        headers: {
+          Authorization: `Zoho-oauthtoken ${token}`
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    // 👇 THIS is what you want
+    console.log("ZOHO ITEMS:");
+    console.log(JSON.stringify(data.items, null, 2));
+
+    res.json({
+      count: data.items?.length || 0,
+      message: "Check server logs for full item list"
+    });
+
+  } catch (err) {
+    console.error("DEBUG ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/*app.get("/zoho/callback", async (req, res) => {
   const code = req.query.code;
 
   if (!code) {
@@ -283,7 +338,7 @@ app.get("/zoho/callback", async (req, res) => {
       stack: err.stack,
     });
   }
-});
+});*/
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
