@@ -7,6 +7,7 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const app = express();
+const fetch = require("node-fetch");
 
 app.use(cors());
 app.use(express.json());
@@ -220,8 +221,6 @@ res.json(formatted);
     res.status(500).json({ error: "Failed to fetch product" });
   }
 });
-
-import fetch from "node-fetch";
 
 app.get("/zoho/callback", async (req, res) => {
   const code = req.query.code;
