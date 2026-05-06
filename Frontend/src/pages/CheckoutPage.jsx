@@ -9,9 +9,15 @@ import { getVATAmount } from "../utils/pricing.js"
 import { useLanguage } from "../context/LanguageContext";
 
 function CheckoutPage() {
-  const { cart, totalPrice, clearCart } = useCart();
+  const { cart, totalPrice, clearCart, cartItems} = useCart();
 
   const { t } = useLanguage();
+
+  const discount = Number(localStorage.getItem("discountValue")) || 0;
+  const productsTotal = totalPrice;
+
+const discountedProductsTotal =
+  productsTotal * (1 - discount / 100);
 
   const [billingAddress, setBillingAddress] = useState({
     firstName: "",
@@ -29,7 +35,7 @@ function CheckoutPage() {
     firstName: "",
     lastName: "",
     email: "",
-    phonecode: "+45",
+    phoneCode: "+45",
     phoneNumber: "",
     address: "",
     postalCode: "",
@@ -51,7 +57,7 @@ function CheckoutPage() {
   data.firstName &&
   data.lastName &&
   data.email &&
-  idata.phoneNumber &&
+  data.phoneNumber &&
   data.address &&
   isValidPostcodeDK(data.postalCode) &&
   data.city &&
@@ -83,6 +89,8 @@ function CheckoutPage() {
     }
   }, [cart, navigate]);
 
+  const finalTotal = discountedProductsTotal + shippingPrice;
+
   return (
     <div className="page checkout">
       <h1>{t.checkout.title}</h1>
@@ -92,7 +100,7 @@ function CheckoutPage() {
         <h2>{t.checkout.order}</h2>
 
         {cart.map((item) => (
-          <div key={item.cartId} className="checkout-item">
+          <div key={item.id + JSON.stringify(item.options)} className="checkout-item">
             <img src={item.image} alt={item.name} />
             <div>
               <strong>{item.name}</strong>

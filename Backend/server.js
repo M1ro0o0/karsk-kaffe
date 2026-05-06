@@ -221,6 +221,32 @@ res.json(formatted);
   }
 });
 
+import fetch from "node-fetch";
+
+app.get("/zoho/callback", async (req, res) => {
+  const code = req.query.code;
+
+  const response = await fetch("https://accounts.zoho.eu/oauth/v2/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+      grant_type: "authorization_code",
+      client_id: process.env.ZOHO_CLIENT_ID,
+      client_secret: process.env.ZOHO_CLIENT_SECRET,
+      redirect_uri: "https://karsk-kaffe.onrender.com/zoho/callback",
+      code: code
+    })
+  });
+
+  const data = await response.json();
+
+  console.log("TOKENS:", data);
+
+  res.send("Tokens received, check logs");
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
