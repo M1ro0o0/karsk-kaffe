@@ -270,19 +270,20 @@ app.get("/debug/zoho-items", async (req, res) => {
     const token = await getZohoAccessToken();
 
     const response = await fetch(
-      `https://www.zohoapis.eu/inventory/v1/items?organization_id=${process.env.ZOHO_ORG_ID}`,
-      {
-        headers: {
-          Authorization: `Zoho-oauthtoken ${token}`
-        }
-      }
-    );
-
+  `https://www.zohoapis.eu/inventory/v1/items?organization_id=${process.env.ZOHO_ORG_ID}&per_page=200&page=1`,
+  {
+    headers: {
+      Authorization: `Zoho-oauthtoken ${token}`
+    }
+  }
+);
     const data = await response.json();
 
-    // 👇 THIS is what you want
-    console.log("ZOHO ITEMS:");
-    console.log(JSON.stringify(data.items, null, 2));
+    console.log("ITEM IDS:", data.items.map(i => ({
+  id: i.item_id,
+  sku: i.sku,
+  name: i.name
+})));
 
     res.json({
       count: data.items?.length || 0,
