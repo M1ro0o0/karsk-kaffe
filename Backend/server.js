@@ -225,25 +225,38 @@ res.json(formatted);
 app.get("/zoho/callback", async (req, res) => {
   const code = req.query.code;
 
-  const response = await fetch("https://accounts.zoho.eu/oauth/v2/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: new URLSearchParams({
-      grant_type: "authorization_code",
-      client_id: process.env.ZOHO_CLIENT_ID,
-      client_secret: process.env.ZOHO_CLIENT_SECRET,
-      redirect_uri: "https://karsk-kaffe.onrender.com/zoho/callback",
-      code: code
-    })
-  });
+  if (!code) {
+    return res.status(400).send("Missing code");
+  }
 
-  const data = await response.json();
+  try {
+    const response = await fetch("https://accounts.zoho.eu/oauth/v2/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        grant_type: "authorization_code",
+        client_id: process.env.ZOHO_CLIENT_ID,
+        client_secret: process.env.ZOHO_CLIENT_SECRET,
+        redirect_uri: "https://karsk-kaffe.onrender.com/zoho/callback",
+        code: code
+      })
+    });
 
-  console.log("TOKENS:", data);
+    const data = await response.json();
 
-  res.send("Tokens received, check logs");
+    console.log("ZOHO RESPONSE:", data);
+
+    if (!response.ok) {
+      return res.status(500).json(data);
+    }
+
+    res.send("Tokens received, check logs");
+  } catch (err) {
+    console.error("ERROR:", err);
+    res.status(500).send("Something broke");
+  }
 });
 
 const PORT = process.env.PORT || 3000;
