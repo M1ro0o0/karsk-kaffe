@@ -213,7 +213,7 @@ app.get("/api/products/:id", async (req, res) => {
     }
 
     const formatted = formatProduct(data, lang);
-res.json(formatted);
+    res.json(formatted);
 
     console.log(data);
   } catch (err) {
@@ -229,19 +229,22 @@ app.get("/zoho/callback", async (req, res) => {
     return res.status(400).send("Missing code");
   }
 
+  console.log("CLIENT_ID:", process.env.ZOHO_CLIENT_ID);
+  console.log("SECRET EXISTS:", !!process.env.ZOHO_CLIENT_SECRET);
+
   try {
     const response = await fetch("https://accounts.zoho.eu/oauth/v2/token", {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
         grant_type: "authorization_code",
         client_id: process.env.ZOHO_CLIENT_ID,
         client_secret: process.env.ZOHO_CLIENT_SECRET,
         redirect_uri: "https://karsk-kaffe.onrender.com/zoho/callback",
-        code: code
-      })
+        code: code,
+      }),
     });
 
     const data = await response.json();
@@ -254,14 +257,14 @@ app.get("/zoho/callback", async (req, res) => {
 
     res.send("Tokens received, check logs");
   } catch (err) {
-  console.error("FULL ERROR:", err);
-  console.error("STACK:", err?.stack);
+    console.error("FULL ERROR:", err);
+    console.error("STACK:", err?.stack);
 
-  res.status(500).json({
-    message: err.message,
-    stack: err.stack
-  });
-}
+    res.status(500).json({
+      message: err.message,
+      stack: err.stack,
+    });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
