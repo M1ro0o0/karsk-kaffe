@@ -166,20 +166,20 @@ function CoffeeProduct({ product }) {
 
             <button
   onClick={async () => {
-    const res = await fetch("https://karsk-kaffe.onrender.com/debug/sku", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        productId: product.id,
-        selectedOptions: selectedOptions
-      })
-    });
+    const res = await fetch("https://karsk-kaffe.onrender.com/api/stock-check", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    productId,
+    selectedOptions
+  })
+});
 
-    const text = await res.text();
+const data = await res.json();
 
-console.log("RAW RESPONSE:", text);
+//setStock(data.stock);
+
+console.log("RAW RESPONSE:", data);
   }}
 >
   Test SKU

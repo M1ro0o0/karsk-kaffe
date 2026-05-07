@@ -310,81 +310,58 @@ app.get("/api/products/:id", async (req, res) => {
   }
 });
 
-app.get("/api/stock/:sku", async (req, res) => {
-  const { sku } = req.params;
+app.post("/api/stock-check", async (req, res) => {
+  const { productId, selectedOptions } = req.body;
 
-  // 1. get zoho_item_id from DB
-  const { data: product } = await supabase
-    .from("ZohoInventory")
-    .select("ZohoID")
-    .eq("ProductSKU", sku)
-    .single();
-
-  if (!product) {
-    return res.status(404).json({ error: "Product not found" });
-  }
-
-  // 2. get Zoho token
-  const token = await getZohoAccessToken();
-
-  // 3. call Zoho
-  const response = await fetch(
-    `https://www.zohoapis.eu/inventory/v1/items/${product.ZohoID}?organization_id=${process.env.ZOHO_ORG_ID}`,
-    {
-      headers: {
-        Authorization: `Zoho-oauthtoken ${token}`
-      }
-    }
-  );
-
-  const data = await response.json();
-
-  // 4. return only stock
-  res.json({
-    sku,
-    stock: data.item?.available_stock ?? 0
-  });
-});
-
-app.post("/debug/sku", async (req, res) => {
   try {
-    console.log("BODY:", req.body);
-
-    const { productId, selectedOptions } = req.body;
-
-    const { data: optionsFromDb, error } = await supabase
+    // 1. get options (for SKU builder)
+    const { data: optionsFromDb } = await supabase
       .from("ProductOptions")
-      .select("type, value, code");
+      .select("*");
 
-    if (error) {
-      console.error("SUPABASE ERROR:", error);
+    // 2. build SKU in backend
+    const sku = buildSku(productId, selectedOptions, optionsFromDb);
 
-      return res.status(500).json({
-        error: error.message
-      });
+    // 3. find Zoho ID
+    const { data: product } = await supabase
+      .from("ZohoInventory")
+      .select("ZohoID")
+      .eq("ProductSKU", sku)
+      .single();
+
+    if (!product) {
+      return res.status(404).json({ error: "SKU not mapped", sku });
     }
 
-    console.log("OPTIONS FROM DB:", optionsFromDb);
+    // 4. get Zoho token
+    const token = await getZohoAccessToken();
 
-    console.log("SELECTED OPTIONS:", selectedOptions);
-    console.log("OPTIONS FROM DB:", optionsFromDb);
-
-    const sku = buildSku(
-      productId,
-      selectedOptions,
-      optionsFromDb
+    // 5. call Zoho
+    const response = await fetch(
+      `https://www.zohoapis.eu/inventory/v1/items/${product.ZohoID}?organization_id=${process.env.ZOHO_ORG_ID}`,
+      {
+        headers: {
+          Authorization: `Zoho-oauthtoken ${token}`
+        }
+      }
     );
 
-    console.log("GENERATED SKU:", sku);
+    const data = await response.json();
 
-    return res.json({ sku });
+    // 6. return stock only
+    return res.json({
+      sku,
+      stock:
+        data.item?.available_stock ??
+        data.item?.stock_on_hand ??
+        0
+    });
 
   } catch (err) {
-    console.error("FULL ERROR:", err);
+    console.error(err);
 
     return res.status(500).json({
-      message: err.message,
-      stack: err.stack
+      message: err.message
     });
   }
 });
