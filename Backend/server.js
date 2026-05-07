@@ -98,18 +98,23 @@ async function getZohoAccessToken() {
 
 function buildSku(productId, selectedOptions, optionsFromDb) {
   const getCode = (type, value) => {
-    const match = optionsFromDb.find(
-      opt =>
-        opt.type === type &&
-        opt.value.trim().toLowerCase() === value.trim().toLowerCase()
-    );
+  if (!value) {
+    throw new Error(`Missing selected option value for ${type}`);
+  }
 
-    if (!match) {
-      throw new Error(`Missing code for ${type}: ${value}`);
-    }
+  const match = optionsFromDb.find(opt =>
+    opt.type &&
+    opt.value &&
+    opt.type.trim().toLowerCase() === type.trim().toLowerCase() &&
+    opt.value.trim().toLowerCase() === value.trim().toLowerCase()
+  );
 
-    return match.code;
-  };
+  if (!match) {
+    throw new Error(`No matching option for ${type}: ${value}`);
+  }
+
+  return match.code;
+};
 
   // weight comes directly from frontend
   const weight = selectedOptions.weight;
@@ -359,6 +364,9 @@ app.post("/debug/sku", async (req, res) => {
       });
     }
 
+    console.log("OPTIONS FROM DB:", optionsFromDb);
+
+    console.log("SELECTED OPTIONS:", selectedOptions);
     console.log("OPTIONS FROM DB:", optionsFromDb);
 
     const sku = buildSku(
