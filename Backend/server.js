@@ -98,12 +98,23 @@ async function getZohoAccessToken() {
 
 function buildSku(productId, selectedOptions, optionsFromDb) {
   const getCode = (type, value) => {
-    return optionsFromDb.find(
-      opt => opt.type === type && opt.value === value
-    )?.code;
+    const match = optionsFromDb.find(
+      opt =>
+        opt.type === type &&
+        opt.value.trim().toLowerCase() === value.trim().toLowerCase()
+    );
+
+    if (!match) {
+      throw new Error(`Missing code for ${type}: ${value}`);
+    }
+
+    return match.code;
   };
 
-  const weight = getCode("weight", selectedOptions.weight);
+  // weight comes directly from frontend
+  const weight = selectedOptions.weight;
+
+  // these come from DB option codes
   const roast = getCode("roast", selectedOptions.roast);
   const grind = getCode("grind", selectedOptions.grind);
 

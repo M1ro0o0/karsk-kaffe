@@ -27,8 +27,6 @@ function ProductPage() {
       });
   }, [id, lang]);
 
-  console.log(product);
-
   if (!product)
     return <p style={{ textAlign: "center" }}>{t.product.loading}...</p>;
 

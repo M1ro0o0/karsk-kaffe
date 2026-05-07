@@ -8,8 +8,6 @@ import { useLanguage } from "../../context/LanguageContext";
 import ReactMarkdown from "react-markdown";
 
 function CoffeeProduct({ product }) {
-  console.log("Test");
-  console.log(product);
   const { addToCart } = useCart();
   const { t } = useLanguage();
   const location = useLocation();
@@ -34,7 +32,6 @@ function CoffeeProduct({ product }) {
   const basePrice = selectedPriceObj?.price || 0;
   const finalPrice = getDiscountedPrice(basePrice, product.discount);
 
-  console.log("Image: ", product?.image);
   return (
     <div className="product-page">
       <img
