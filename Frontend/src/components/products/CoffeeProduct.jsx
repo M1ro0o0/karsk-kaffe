@@ -177,8 +177,9 @@ function CoffeeProduct({ product }) {
       })
     });
 
-    const data = await res.json();
-    console.log("DEBUG SKU RESULT:", data);
+    const text = await res.text();
+
+console.log("RAW RESPONSE:", text);
   }}
 >
   Test SKU

@@ -330,18 +330,43 @@ app.get("/api/stock/:sku", async (req, res) => {
 });
 
 app.post("/debug/sku", async (req, res) => {
-  const { productId, selectedOptions } = req.body;
+  try {
+    console.log("BODY:", req.body);
 
-  const { data: optionsFromDb } = await supabase
-    .from("ProductOptions")
-    .select("type, value, code");
+    const { productId, selectedOptions } = req.body;
 
-  const sku = buildSku(productId, selectedOptions, optionsFromDb);
+    const { data: optionsFromDb, error } = await supabase
+      .from("ProductOptions")
+      .select("type, value, code");
 
-  console.log("INPUT:", { productId, selectedOptions });
-  console.log("OUTPUT SKU:", sku);
+    if (error) {
+      console.error("SUPABASE ERROR:", error);
 
-  res.json({ sku });
+      return res.status(500).json({
+        error: error.message
+      });
+    }
+
+    console.log("OPTIONS FROM DB:", optionsFromDb);
+
+    const sku = buildSku(
+      productId,
+      selectedOptions,
+      optionsFromDb
+    );
+
+    console.log("GENERATED SKU:", sku);
+
+    return res.json({ sku });
+
+  } catch (err) {
+    console.error("FULL ERROR:", err);
+
+    return res.status(500).json({
+      message: err.message,
+      stack: err.stack
+    });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
