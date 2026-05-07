@@ -117,7 +117,7 @@ function buildSku(productId, selectedOptions, optionsFromDb) {
 };
 
   // weight comes directly from frontend
-  const weight = selectedOptions.weight;
+  const weight = selectedOptions.size;
 
   // these come from DB option codes
   const roast = getCode("roast", selectedOptions.roast);
