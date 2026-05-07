@@ -210,15 +210,27 @@ app.post("/api/discount/redeem", async (req, res) => {
 });
 
 app.post("/api/resolve-sku", async (req, res) => {
-  const { productId, selectedOptions } = req.body;
+  try {
+    const { data, error } = await supabase
+      .from("ProductOptions")
+      .select("*");
 
-  const { data: optionsFromDb } = await supabase
-    .from("ProductOptions")
-    .select("type, value, code");
+    console.log(data);
 
-  const sku = buildSku(productId, selectedOptions, optionsFromDb);
+    if (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
 
-  res.json({ sku });
+    res.json(data);
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      message: err.message
+    });
+  }
 });
 
 //Product retrieving
