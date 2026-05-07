@@ -166,12 +166,12 @@ function CoffeeProduct({ product }) {
 
             <button
   onClick={async () => {
-    const res = await fetch("https://karsk-kaffe.onrender.com/api/stock-check", {
+    const res = await fetch("/api/stock-check", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    productId,
-    selectedOptions
+    productId: product.id,
+        selectedOptions: selectedOptions
   })
 });
 

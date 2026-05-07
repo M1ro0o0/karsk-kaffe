@@ -220,7 +220,6 @@ app.post("/api/resolve-sku", async (req, res) => {
       .from("ProductOptions")
       .select("*");
 
-    console.log(data);
 
     if (error) {
       console.error(error);
@@ -303,7 +302,6 @@ app.get("/api/products/:id", async (req, res) => {
     const formatted = formatProduct(data, lang);
     res.json(formatted);
 
-    console.log(data);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch product" });
@@ -347,6 +345,8 @@ app.post("/api/stock-check", async (req, res) => {
     );
 
     const data = await response.json();
+
+    console.log(data);
 
     // 6. return stock only
     return res.json({
