@@ -29,6 +29,7 @@ const pl = {
     customMessage: "Twoja własna wiadomość",
     select: "Wybierz",
     VAT: "Z VAT",
+    stock: "Brak w magazynie",
     addToCart: "Dodaj do koszyka",
     clickMore: "Kliknij, aby zobaczyć więcej",
   },

@@ -29,6 +29,7 @@ const en = {
     customMessage: "Your Custom message",
     select: "Select",
     VAT: "VAT included",
+    stock: "Out of stock",
     addToCart: "Add to cart",
     clickMore: "Click for more",
   },

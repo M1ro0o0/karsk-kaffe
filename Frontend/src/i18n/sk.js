@@ -29,6 +29,7 @@ const sk = {
     customMessage: "Váš vlastný odkaz",
     select: "Vybrať",
     VAT: "DPH zahrnutá",
+    stock: "Nie je na sklade",
     addToCart: "Pridať do košíka",
     clickMore: "Kliknite pre viac",
   },

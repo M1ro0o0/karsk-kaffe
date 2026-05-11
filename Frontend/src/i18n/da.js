@@ -29,6 +29,7 @@ const da = {
     customMessage: "Din brugerdefinerede besked",
     select: "Vælge",
     VAT: "Moms inkluderet",
+    stock: "Udsolgt",
     addToCart: "Læg i kurv",
     clickMore: "Klik for mere",
   },

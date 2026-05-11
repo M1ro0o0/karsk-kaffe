@@ -312,15 +312,30 @@ app.post("/api/stock-check", async (req, res) => {
   const { productId, selectedOptions } = req.body;
 
   try {
-    // 1. get options (for SKU builder)
-    const { data: optionsFromDb } = await supabase
-      .from("ProductOptions")
-      .select("*");
 
-    // 2. build SKU in backend
-    const sku = buildSku(productId, selectedOptions, optionsFromDb);
+    let sku;
 
-    // 3. find Zoho ID
+    // BOX PRODUCTS
+    if (productId.startsWith("BO-")) {
+
+      // box ID already IS the SKU
+      sku = productId;
+
+    } else {
+
+      // COFFEE PRODUCTS → build SKU from options
+      const { data: optionsFromDb } = await supabase
+        .from("ProductOptions")
+        .select("*");
+
+      sku = buildSku(
+        productId,
+        selectedOptions,
+        optionsFromDb
+      );
+    }
+
+    // FIND ZOHO ITEM ID
     const { data: product } = await supabase
       .from("ZohoInventory")
       .select("ZohoID")
@@ -328,15 +343,18 @@ app.post("/api/stock-check", async (req, res) => {
       .single();
 
     if (!product) {
-      return res.status(404).json({ error: "SKU not mapped", sku });
+      return res.status(404).json({
+        error: "SKU not mapped",
+        sku
+      });
     }
 
-    // 4. get Zoho token
+    // GET ZOHO ACCESS TOKEN
     const token = await getZohoAccessToken();
 
-    // 5. call Zoho
+    // FETCH ITEM FROM ZOHO
     const response = await fetch(
-      `https://www.zohoapis.eu/inventory/v1/items/${product.ZohoID}?organization_id=${process.env.ZOHO_ORG_ID}`,
+      `https://www.zohoapis.eu/inventory/v1/items/${String(product.ZohoID).trim()}?organization_id=${process.env.ZOHO_ORG_ID}`,
       {
         headers: {
           Authorization: `Zoho-oauthtoken ${token}`
@@ -346,9 +364,9 @@ app.post("/api/stock-check", async (req, res) => {
 
     const data = await response.json();
 
-    console.log(data);
+    console.log("ZOHO RESPONSE:", data);
 
-    // 6. return stock only
+    // RETURN STOCK
     return res.json({
       sku,
       stock:
@@ -358,7 +376,8 @@ app.post("/api/stock-check", async (req, res) => {
     });
 
   } catch (err) {
-    console.error(err);
+
+    console.error("STOCK CHECK ERROR:", err);
 
     return res.status(500).json({
       message: err.message
