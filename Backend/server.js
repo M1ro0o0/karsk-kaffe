@@ -23,7 +23,7 @@ const productRoutes =
   require("./routes/products");
 
 const discountRoutes =
-  require("./routes/discounts");
+  require("./routes/discount");
 
 /*const shippingRoutes =
   require("./routes/shipping");*/
