@@ -1,5 +1,5 @@
 //Validation
-app.post("/api/discount/validate", async (req, res) => {
+router.post("/api/discount/validate", async (req, res) => {
   const { code } = req.body;
 
   if (!code) {
@@ -33,7 +33,7 @@ app.post("/api/discount/validate", async (req, res) => {
 });
 
 //Redeem
-app.post("/api/discount/redeem", async (req, res) => {
+router.post("/api/discount/redeem", async (req, res) => {
   const { code, invoice } = req.body;
 
   const { data } = await supabase
