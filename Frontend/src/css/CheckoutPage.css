@@ -11,6 +11,7 @@
   display: flex;
   gap: 15px;
   margin-bottom: 10px;
+  border-bottom: solid 1px #8f5445;
 }
 
 .checkout-item img {
@@ -40,6 +41,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   height: 40px;
+  margin-bottom: 20px;
 }
 
 .checkout-button:hover {
@@ -65,4 +67,29 @@
 
 .vat {
     margin-top: 3px;
+}
+
+.checkout-notice {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  background: #fafafa;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkout-warning {
+  font-weight: 600;
+  color: #b45309; /* warm warning orange */
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.checkout-terms {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
 }

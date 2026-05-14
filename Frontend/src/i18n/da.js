@@ -53,6 +53,8 @@ const da = {
     cart: "Din Kurv",
     pPerPcs: "Pris pr. stk.",
     VAT: "Moms",
+    subtotal: "Delsum",
+    ship: "Levering",
     total: "I Alt",
     clear: "Rudde Kurv",
     proceed: "Fortsæt til kassen",
@@ -70,7 +72,9 @@ const da = {
     title: "Kasse",
     order: "Ordreoversigt",
     shipadd: "Leveringsadressen er den samme som faktureringsadressen",
-    placeOrder: "Afgiv ordre",
+    placeOrder: "Gå til betaling og afgiv ordre",
+    warning: "Dette er det sidste sted, hvor du kan ændre oplysningerne. Sørg for, at alt er korrekt.",
+    terms: "Ved at fortsætte bekræfter du, at du har læst vores vilkår og betingelser og accepterer dem.",
   },
 
   address: {

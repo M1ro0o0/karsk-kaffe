@@ -53,6 +53,8 @@ const en = {
     cart: "Your Cart",
     pPerPcs: "Price per pcs",
     VAT: "VAT",
+    subtotal: "Subtotal",
+    ship: "Shipping",
     total: "Total",
     clear: "Clear cart",
     proceed: "Proceed to checkout",
@@ -71,6 +73,8 @@ const en = {
     order: "Order Summary",
     shipadd: "Shipping address is the same as the billing address",
     placeOrder: "Place order",
+    warning: "This is the last place to change the information, make sure that everything is correct.",
+    terms: "By proceeding you confirm that you have read our terms and conditions and you comply with them.",
   },
 
   address: {

@@ -53,6 +53,8 @@ const sk = {
     cart: "Váš košík",
     pPerPcs: "Cena za ks",
     VAT: "DPH",
+    subtotal: "Medzisúčet",
+    ship: "Doprava",
     total: "Spolu",
     clear: "Vyprázdniť košík",
     proceed: "Pokračovať k pokladni",
@@ -71,6 +73,8 @@ const sk = {
     order: "Zhrnutie objednávky",
     shipadd: "Dodacia adresa je rovnaká ako fakturačná adresa",
     placeOrder: "Odoslať objednávku",
+    warning: "Toto je posledné miesto na úpravu údajov. Uistite sa, že všetko je správne.",
+    terms: "Pokračovaním potvrdzujete, že ste si prečítali naše obchodné podmienky a súhlasíte s nimi."
   },
 
   address: {

@@ -53,6 +53,8 @@ const pl = {
     cart: "Twój koszyk",
     pPerPcs: "Cena za sztukę",
     VAT: "VAT",
+    subtotal: "Suma częściowa",
+    ship: "Wysyłka",
     total: "Razem",
     clear: "Wyczyść koszyk",
     proceed: "Przejdź do kasy",
@@ -71,6 +73,8 @@ const pl = {
     order: "Podsumowanie zamówienia",
     shipadd: "Adres dostawy jest taki sam jak adres rozliczeniowy",
     placeOrder: "Złóż zamówienie",
+    warning: "To ostatni moment na zmianę danych. Upewnij się, że wszystko jest poprawne.",
+    terms: "Kontynuując, potwierdzasz, że przeczytałeś regulamin i go akceptujesz.",
   },
 
   address: {

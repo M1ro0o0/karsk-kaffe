@@ -1,8 +1,17 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState
+} from "react";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
+
+  // ======================
+  // CART
+  // ======================
   const [cart, setCart] = useState(() => {
     const saved = localStorage.getItem("cart");
     const savedTime = localStorage.getItem("cartTime");
@@ -12,6 +21,7 @@ export function CartProvider({ children }) {
     const age = Date.now() - Number(savedTime);
     const DAY = 24 * 60 * 60 * 1000;
 
+    // clear expired cart
     if (age > DAY) {
       localStorage.removeItem("cart");
       localStorage.removeItem("cartTime");
@@ -21,79 +31,157 @@ export function CartProvider({ children }) {
     return JSON.parse(saved);
   });
 
+  // ======================
+  // DISCOUNT (PRODUCTS ONLY)
+  // ======================
+  const [discount, setDiscount] = useState({
+    code: "",
+    percent: 0
+  });
+
+  // ======================
+  // SHIPPING (SET IN CHECKOUT)
+  // ======================
+  const [shippingPrice, setShippingPrice] = useState(0);
+
+  // ======================
+  // LOCAL STORAGE SYNC
+  // ======================
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
     localStorage.setItem("cartTime", Date.now().toString());
   }, [cart]);
 
+  // ======================
+  // HELPERS
+  // ======================
+  const isSameOptions = (a = {}, b = {}) =>
+    JSON.stringify(a) === JSON.stringify(b);
+
+  // ======================
+  // CART ACTIONS
+  // ======================
   const addToCart = (newItem) => {
-    setCart((prevCart) => {
-      const existingIndex = prevCart.findIndex(
+    setCart((prev) => {
+      const index = prev.findIndex(
         (item) =>
           item.id === newItem.id &&
-          isSameOptions(item.options, newItem.options),
+          isSameOptions(item.options, newItem.options)
       );
 
-      const itemToAdd = {
+      const item = {
         ...newItem,
-        price: newItem.price,
-        quantity: newItem.quantity ?? 1,
+        price: Number(newItem.price) || 0,
+        quantity: Number(newItem.quantity) || 1
       };
 
-      if (existingIndex !== -1) {
-        return prevCart.map((item, index) =>
-          index === existingIndex
+      if (index !== -1) {
+        return prev.map((p, i) =>
+          i === index
             ? {
-                ...item,
+                ...p,
                 quantity:
-                  (Number(item.quantity) || 0) +
-                  (Number(newItem.quantity) || 1),
+                  (Number(p.quantity) || 0) +
+                  (item.quantity || 1)
               }
-            : item,
+            : p
         );
       }
 
-      return [...prevCart, itemToAdd];
+      return [...prev, item];
     });
   };
 
   const updateQuantity = (index, quantity) => {
     setCart((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, quantity } : item)),
+      prev.map((item, i) =>
+        i === index
+          ? {
+              ...item,
+              quantity: quantity > 0 ? quantity : 1
+            }
+          : item
+      )
     );
   };
 
   const removeFromCart = (index) => {
-    setCart((prev) => prev.filter((_, i) => i !== index));
+    setCart((prev) =>
+      prev.filter((_, i) => i !== index)
+    );
   };
 
-  const clearCart = () => setCart([]);
-
-  const isSameOptions = (a = {}, b = {}) => {
-    return JSON.stringify(a) === JSON.stringify(b);
+  const clearCart = () => {
+    setCart([]);
+    clearDiscount();
+    setShippingPrice(0);
   };
 
-  const totalItems = cart.reduce(
-    (sum, item) => sum + (Number(item.quantity) || 0),
-    0,
+  // ======================
+  // DISCOUNT ACTIONS
+  // ======================
+  const applyDiscount = (code, percent) => {
+    setDiscount({ code, percent });
+  };
+
+  const clearDiscount = () => {
+    setDiscount({ code: "", percent: 0 });
+  };
+
+  // ======================
+  // TOTALS (DERIVED)
+  // ======================
+  const productsTotal = cart.reduce(
+    (sum, item) =>
+      sum +
+      (Number(item.price) || 0) *
+      (Number(item.quantity) || 0),
+    0
   );
 
-  const totalPrice = cart.reduce((sum, item) => {
-    const price = Number(item.price) || 0;
-    const quantity = Number(item.quantity) || 0;
-    return sum + price * quantity;
-  }, 0);
+  const discountAmount =
+    (productsTotal * discount.percent) / 100;
 
+  const discountedProductsTotal =
+    productsTotal - discountAmount;
+
+  const finalTotal =
+    discountedProductsTotal + shippingPrice;
+
+  const totalItems = cart.reduce(
+    (sum, item) =>
+      sum + (Number(item.quantity) || 0),
+    0
+  );
+
+  // ======================
+  // PROVIDER
+  // ======================
   return (
     <CartContext.Provider
       value={{
+        // cart
         cart,
         addToCart,
         updateQuantity,
         removeFromCart,
         clearCart,
-        totalItems,
-        totalPrice,
+
+        // shipping (checkout only)
+        shippingPrice,
+        setShippingPrice,
+
+        // discount
+        discount,
+        applyDiscount,
+        clearDiscount,
+
+        // totals
+        productsTotal,
+        discountAmount,
+        discountedProductsTotal,
+        finalTotal,
+        totalItems
       }}
     >
       {children}
