@@ -25,8 +25,8 @@ const productRoutes =
 const discountRoutes =
   require("./routes/discount");
 
-/*const shippingRoutes =
-  require("./routes/shipping");*/
+const shippingRoutes =
+  require("./routes/shipping");
 
 /*--------------------
         APP
