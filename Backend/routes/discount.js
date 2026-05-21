@@ -1,70 +1,4 @@
-//Validation
-router.post("/api/discount/validate", async (req, res) => {
-  const { code } = req.body;
-
-  if (!code) {
-    return res.json({ valid: false, error: "EMPTY_CODE" });
-  }
-
-  const { data, error } = await supabase
-    .from("DiscountCodes")
-    .select("*")
-    .eq("code", code)
-    .single();
-
-  if (error || !data) {
-    return res.json({ valid: false, error: "NOT_FOUND" });
-  }
-
-  // expired check (if you have it)
-  if (data.expires_at && new Date(data.expires_at) < new Date()) {
-    return res.json({ valid: false, error: "EXPIRED" });
-  }
-
-  // single-use check
-  if (data.type === "single" && data.used) {
-    return res.json({ valid: false, error: "ALREADY_USED" });
-  }
-
-  return res.json({
-    valid: true,
-    discount: data.discount,
-  });
-});
-
-//Redeem
-router.post("/api/discount/redeem", async (req, res) => {
-  const { code, invoice } = req.body;
-
-  const { data } = await supabase
-    .from("discount_codes")
-    .select("*")
-    .eq("code", code)
-    .single();
-
-  if (!data) {
-    return res.status(400).send("Invalid code");
-  }
-
-  if (data.type === "single" && data.used) {
-    return res.status(400).send("Already used");
-  }
-
-  const { error } = await supabase
-    .from("discount_codes")
-    .update({
-      used: true,
-      used_at: new Date().toISOString(),
-      invoice: invoice,
-    })
-    .eq("code", code);
-
-  if (error) {
-    return res.status(500).send(error.message);
-  }
-
-  res.send({ success: true });
-});const express = require("express");
+const express = require("express");
 
 module.exports = (supabase) => {
 
@@ -80,15 +14,13 @@ module.exports = (supabase) => {
 
       try {
 
-        const { code } =
-          req.body;
+        const { code } = req.body;
 
         if (!code) {
 
           return res.json({
             valid: false,
-            error:
-              "EMPTY_CODE"
+            error: "EMPTY_CODE"
           });
         }
 
@@ -96,58 +28,46 @@ module.exports = (supabase) => {
           data,
           error
         } = await supabase
-          .from(
-            "DiscountCodes"
-          )
+          .from("DiscountCodes")
           .select("*")
           .eq("code", code)
           .single();
 
-        if (
-          error ||
-          !data
-        ) {
+        if (error || !data) {
 
           return res.json({
             valid: false,
-            error:
-              "NOT_FOUND"
+            error: "NOT_FOUND"
           });
         }
 
-        // EXPIRED
+        // EXPIRED CHECK
         if (
           data.expires_at &&
-          new Date(
-            data.expires_at
-          ) < new Date()
+          new Date(data.expires_at) < new Date()
         ) {
 
           return res.json({
             valid: false,
-            error:
-              "EXPIRED"
+            error: "EXPIRED"
           });
         }
 
-        // SINGLE USE
+        // SINGLE USE CHECK
         if (
-          data.type ===
-            "single" &&
+          data.type === "single" &&
           data.used
         ) {
 
           return res.json({
             valid: false,
-            error:
-              "ALREADY_USED"
+            error: "ALREADY_USED"
           });
         }
 
         return res.json({
           valid: true,
-          discount:
-            data.discount
+          discount: data.discount
         });
 
       } catch (err) {
@@ -161,8 +81,7 @@ module.exports = (supabase) => {
           .status(500)
           .json({
             valid: false,
-            error:
-              "SERVER_ERROR"
+            error: "SERVER_ERROR"
           });
       }
     }
@@ -188,8 +107,7 @@ module.exports = (supabase) => {
           return res
             .status(400)
             .json({
-              error:
-                "Missing discount code"
+              error: "Missing discount code"
             });
         }
 
@@ -197,51 +115,39 @@ module.exports = (supabase) => {
           data,
           error
         } = await supabase
-          .from(
-            "DiscountCodes"
-          )
+          .from("DiscountCodes")
           .select("*")
           .eq("code", code)
           .single();
 
-        if (
-          error ||
-          !data
-        ) {
+        if (error || !data) {
 
           return res
             .status(400)
             .json({
-              error:
-                "Invalid code"
+              error: "Invalid code"
             });
         }
 
         if (
-          data.type ===
-            "single" &&
+          data.type === "single" &&
           data.used
         ) {
 
           return res
             .status(400)
             .json({
-              error:
-                "Already used"
+              error: "Already used"
             });
         }
 
         const {
           error: updateError
         } = await supabase
-          .from(
-            "DiscountCodes"
-          )
+          .from("DiscountCodes")
           .update({
             used: true,
-            used_at:
-              new Date()
-                .toISOString(),
+            used_at: new Date().toISOString(),
             invoice
           })
           .eq("code", code);
@@ -256,8 +162,7 @@ module.exports = (supabase) => {
           return res
             .status(500)
             .json({
-              error:
-                updateError.message
+              error: updateError.message
             });
         }
 
@@ -275,8 +180,7 @@ module.exports = (supabase) => {
         return res
           .status(500)
           .json({
-            error:
-              "SERVER_ERROR"
+            error: "SERVER_ERROR"
           });
       }
     }
