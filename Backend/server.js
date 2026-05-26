@@ -82,12 +82,12 @@ app.use(
 );
 
 // SHIPPING
-app.use(
+/*app.use(
   "/api/shipping",
   shippingRoutes(
     supabase
   )
-);
+);*/
 
 /*--------------------
       HEALTH CHECK
