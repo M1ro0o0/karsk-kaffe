@@ -19,7 +19,7 @@ export function CartProvider({ children }) {
     if (!saved || !savedTime) return [];
 
     const age = Date.now() - Number(savedTime);
-    const DAY = 24 * 60 * 60 * 1000;
+    const DAY = 24 * 60 * 60 * 1000 * 3;
 
     // clear expired cart
     if (age > DAY) {
@@ -91,6 +91,18 @@ export function CartProvider({ children }) {
       return [...prev, item];
     });
   };
+
+const PACKAGING_WEIGHT = 0.2;
+
+const getTotalWeight = () => {
+  const productWeight = cartItems.reduce((total, item) => {
+    const product = products.find(p => p.id === item.productId);
+    if (!product) return total;
+    return total + product.weight * item.quantity;
+  }, 0);
+
+  return productWeight + PACKAGING_WEIGHT;
+};
 
   const updateQuantity = (index, quantity) => {
     setCart((prev) =>
@@ -166,6 +178,7 @@ export function CartProvider({ children }) {
         updateQuantity,
         removeFromCart,
         clearCart,
+        getTotalWeight,
 
         // shipping (checkout only)
         shippingPrice,

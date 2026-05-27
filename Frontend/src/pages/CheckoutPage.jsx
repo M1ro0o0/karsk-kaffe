@@ -24,6 +24,13 @@ function CheckoutPage() {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
+  const { getTotalWeight } = useCart();
+  const totalWeight = getTotalWeight();
+  const isOver1kg = totalWeight > 1000;
+
+  const [selectedProvider, setSelectedProvider] = useState(null);
+  const [selectedMethod, setSelectedMethod] = useState(null);
+
   // =========================
   // ADDRESSES
   // =========================

@@ -51,6 +51,8 @@ function formatProduct(
       product.baseDiscount,
     prices:
       product.ProductPrices || [],
+    weight:
+      product.ProductPrices.weight || 0,
     name:
       translation?.name,
     description:

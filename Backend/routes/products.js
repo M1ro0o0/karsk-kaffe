@@ -95,7 +95,7 @@ module.exports = (supabase) => {
             image,
             type,
             baseDiscount,
-            ProductPrices(label, price),
+            ProductPrices(label, price, weight),
             ProductTranslation(name, language, description),
             ProductOptions(type, value),
             ProductContent(language, items)
