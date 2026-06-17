@@ -1,12 +1,12 @@
 .shipping-selector {
   padding: 16px;
-  border: 1px solid #e5e5e5;
+  border: 2px solid #8f5445;
   border-radius: 8px;
 }
 
 .shipping-title {
   margin-bottom: 12px;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .shipping-providers {
@@ -14,14 +14,32 @@
   gap: 8px;
   flex-wrap: wrap;
   margin-bottom: 12px;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.provider-logo {
+  height: 40px;
 }
 
 .provider-btn {
   padding: 8px 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #c7a9a2;
   background: white;
   cursor: pointer;
   border-radius: 6px;
+
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
+  flex: 1; /* makes all buttons evenly stretch */
+}
+
+.provider-btn:hover {
+  transform: scale(1.02);
+    border: 1px solid #8f5445;
 }
 
 .provider-btn.active {
@@ -31,23 +49,47 @@
 
 .shipping-methods {
   margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
 }
 
 .method-btn {
-  display: block;
-  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  width: 45%;
   margin-top: 6px;
   padding: 10px;
   text-align: left;
-  border: 1px solid #ccc;
+  font-size: 1rem;
+  border: 1px solid #c7a9a2;
   background: white;
   cursor: pointer;
   border-radius: 6px;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.method-btn:hover {
+  transform: scale(1.02);
+  border: 1px solid #8f5445;
 }
 
 .method-btn.active {
   border: 2px solid black;
   font-weight: bold;
+}
+
+.method-name {
+  font-weight: 500;
+}
+
+.method-price {
+  font-weight: 600;
 }
 
 .shipping-summary {

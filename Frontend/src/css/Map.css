@@ -1,0 +1,220 @@
+/* ============================
+   MODAL OVERLAY
+   ============================ */
+.map-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.map-modal {
+  background: #fff;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 700px;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================
+   HEADER
+   ============================ */
+.map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+.map-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.map-provider-name {
+  font-weight: 400;
+  color: #666;
+}
+
+.map-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #555;
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+}
+
+.map-close-btn:hover {
+  color: #000;
+}
+
+/* ============================
+   SEARCH
+   ============================ */
+.map-search {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: #f9f9f9;
+  border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+.map-search input {
+  flex: 1;
+  max-width: 180px;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.map-search button {
+  padding: 0.45rem 1rem;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.map-search button:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+/* ============================
+   MAP
+   ============================ */
+.map-container {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ============================
+   STATUS
+   ============================ */
+.map-status {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.85rem;
+  color: #555;
+  flex-shrink: 0;
+}
+
+.map-error {
+  color: #c0392b;
+}
+
+/* ============================
+   POPUP SELECT BUTTON
+   ============================ */
+.map-select-btn {
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.75rem;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+/* ============================
+   FOOTER
+   ============================ */
+.map-footer {
+  border-top: 1px solid #e0e0e0;
+  padding: 0.85rem 1.25rem;
+  flex-shrink: 0;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+}
+
+.map-footer-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.map-selected-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.map-selected-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.map-selected-info strong {
+  font-size: 0.95rem;
+}
+
+.map-selected-info span {
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.map-confirm-btn {
+  padding: 0.55rem 1.25rem;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.map-confirm-btn:hover {
+  background: #111;
+}
+
+.marker-selected {
+  filter: hue-rotate(120deg);
+}
+
+/* ============================
+   MOBILE
+   ============================ */
+@media (max-width: 600px) {
+  .map-modal {
+    height: 95vh;
+    border-radius: 12px 12px 0 0;
+    align-self: flex-end;
+    margin-bottom: 0;
+  }
+
+  .map-modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .map-selected-summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .map-confirm-btn {
+    width: 100%;
+  }
+}

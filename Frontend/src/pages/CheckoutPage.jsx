@@ -6,30 +6,28 @@ import { useNavigate } from "react-router-dom";
 import AddressForm from "../components/AddressForm";
 import { getVATAmount } from "../utils/pricing.js";
 import { useLanguage } from "../context/LanguageContext";
+import ShippingSelector from "../components/ShippingSelector";
+import MapModal from "../components/MapModal";
 
 function CheckoutPage() {
   const {
     cart,
     clearCart,
-
-    // NEW CART CONTEXT VALUES
     productsTotal,
     discountAmount,
     finalTotal,
     shippingPrice,
     setShippingPrice,
     discount,
+    isOver1kg,
   } = useCart();
 
   const { t } = useLanguage();
   const navigate = useNavigate();
 
-  const { getTotalWeight } = useCart();
-  const totalWeight = getTotalWeight();
-  const isOver1kg = totalWeight > 1000;
-
-  const [selectedProvider, setSelectedProvider] = useState(null);
-  const [selectedMethod, setSelectedMethod] = useState(null);
+  const [shippingData, setShippingData] = useState(null);
+  const [pickupPoint, setPickupPoint] = useState(null);
+  const [mapOpen, setMapOpen] = useState(false);
 
   // =========================
   // ADDRESSES
@@ -67,6 +65,27 @@ function CheckoutPage() {
   }, [sameAsBilling, billingAddress]);
 
   // =========================
+  // SHIPPING SELECTION
+  // =========================
+  const handleShippingChange = ({ provider, method, shippingPrice }) => {
+    setShippingData({ provider, method });
+    setShippingPrice(shippingPrice);
+
+    if (method?.id !== "shop") {
+      setPickupPoint(null);
+    }
+  };
+
+  const handlePickupRequired = () => {
+    setMapOpen(true);
+  };
+
+  const handlePickupConfirm = (point) => {
+    setPickupPoint(point);
+    setMapOpen(false);
+  };
+
+  // =========================
   // VALIDATION
   // =========================
   const isValidPostcodeDK = (postcode) => /^\d{4}$/.test(postcode);
@@ -81,10 +100,14 @@ function CheckoutPage() {
     data.city &&
     data.country;
 
+  const requiresPickupPoint = shippingData?.method?.id === "shop";
+
   const isDisabled =
     !isAddressValid(billingAddress) ||
     (!sameAsBilling && !isAddressValid(shippingAddress)) ||
-    cart.length === 0;
+    cart.length === 0 ||
+    !shippingData?.method ||
+    (requiresPickupPoint && !pickupPoint);
 
   // =========================
   // SUBMIT ORDER
@@ -92,16 +115,15 @@ function CheckoutPage() {
   const handleSubmit = () => {
     const order = {
       items: cart,
-
       productsTotal,
-      discount: discount,
+      discount,
       discountAmount,
       shippingPrice,
       finalTotal,
-
+      shippingMethod: shippingData,
+      pickupPoint: pickupPoint || null,
       billingAddress,
       shippingAddress,
-
       createdAt: new Date().toISOString(),
     };
 
@@ -113,7 +135,7 @@ function CheckoutPage() {
     alert("Order placed successfully!");
   };
 
-  // redirect if empty cart
+  // Redirect if empty cart
   useEffect(() => {
     if (cart.length === 0) {
       navigate("/");
@@ -143,18 +165,56 @@ function CheckoutPage() {
             checked={sameAsBilling}
             onChange={(e) => setSameAsBilling(e.target.checked)}
           />
-
           {t.checkout.shipadd}
         </label>
       </div>
 
-      {/* SHIPPING */}
+      {/* SHIPPING ADDRESS */}
       <AddressForm
         title="ship"
         data={shippingAddress}
         onChange={setShippingAddress}
         disabled={sameAsBilling}
       />
+
+      {/* SHIPPING SELECTOR */}
+      <ShippingSelector
+        onChange={handleShippingChange}
+        onPickupRequired={handlePickupRequired}
+      />
+
+      {/* PICKUP POINT DISPLAY */}
+      {requiresPickupPoint && (
+        <div className="checkout-pickup">
+          {pickupPoint ? (
+            <div className="checkout-pickup-selected">
+              <strong>Pickup point:</strong> {pickupPoint.name},{" "}
+              {pickupPoint.address}, {pickupPoint.postal_code} {pickupPoint.city}
+              <button
+                className="checkout-pickup-change"
+                onClick={() => setMapOpen(true)}
+              >
+                Change
+              </button>
+            </div>
+          ) : (
+            <p className="checkout-pickup-warning">
+              ⚠ Please select a pickup point to continue.
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* MAP MODAL */}
+      {mapOpen && (
+        <MapModal
+          provider={shippingData?.provider}
+          method={shippingData?.method}
+          postalCode={billingAddress.postalCode}
+          onConfirm={handlePickupConfirm}
+          onClose={() => setMapOpen(false)}
+        />
+      )}
 
       {/* ORDER SUMMARY */}
       <div className="checkout-section">
@@ -166,10 +226,8 @@ function CheckoutPage() {
             className="checkout-item"
           >
             <img src={item.image} alt={item.name} />
-
             <div>
               <strong>{item.name}</strong>
-
               <p>
                 {Object.entries(item.options || {}).map(([key, value]) => (
                   <span key={key}>
@@ -177,12 +235,9 @@ function CheckoutPage() {
                   </span>
                 ))}
               </p>
-
               <p className="total-price">
-                {item.quantity} × {item.price} kr ({item.quantity * item.price}{" "}
-                kr)
+                {item.quantity} × {item.price} kr ({item.quantity * item.price} kr)
               </p>
-
               <p className="vat">
                 {t.cart.VAT}(25%): {getVATAmount(item.price) * item.quantity} kr
               </p>
@@ -190,7 +245,6 @@ function CheckoutPage() {
           </div>
         ))}
 
-        {/* TOTALS */}
         <h3 className="total-price">
           {t.cart.subtotal}: {productsTotal} kr
         </h3>
@@ -216,7 +270,6 @@ function CheckoutPage() {
 
       <div className="checkout-notice">
         <p className="checkout-warning">{t.checkout.warning}</p>
-
         <p className="checkout-terms">{t.checkout.terms}</p>
       </div>
 

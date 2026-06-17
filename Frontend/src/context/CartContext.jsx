@@ -1,14 +1,8 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-
   // ======================
   // CART
   // ======================
@@ -36,7 +30,7 @@ export function CartProvider({ children }) {
   // ======================
   const [discount, setDiscount] = useState({
     code: "",
-    percent: 0
+    percent: 0,
   });
 
   // ======================
@@ -66,13 +60,13 @@ export function CartProvider({ children }) {
       const index = prev.findIndex(
         (item) =>
           item.id === newItem.id &&
-          isSameOptions(item.options, newItem.options)
+          isSameOptions(item.options, newItem.options),
       );
 
       const item = {
         ...newItem,
         price: Number(newItem.price) || 0,
-        quantity: Number(newItem.quantity) || 1
+        quantity: Number(newItem.quantity) || 1,
       };
 
       if (index !== -1) {
@@ -80,11 +74,9 @@ export function CartProvider({ children }) {
           i === index
             ? {
                 ...p,
-                quantity:
-                  (Number(p.quantity) || 0) +
-                  (item.quantity || 1)
+                quantity: (Number(p.quantity) || 0) + (item.quantity || 1),
               }
-            : p
+            : p,
         );
       }
 
@@ -92,17 +84,17 @@ export function CartProvider({ children }) {
     });
   };
 
-const PACKAGING_WEIGHT = 0.2;
+  const PACKAGING_WEIGHT = 200;
 
-const getTotalWeight = () => {
-  const productWeight = cartItems.reduce((total, item) => {
-    const product = products.find(p => p.id === item.productId);
-    if (!product) return total;
-    return total + product.weight * item.quantity;
-  }, 0);
+  const getTotalWeight = () => {
+    const productWeight = Object.values(cart).reduce((total, item) => {
+      return total + (item.selectedPrice.weight * item.quantity);
+    }, 0);
 
-  return productWeight + PACKAGING_WEIGHT;
-};
+    return productWeight + PACKAGING_WEIGHT;
+  };
+
+  const isOver1kg = getTotalWeight() > 1000;
 
   const updateQuantity = (index, quantity) => {
     setCart((prev) =>
@@ -110,17 +102,15 @@ const getTotalWeight = () => {
         i === index
           ? {
               ...item,
-              quantity: quantity > 0 ? quantity : 1
+              quantity: quantity > 0 ? quantity : 1,
             }
-          : item
-      )
+          : item,
+      ),
     );
   };
 
   const removeFromCart = (index) => {
-    setCart((prev) =>
-      prev.filter((_, i) => i !== index)
-    );
+    setCart((prev) => prev.filter((_, i) => i !== index));
   };
 
   const clearCart = () => {
@@ -145,25 +135,19 @@ const getTotalWeight = () => {
   // ======================
   const productsTotal = cart.reduce(
     (sum, item) =>
-      sum +
-      (Number(item.price) || 0) *
-      (Number(item.quantity) || 0),
-    0
+      sum + (Number(item.price) || 0) * (Number(item.quantity) || 0),
+    0,
   );
 
-  const discountAmount =
-    (productsTotal * discount.percent) / 100;
+  const discountAmount = (productsTotal * discount.percent) / 100;
 
-  const discountedProductsTotal =
-    productsTotal - discountAmount;
+  const discountedProductsTotal = productsTotal - discountAmount;
 
-  const finalTotal =
-    discountedProductsTotal + shippingPrice;
+  const finalTotal = discountedProductsTotal + shippingPrice;
 
   const totalItems = cart.reduce(
-    (sum, item) =>
-      sum + (Number(item.quantity) || 0),
-    0
+    (sum, item) => sum + (Number(item.quantity) || 0),
+    0,
   );
 
   // ======================
@@ -179,6 +163,7 @@ const getTotalWeight = () => {
         removeFromCart,
         clearCart,
         getTotalWeight,
+        isOver1kg,
 
         // shipping (checkout only)
         shippingPrice,
@@ -194,7 +179,7 @@ const getTotalWeight = () => {
         discountAmount,
         discountedProductsTotal,
         finalTotal,
-        totalItems
+        totalItems,
       }}
     >
       {children}
