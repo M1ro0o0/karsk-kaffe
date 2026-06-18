@@ -1,3 +1,5 @@
+import { API_URL } from "../config";
+
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
@@ -20,7 +22,7 @@ function ProductPage() {
   const { lang, t } = useLanguage();
 
   useEffect(() => {
-    fetch(`/api/products/${id}?lang=${lang}`)
+    fetch(`${API_URL}/api/products/${id}?lang=${lang}`)
       .then((res) => res.json())
       .then((data) => {
         setProduct(data);

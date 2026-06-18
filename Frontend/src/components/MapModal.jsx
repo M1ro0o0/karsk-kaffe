@@ -1,3 +1,5 @@
+import { API_URL } from "../config";
+
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
@@ -57,7 +59,7 @@ export default function MapModal({ provider, method, postalCode: initialPostalCo
         postal_code: zip,
       });
 
-      const res = await fetch(`/api/shipping/pickup-points?${params}`);
+      const res = await fetch(`${API_URL}/api/shipping/pickup-points?${params}`);
       if (!res.ok) throw new Error("Failed to fetch pickup points");
 
       const data = await res.json();
@@ -143,7 +145,7 @@ export default function MapModal({ provider, method, postalCode: initialPostalCo
               <Marker
                 key={point.id}
                 position={[point.latitude, point.longitude]}
-                icon={selectedPoint?.id === point.id ? selectedIcon : undefined}
+                /*icon={selectedPoint?.id === point.id ? selectedIcon : undefined}*/
                 eventHandlers={{ click: () => setSelectedPoint(point) }}
               >
                 <Popup>

@@ -1,3 +1,4 @@
+import { API_URL } from "../../config";
 import "../../css/CoffeeProduct.css";
 
 import { useState, useEffect } from "react";
@@ -70,7 +71,7 @@ function CoffeeProduct({ product }) {
         setStock(null);
 
         const res = await fetch(
-          "https://karsk-kaffe.onrender.com/api/stock-check",
+          `${API_URL}/api/stock-check`,
           {
             method: "POST",
             headers: {

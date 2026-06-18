@@ -1,3 +1,4 @@
+import { API_URL } from "../config";
 import "../css/Contact.css";
 
 import React, { useState } from "react";
@@ -24,7 +25,7 @@ function ContactPage() {
     e.preventDefault();
 
     try {
-      const res = await fetch("https://karsk-kaffe.onrender.com/api/contact", {
+      const res = await fetch(`${API_URL}/api/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

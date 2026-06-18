@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { API_URL } from "../config";
 import "../css/ShippingSelector.css";
+
+import { useEffect, useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
 import { useCart } from "../context/CartContext";
 
@@ -24,7 +26,7 @@ export default function ShippingSelector({ onChange, onPickupRequired }) {
   useEffect(() => {
     const fetchShipping = async () => {
       try {
-        const res = await fetch("/api/shipping/options");
+        const res = await fetch(`${API_URL}/api/shipping/options`);
         const data = await res.json();
         setProviders(data);
       } catch (err) {

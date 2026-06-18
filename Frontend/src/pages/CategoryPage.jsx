@@ -1,8 +1,10 @@
+import { API_URL } from "../config";
+import "../css/CategoryPage.css";
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { useLanguage } from "../context/LanguageContext";
-import "../css/CategoryPage.css";
 
 function CategoryPage() {
   const { tag } = useParams();
@@ -14,7 +16,7 @@ function CategoryPage() {
   useEffect(() => {
     setLoading(true);
 
-    fetch(`https://karsk-kaffe.onrender.com/api/products?tag=${tag}`)
+    fetch(`${API_URL}/api/products?tag=${tag}`)
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);

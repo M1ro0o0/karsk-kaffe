@@ -1,3 +1,4 @@
+import { API_URL } from "../config";
 import "../css/CartPage.css";
 
 import { useCart } from "../context/CartContext";
@@ -42,7 +43,7 @@ export default function CartPage() {
     try {
 
       const res = await fetch(
-        "https://karsk-kaffe.onrender.com/api/discount/validate",
+        `${API_URL}/api/discount/validate`,
         {
           method: "POST",
           headers: {

@@ -1,3 +1,4 @@
+import { API_URL } from "../config";
 import "../css/Home.css";
 
 import { useEffect, useState } from "react";
@@ -11,7 +12,7 @@ function Home() {
   const { lang } = useLanguage();
 
   useEffect(() => {
-  fetch(`https://karsk-kaffe.onrender.com/api/products?lang=${lang}`)
+  fetch(`${API_URL}/api/products?lang=${lang}`)
     .then(res => res.json())
     .then(data => {
       if (!Array.isArray(data)) {

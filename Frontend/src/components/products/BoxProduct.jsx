@@ -1,3 +1,4 @@
+import { API_URL } from "../../config";
 import "../../css/BoxProduct.css";
 
 import { useState, useEffect } from "react";
@@ -35,7 +36,7 @@ function BoxProduct({ product }) {
       try {
 
         const res = await fetch(
-          "https://karsk-kaffe.onrender.com/api/stock-check",
+          `${API_URL}/api/stock-check`,
           {
             method: "POST",
             headers: {
