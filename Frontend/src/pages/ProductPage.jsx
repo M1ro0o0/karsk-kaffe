@@ -40,7 +40,7 @@ function ProductPage() {
 
       <h2 style={{ textAlign: "center" }}>{t.product.like}</h2>
 
-      <RandomProducts apiUrl="/api/products/" count={4} />
+      <RandomProducts apiUrl={`${API_URL}/api/products/`} count={4} />
     </>
   );
 }
