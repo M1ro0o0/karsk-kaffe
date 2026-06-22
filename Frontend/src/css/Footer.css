@@ -56,5 +56,46 @@ html, body, #root {
 }
 
 .rights img {
-  height: 10rem;
+  height: 4rem;
+  width: auto;
+  margin-bottom: 8px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .footer {
+    padding: 24px 16px;
+  }
+
+  .footer .container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .rights img {
+    height: 3.2rem;
+  }
+
+  .links {
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .footer .container > div {
+    text-align: center;
+  }
+}
+
+@media (max-width: 420px) {
+  .links {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .rights img {
+    height: 2.8rem;
+  }
 }

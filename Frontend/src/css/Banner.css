@@ -46,3 +46,43 @@
     rgba(0,0,0,0.2)
   );
 }
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .banner {
+    height: 60vh;
+  }
+
+  .banner-overlay {
+    left: 6%;
+    right: 6%;
+    top: 80%;
+  }
+
+  .banner-overlay h1 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  .banner-overlay p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner {
+    height: 50vh;
+  }
+
+  .banner-overlay {
+    top: 75%;
+  }
+
+  .banner-overlay h1 {
+    font-size: 1.5rem;
+  }
+
+  .banner-overlay p {
+    font-size: 0.9rem;
+  }
+}

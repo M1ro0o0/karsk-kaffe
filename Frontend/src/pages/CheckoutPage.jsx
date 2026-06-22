@@ -7,7 +7,6 @@ import AddressForm from "../components/AddressForm";
 import { getVATAmount } from "../utils/pricing.js";
 import { useLanguage } from "../context/LanguageContext";
 import ShippingSelector from "../components/ShippingSelector";
-import MapModal from "../components/MapModal";
 
 function CheckoutPage() {
   const {
@@ -27,7 +26,6 @@ function CheckoutPage() {
 
   const [shippingData, setShippingData] = useState(null);
   const [pickupPoint, setPickupPoint] = useState(null);
-  const [mapOpen, setMapOpen] = useState(false);
 
   // =========================
   // ADDRESSES
@@ -67,22 +65,10 @@ function CheckoutPage() {
   // =========================
   // SHIPPING SELECTION
   // =========================
-  const handleShippingChange = ({ provider, method, shippingPrice }) => {
+  const handleShippingChange = ({ provider, method, shippingPrice, pickupPoint }) => {
     setShippingData({ provider, method });
     setShippingPrice(shippingPrice);
-
-    if (method?.id !== "shop") {
-      setPickupPoint(null);
-    }
-  };
-
-  const handlePickupRequired = () => {
-    setMapOpen(true);
-  };
-
-  const handlePickupConfirm = (point) => {
-    setPickupPoint(point);
-    setMapOpen(false);
+    setPickupPoint(pickupPoint || null);
   };
 
   // =========================
@@ -177,44 +163,11 @@ function CheckoutPage() {
         disabled={sameAsBilling}
       />
 
-      {/* SHIPPING SELECTOR */}
+      {/* SHIPPING SELECTOR (pickup point UI + map now live inside this) */}
       <ShippingSelector
         onChange={handleShippingChange}
-        onPickupRequired={handlePickupRequired}
+        postalCode={billingAddress.postalCode}
       />
-
-      {/* PICKUP POINT DISPLAY */}
-      {requiresPickupPoint && (
-        <div className="checkout-pickup">
-          {pickupPoint ? (
-            <div className="checkout-pickup-selected">
-              <strong>Pickup point:</strong> {pickupPoint.name},{" "}
-              {pickupPoint.address}, {pickupPoint.postal_code} {pickupPoint.city}
-              <button
-                className="checkout-pickup-change"
-                onClick={() => setMapOpen(true)}
-              >
-                Change
-              </button>
-            </div>
-          ) : (
-            <p className="checkout-pickup-warning">
-              ⚠ Please select a pickup point to continue.
-            </p>
-          )}
-        </div>
-      )}
-
-      {/* MAP MODAL */}
-      {mapOpen && (
-        <MapModal
-          provider={shippingData?.provider}
-          method={shippingData?.method}
-          postalCode={billingAddress.postalCode}
-          onConfirm={handlePickupConfirm}
-          onClose={() => setMapOpen(false)}
-        />
-      )}
 
       {/* ORDER SUMMARY */}
       <div className="checkout-section">

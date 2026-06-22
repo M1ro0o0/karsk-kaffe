@@ -30,7 +30,7 @@
 .nav-group {
   display: flex;
   align-items: center;
-  gap: 45px; /* smaller gap between items in same group */
+  gap: 45px;
 }
 
 /* Main links */
@@ -68,7 +68,7 @@
   opacity: 0.7;
 }
 
-/* ================= DROPDOWN ================= */
+/* ================= DROPDOWN (desktop) ================= */
 .dropdown {
   position: relative;
   display: flex;
@@ -109,7 +109,6 @@
   font-size: 12px;
 }
 
-/* Dropdown menu */
 .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -153,15 +152,14 @@
   padding-left: 22px;
 }
 
-/* ================= RIGHT SIDE ================= */
+/* ================= RIGHT SIDE (desktop) ================= */
 .nav-group.nav-right,
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 15px; /* spacing for right group */
+  gap: 15px;
 }
 
-/* Language buttons */
 .nav-right button {
   background: none;
   border: none;
@@ -215,7 +213,6 @@
   line-height: 1;
 }
 
-/* Cart bounce animation */
 @keyframes bounce {
   0% { transform: scale(1); }
   50% { transform: scale(1.3); }
@@ -224,4 +221,102 @@
 
 .cart-icon.bounce {
   animation: bounce 0.3s ease;
+}
+
+/* ================= MOBILE CONTROLS ================= */
+/* Hidden on desktop, shown only on mobile */
+.nav-mobile-controls {
+  display: none;
+  align-items: center;
+  gap: 18px;
+}
+
+.hamburger-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #8f5445;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+/* ================= MOBILE MENU ================= */
+.mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-bottom: 3px solid #C7A9A2;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  z-index: 9999;
+}
+
+.mobile-link {
+  font-family: 'Montserrat', sans-serif;
+  color: #8f5445;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 14px 6%;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f3eae7;
+}
+
+.mobile-dropdown-trigger {
+  width: 100%;
+}
+
+.mobile-submenu {
+  display: flex;
+  flex-direction: column;
+  background: #faf6f5;
+}
+
+.mobile-submenu .mobile-link,
+.mobile-submenu button {
+  padding-left: 12%;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #333;
+  border-bottom: 1px solid #f3eae7;
+  text-align: left;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  cursor: pointer;
+}
+
+/* ================= RESPONSIVE BREAKPOINT ================= */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 14px 5%;
+  }
+
+  .logo img {
+    height: 70px;
+  }
+
+  /* Hide desktop nav groups */
+  .nav-group.main-links,
+  .nav-group.nav-right {
+    display: none;
+  }
+
+  /* Show mobile controls */
+  .nav-mobile-controls {
+    display: flex;
+  }
 }
