@@ -32,18 +32,19 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #C7A9A2;
   flex-shrink: 0;
 }
 
 .map-header h2 {
   margin: 0;
   font-size: 1.1rem;
+  color: #8F5445;
 }
 
 .map-provider-name {
   font-weight: 400;
-  color: #666;
+  color: #C7A9A2;
 }
 
 .map-close-btn {
@@ -51,13 +52,13 @@
   border: none;
   font-size: 1.1rem;
   cursor: pointer;
-  color: #555;
+  color: #C7A9A2;
   padding: 0.25rem 0.5rem;
   line-height: 1;
 }
 
 .map-close-btn:hover {
-  color: #000;
+  color: #8F5445;
 }
 
 /* ============================
@@ -68,7 +69,7 @@
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
   background: #f9f9f9;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #8F5445;
   flex-shrink: 0;
 }
 
@@ -76,14 +77,14 @@
   flex: 1;
   max-width: 180px;
   padding: 0.45rem 0.75rem;
-  border: 1px solid #ccc;
+  border: 1px solid #8F5445;
   border-radius: 4px;
   font-size: 0.95rem;
 }
 
 .map-search button {
   padding: 0.45rem 1rem;
-  background: #333;
+  background: #C7A9A2;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -110,7 +111,7 @@
 .map-status {
   padding: 0.5rem 1.25rem;
   font-size: 0.85rem;
-  color: #555;
+  color: #C7A9A2;
   flex-shrink: 0;
 }
 
@@ -124,7 +125,7 @@
 .map-select-btn {
   margin-top: 0.5rem;
   padding: 0.3rem 0.75rem;
-  background: #333;
+  background: #8F5445;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -148,7 +149,7 @@
 .map-footer-hint {
   margin: 0;
   font-size: 0.85rem;
-  color: #888;
+  color: #C7A9A2;
 }
 
 .map-selected-summary {
@@ -176,7 +177,7 @@
 
 .map-confirm-btn {
   padding: 0.55rem 1.25rem;
-  background: #333;
+  background: #C7A9A2;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -186,7 +187,7 @@
 }
 
 .map-confirm-btn:hover {
-  background: #111;
+  background: #8F5445;
 }
 
 .marker-selected {
