@@ -26,7 +26,11 @@ export default function CartPage() {
     productsTotal,
     discountAmount,
     discountedProductsTotal,
-    finalTotal
+    finalTotal,
+
+    // ORDER NOTE
+    orderNote,
+    setOrderNote,
   } = useCart();
 
   const navigate = useNavigate();
@@ -34,6 +38,8 @@ export default function CartPage() {
   // local input only
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+
+  const maxNoteChars = 300;
 
   // =========================
   // APPLY DISCOUNT CODE
@@ -214,6 +220,28 @@ export default function CartPage() {
           {error}
         </p>
       )}
+
+      {/* ================= ORDER NOTE ================= */}
+      <div className="order-note">
+        <label htmlFor="order-note-textarea">
+          {t.cart.noteLabel || "Note for your order (optional)"}
+        </label>
+
+        <textarea
+          id="order-note-textarea"
+          placeholder={
+            t.cart.notePlaceholder ||
+            "Any preferences or notes for your order..."
+          }
+          value={orderNote}
+          maxLength={maxNoteChars}
+          onChange={(e) => setOrderNote(e.target.value)}
+        />
+
+        <div className="char-counter">
+          {orderNote.length}/{maxNoteChars}
+        </div>
+      </div>
 
       {/* ================= SUMMARY ================= */}
       <div className="cart-summary">

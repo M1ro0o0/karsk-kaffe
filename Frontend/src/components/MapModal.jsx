@@ -6,27 +6,38 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../css/Map.css";
 
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
+// ======================
+// CUSTOM COFFEE-CUP PIN ICONS
+// ======================
+// Brand-colored SVG pins replace Leaflet's default blue marker.
+// Default = brand brown (#8F5445), Selected = brand green (#4d8b55).
 
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
+const createPinIcon = (color, size = 42) => {
+  const width = size;
+  const height = size * 1.5;
 
-const selectedIcon = new L.Icon({
-  iconUrl: markerIcon,
-  iconRetinaUrl: markerIcon2x,
-  shadowUrl: markerShadow,
-  iconSize: [30, 46],
-  iconAnchor: [15, 46],
-  popupAnchor: [1, -40],
-  shadowSize: [46, 46],
-  className: "marker-selected",
-});
+  const svg = `
+    <svg width="${width}" height="${height}" viewBox="0 0 60 90" xmlns="http://www.w3.org/2000/svg">
+      <path d="M30 0C13.4 0 0 13.4 0 30C0 52.5 30 90 30 90C30 90 60 52.5 60 30C60 13.4 46.6 0 30 0Z" fill="${color}"/>
+      <circle cx="30" cy="30" r="18" fill="#ffffff"/>
+      <path d="M22 27C22 24 24 22 27 22H33C36 22 38 24 38 27V33C38 37 35 40 30 40C25 40 22 37 22 33V27Z" fill="none" stroke="${color}" stroke-width="2"/>
+      <path d="M38 26C40 26 42 27.5 42 30C42 32.5 40 34 38 34" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round"/>
+      <path d="M25 18C25 16 26.5 15 26.5 13" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M30 18C30 16 31.5 15 31.5 13" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  `;
+
+  return L.divIcon({
+    html: svg,
+    className: "coffee-pin-icon",
+    iconSize: [width, height],
+    iconAnchor: [width / 2, height],
+    popupAnchor: [0, -height + 10],
+  });
+};
+
+const defaultPinIcon = createPinIcon("#8F5445", 38);
+const selectedPinIcon = createPinIcon("#4d8b55", 46);
 
 // Re-centers the map whenever the given center coordinates change
 function RecenterMap({ center }) {
@@ -145,7 +156,7 @@ export default function MapModal({ provider, method, postalCode: initialPostalCo
               <Marker
                 key={point.id}
                 position={[point.latitude, point.longitude]}
-                /*icon={selectedPoint?.id === point.id ? selectedIcon : undefined}*/
+                icon={selectedPoint?.id === point.id ? selectedPinIcon : defaultPinIcon}
                 eventHandlers={{ click: () => setSelectedPoint(point) }}
               >
                 <Popup>

@@ -5,7 +5,7 @@
 }
 
 .address-form {
-    width: 100%;
+  width: 100%;
   margin-bottom: 32px;
 }
 
@@ -14,7 +14,7 @@
 }
 
 .address-form h5 {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .address-form input {
@@ -24,30 +24,57 @@
   border-radius: 8px;
   font-size: 18px;
   padding: 0 10px;
+  margin-bottom: 12px;
 }
 
 .address-form input:focus {
-    border-color: #8f5445;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-color: #8f5445;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .address-form input:disabled {
-    background-color: #f0f0f0;
-    border-color: #000;
+  background-color: #f0f0f0;
+  border-color: #000;
 }
 
 .address-row {
   display: flex;
   width: 100%;
+  gap: 12px;
+}
+
+.address-row input {
+  flex: 1;
+  min-width: 0; /* prevents flex children from overflowing the row */
 }
 
 .address-form input.small {
-  width: 80px;        
-  flex-shrink: 0;
+  width: 80px;
+  flex: 0 0 80px;
 }
 
 .address-form input.locked {
   background-color: #f0f0f0;
   font-weight: 600;
   cursor: not-allowed;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 480px) {
+  .address-form input {
+    font-size: 16px;
+  }
+
+  /* Stack name fields and stack postal/city vertically; keep phone code beside number */
+  .address-row {
+    flex-wrap: wrap;
+  }
+
+  .address-row input:not(.small) {
+    flex: 1 1 100%;
+  }
+
+  .address-row input.small {
+    flex: 0 0 90px;
+  }
 }

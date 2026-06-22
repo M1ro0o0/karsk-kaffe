@@ -41,7 +41,6 @@
   margin: 80px 0;
 }
 
-/* Headings & paragraphs */
 .about-section h2 {
   font-family: 'Montserrat', sans-serif;
   font-size: 30px;
@@ -71,33 +70,28 @@
   align-items: start;
 }
 
-/* Images column */
 .about-roastery .about-images {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-/* Roastery image */
 .about-roastery .roastery {
   width: 100%;
   border-radius: 8px;
   object-fit: cover;
 }
 
-/* Detva container for overlay */
 .about-roastery .detva-container {
   position: relative;
 }
 
-/* Detva image */
 .about-roastery .detva {
   width: 100%;
   border-radius: 8px;
   object-fit: cover;
 }
 
-/* Folk overlay image */
 .about-roastery .folk-overlay {
   position: absolute;
   top: 8px;
@@ -115,14 +109,12 @@
   transform: scale(1.1);
 }
 
-/* Text column */
 .about-roastery .about-text {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-/* Cards grid */
 .about-roastery .card-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -130,7 +122,6 @@
   margin-top: 1rem;
 }
 
-/* Info cards */
 .about-roastery .info-card {
   background-color: #f4f4f4;
   padding: 1rem;
@@ -141,14 +132,12 @@
 
 /* WHY DENMARK / VALUE CARDS */
 .card-grid {
-  display: flex;
-  flex-direction: row;
+  display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin-top: 1rem;
 }
 
-/* Value cards for Why Denmark */
 .value-card {
   background-color: #f4f4f4;
   padding: 1rem;
@@ -183,14 +172,78 @@
   color: black;
 }
 
-/* RESPONSIVE */
+/* ================= RESPONSIVE ================= */
 @media (max-width: 768px) {
-  .grid,
-  .about-roastery {
-    grid-template-columns: 1fr; /* stack columns on mobile */
+  .about-container {
+    width: 92%;
+  }
+
+  .about-hero {
+    padding: 60px 16px 40px;
   }
 
   .about-hero h1 {
-    font-size: 36px;
+    font-size: 32px;
+  }
+
+  .hero-sub {
+    font-size: 26px;
+  }
+
+  .about-section {
+    margin: 50px 0;
+  }
+
+  .about-section h2 {
+    font-size: 24px;
+  }
+
+  .centered {
+    margin: 50px auto;
+    gap: 1rem;
+  }
+
+  .about-roastery,
+  .card-grid {
+    grid-template-columns: 1fr; /* stack columns on mobile */
+  }
+
+  .about-roastery .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .about-roastery .folk-overlay {
+    width: 5.5rem;
+    height: 5.5rem;
+  }
+
+  .mission {
+    padding: 50px 24px;
+    border-radius: 16px;
+  }
+
+  .cta-button {
+    padding: 10px 24px;
+  }
+}
+
+@media (max-width: 420px) {
+  .about-hero h1 {
+    font-size: 26px;
+  }
+
+  .hero-sub {
+    font-size: 20px;
+  }
+
+  .about-roastery .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-roastery .folk-overlay {
+    width: 4.5rem;
+    height: 4.5rem;
+    top: 6px;
+    right: 6px;
   }
 }

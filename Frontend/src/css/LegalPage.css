@@ -30,3 +30,19 @@
   color: #0070f3;
   text-decoration: underline;
 }
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 600px) {
+  .legal-container {
+    padding: 28px 16px;
+  }
+
+  .legal-container h1 {
+    font-size: 1.6rem;
+  }
+
+  .legal-container h2 {
+    font-size: 1.2rem;
+    margin-top: 24px;
+  }
+}

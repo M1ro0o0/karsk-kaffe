@@ -8,5 +8,31 @@
 }
 
 .random-products-container .product-card {
-  flex: 0 0 220px;             /* fixed card width */
+  flex: 0 0 220px;             /* fixed card width on desktop */
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+  .random-products-container .product-card {
+    flex: 0 0 200px;
+  }
+}
+
+@media (max-width: 600px) {
+  .random-products-container {
+    gap: 16px;
+    margin: 20px 0;
+    padding: 0 4%;
+  }
+
+  .random-products-container .product-card {
+    /* match the 2-column sizing used everywhere else on mobile */
+    flex: 0 0 calc(50% - 8px);
+  }
+}
+
+@media (max-width: 380px) {
+  .random-products-container .product-card {
+    flex: 0 0 100%;
+  }
 }

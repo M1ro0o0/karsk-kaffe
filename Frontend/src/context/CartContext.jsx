@@ -39,6 +39,11 @@ export function CartProvider({ children }) {
   const [shippingPrice, setShippingPrice] = useState(0);
 
   // ======================
+  // ORDER NOTE
+  // ======================
+  const [orderNote, setOrderNote] = useState("");
+
+  // ======================
   // LOCAL STORAGE SYNC
   // ======================
   useEffect(() => {
@@ -86,14 +91,14 @@ export function CartProvider({ children }) {
 
   const PACKAGING_WEIGHT = 200;
 
- const getTotalWeight = () => {
-  const productWeight = cart.reduce((total, item) => {
-    const weight = item.selectedPrice?.weight ?? item.weight ?? 0;
-    return total + weight * item.quantity;
-  }, 0);
+  const getTotalWeight = () => {
+    const productWeight = cart.reduce((total, item) => {
+      const weight = item.selectedPrice?.weight ?? item.weight ?? 0;
+      return total + weight * item.quantity;
+    }, 0);
 
-  return productWeight + PACKAGING_WEIGHT;
-};
+    return productWeight + PACKAGING_WEIGHT;
+  };
 
   const isOver1kg = getTotalWeight() > 1000;
 
@@ -118,6 +123,7 @@ export function CartProvider({ children }) {
     setCart([]);
     clearDiscount();
     setShippingPrice(0);
+    setOrderNote("");
   };
 
   // ======================
@@ -174,6 +180,10 @@ export function CartProvider({ children }) {
         discount,
         applyDiscount,
         clearDiscount,
+
+        // order note
+        orderNote,
+        setOrderNote,
 
         // totals
         productsTotal,

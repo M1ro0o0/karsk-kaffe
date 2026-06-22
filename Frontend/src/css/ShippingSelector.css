@@ -11,17 +11,15 @@
 
 .shipping-providers {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-  display: flex;
   gap: 12px;
   justify-content: space-between;
   flex-wrap: wrap;
+  margin-bottom: 12px;
 }
 
 .provider-logo {
   height: 40px;
+  max-width: 100%;
 }
 
 .provider-btn {
@@ -30,6 +28,9 @@
   background: white;
   cursor: pointer;
   border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   transition:
     transform 0.15s ease,
@@ -39,7 +40,7 @@
 
 .provider-btn:hover {
   transform: scale(1.02);
-    border: 1px solid #8f5445;
+  border: 1px solid #8f5445;
 }
 
 .provider-btn.active {
@@ -51,16 +52,15 @@
   margin-top: 10px;
   display: flex;
   flex-direction: column;
-
-  align-items: center;
+  align-items: stretch;
 }
 
 .method-btn {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  
-  width: 45%;
+
+  width: 100%;
   margin-top: 6px;
   padding: 10px;
   text-align: left;
@@ -135,4 +135,72 @@
 .checkout-pickup-change:hover {
   background: #8f5445;
   color: white;
+}
+
+.checkout-pickup-warning-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.checkout-pickup-warning {
+  margin: 0;
+  color: #b45309;
+  font-size: 0.9rem;
+}
+
+.checkout-pickup-open {
+  padding: 6px 14px;
+  background: #8f5445;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.checkout-pickup-open:hover {
+  background: #c7a9a2;
+  color: #000;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 600px) {
+  .shipping-selector {
+    padding: 12px;
+  }
+
+  .shipping-providers {
+    gap: 8px;
+  }
+
+  .provider-logo {
+    height: 30px;
+  }
+
+  .provider-btn {
+    padding: 8px;
+    flex: 1 1 40%; /* 2 per row instead of stretching all 4 into one line */
+  }
+
+  .method-btn {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+  }
+
+  .checkout-pickup-selected,
+  .checkout-pickup-warning-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .checkout-pickup-change,
+  .checkout-pickup-open {
+    width: 100%;
+    margin-left: 0;
+  }
 }

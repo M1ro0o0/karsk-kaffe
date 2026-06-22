@@ -194,6 +194,11 @@
   filter: hue-rotate(120deg);
 }
 
+.coffee-pin-icon {
+  background: none;
+  border: none;
+}
+
 /* ============================
    MOBILE
    ============================ */
@@ -210,6 +215,31 @@
     padding: 0;
   }
 
+  .map-header {
+    padding: 0.85rem 1rem;
+  }
+
+  .map-header h2 {
+    font-size: 1rem;
+  }
+
+  .map-provider-name {
+    display: block;
+    font-size: 0.85rem;
+  }
+
+  .map-search {
+    padding: 0.6rem 1rem;
+  }
+
+  .map-search input {
+    max-width: none;
+  }
+
+  .map-footer {
+    padding: 0.75rem 1rem;
+  }
+
   .map-selected-summary {
     flex-direction: column;
     align-items: flex-start;
@@ -217,5 +247,10 @@
 
   .map-confirm-btn {
     width: 100%;
+  }
+
+  .leaflet-popup-content {
+    font-size: 0.85rem;
+    min-width: 180px;
   }
 }

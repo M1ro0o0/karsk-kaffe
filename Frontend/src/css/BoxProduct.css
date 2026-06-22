@@ -42,9 +42,8 @@
 
 .discount-product {
   display: flex;
-justify-content: center;
-align-items: center;
-
+  justify-content: center;
+  align-items: center;
 
   background-color: #ff0000;
   color: #ffffff;
@@ -92,8 +91,8 @@ align-items: center;
   flex-wrap: column;
 }
 
-.product-options textarea{
-  width: 300%;
+.product-options textarea {
+  width: 100%;
   min-height: 120px;
 
   padding: 12px 14px;
@@ -206,6 +205,7 @@ align-items: center;
   color: #ffffff;
 }
 
+/* ================= TABLET ================= */
 @media (max-width: 1000px) {
   .product-page {
     flex-direction: column;
@@ -226,5 +226,43 @@ align-items: center;
   .quantity-add {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+/* ================= PHONE ================= */
+@media (max-width: 600px) {
+  .product-page {
+    padding: 20px 5%;
+    gap: 20px;
+  }
+
+  .product-info h1 {
+    font-size: 1.4rem;
+  }
+
+  .price-estimate {
+    font-size: 22px;
+  }
+
+  .price,
+  .price-old {
+    font-size: 17px;
+  }
+
+  .description {
+    margin: 14px 0;
+  }
+
+  .product-options textarea {
+    min-height: 90px;
+    font-size: 13px;
+  }
+
+  .quantity-selector {
+    margin-top: 14px;
+  }
+
+  .quantity-selector input {
+    width: 50px;
   }
 }
