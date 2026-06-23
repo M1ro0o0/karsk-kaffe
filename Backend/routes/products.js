@@ -11,6 +11,7 @@ module.exports = (supabase) => {
 
   /*--------------------
       ALL PRODUCTS
+      (optionally filtered by ?tag= or ?tag=discounted)
   --------------------*/
 
   router.get("/", async (req, res) => {
@@ -18,10 +19,73 @@ module.exports = (supabase) => {
     const lang =
       req.query.lang || "en";
 
+    const tag =
+      req.query.tag || null;
+
     try {
 
-      const { data, error } =
-        await supabase
+      let productIds = null;
+
+      // Special case: "discounted" is computed, not a real tag
+      if (tag && tag !== "discounted") {
+
+        const { data: tagRow, error: tagError } =
+          await supabase
+            .from("Tags")
+            .select("id")
+            .ilike("name", tag)
+            .maybeSingle();
+
+        if (tagError) {
+
+          console.error(
+            "TAG LOOKUP ERROR:",
+            tagError
+          );
+
+          return res
+            .status(500)
+            .json({
+              error: tagError.message
+            });
+        }
+
+        if (!tagRow) {
+          // Unknown tag -> no products match
+          return res.json([]);
+        }
+
+        const { data: links, error: linksError } =
+          await supabase
+            .from("ProductTags")
+            .select("ProductID")
+            .eq("tagsID", tagRow.id);
+
+        if (linksError) {
+
+          console.error(
+            "PRODUCT TAGS ERROR:",
+            linksError
+          );
+
+          return res
+            .status(500)
+            .json({
+              error: linksError.message
+            });
+        }
+
+        productIds = links.map(
+          (l) => l.ProductID
+        );
+
+        if (productIds.length === 0) {
+          return res.json([]);
+        }
+      }
+
+      let query =
+        supabase
           .from("Products")
           .select(`
             id,
@@ -31,6 +95,16 @@ module.exports = (supabase) => {
             ProductTranslation(name, language)
           `)
           .eq("active", true);
+
+      if (tag === "discounted") {
+        query = query.lt("baseDiscount", 1);
+      }
+
+      if (productIds) {
+        query = query.in("id", productIds);
+      }
+
+      const { data, error } = await query;
 
       if (error) {
 
