@@ -1,6 +1,7 @@
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import ProductPage from "./pages/ProductPage";
@@ -10,6 +11,7 @@ import AboutUs from "./pages/AboutUsPage";
 import CategoryPage from "./pages/CategoryPage";
 import Contact from "./pages/Contact";
 import LegalPage from "./pages/LegalPage";
+import ErrorPage from "./pages/ErrorPage";
 
 
 
@@ -18,6 +20,7 @@ function App() {
     <>
       <ScrollToTop />
       <Navbar  />
+      <ErrorBoundary>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs/>} />
@@ -27,8 +30,9 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/legal" element={<LegalPage />} />
-
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
+      </ErrorBoundary>
       <Footer/>
     </>
   );

@@ -12,19 +12,19 @@ function Home() {
   const { lang } = useLanguage();
 
   useEffect(() => {
-  fetch(`${API_URL}/api/products?lang=${lang}`)
-    .then(res => res.json())
-    .then(data => {
-      if (!Array.isArray(data)) {
-        console.error("API error:", data);
-        setProducts([]);
-        return;
-      }
+    fetch(`${API_URL}/api/products?lang=${lang}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!Array.isArray(data)) {
+          console.error("API error:", data);
+          setProducts([]);
+          return;
+        }
 
-      setProducts(data);
-    })
-    .catch(err => console.error(err));
-}, [lang]);
+        setProducts(data);
+      })
+      .catch((err) => console.error(err));
+  }, [lang]);
 
   return (
     <div>
@@ -32,7 +32,7 @@ function Home() {
       <Banner />
 
       <div className="products-container">
-        {products.map(product => (
+        {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
