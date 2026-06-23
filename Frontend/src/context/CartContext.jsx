@@ -15,10 +15,12 @@ export function CartProvider({ children }) {
     const age = Date.now() - Number(savedTime);
     const DAY = 24 * 60 * 60 * 1000 * 3;
 
-    // clear expired cart
+    // clear expired cart (and any associated discount/note)
     if (age > DAY) {
       localStorage.removeItem("cart");
       localStorage.removeItem("cartTime");
+      localStorage.removeItem("discount");
+      localStorage.removeItem("orderNote");
       return [];
     }
 
@@ -28,9 +30,15 @@ export function CartProvider({ children }) {
   // ======================
   // DISCOUNT (PRODUCTS ONLY)
   // ======================
-  const [discount, setDiscount] = useState({
-    code: "",
-    percent: 0,
+  const [discount, setDiscount] = useState(() => {
+    const saved = localStorage.getItem("discount");
+    if (!saved) return { code: "", percent: 0 };
+
+    try {
+      return JSON.parse(saved);
+    } catch {
+      return { code: "", percent: 0 };
+    }
   });
 
   // ======================
@@ -41,7 +49,9 @@ export function CartProvider({ children }) {
   // ======================
   // ORDER NOTE
   // ======================
-  const [orderNote, setOrderNote] = useState("");
+  const [orderNote, setOrderNote] = useState(() => {
+    return localStorage.getItem("orderNote") || "";
+  });
 
   // ======================
   // LOCAL STORAGE SYNC
@@ -50,6 +60,14 @@ export function CartProvider({ children }) {
     localStorage.setItem("cart", JSON.stringify(cart));
     localStorage.setItem("cartTime", Date.now().toString());
   }, [cart]);
+
+  useEffect(() => {
+    localStorage.setItem("discount", JSON.stringify(discount));
+  }, [discount]);
+
+  useEffect(() => {
+    localStorage.setItem("orderNote", orderNote);
+  }, [orderNote]);
 
   // ======================
   // HELPERS
@@ -124,6 +142,8 @@ export function CartProvider({ children }) {
     clearDiscount();
     setShippingPrice(0);
     setOrderNote("");
+    localStorage.removeItem("discount");
+    localStorage.removeItem("orderNote");
   };
 
   // ======================

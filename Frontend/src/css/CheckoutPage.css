@@ -74,6 +74,27 @@
   margin-top: 3px;
 }
 
+.checkout-order-note {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid #c7a9a2;
+  border-radius: 6px;
+  background: #fdf6f4;
+}
+
+.checkout-order-note strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.checkout-order-note p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+  white-space: pre-wrap;
+}
+
 .checkout-notice {
   margin-top: 20px;
   margin-bottom: 20px;

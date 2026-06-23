@@ -19,6 +19,7 @@ function CheckoutPage() {
     setShippingPrice,
     discount,
     isOver1kg,
+    orderNote,
   } = useCart();
 
   const { t } = useLanguage();
@@ -110,6 +111,7 @@ function CheckoutPage() {
       pickupPoint: pickupPoint || null,
       billingAddress,
       shippingAddress,
+      orderNote,
       createdAt: new Date().toISOString(),
     };
 
@@ -203,8 +205,8 @@ function CheckoutPage() {
         </h3>
 
         {discount.percent > 0 && (
-          <h4 className="discount">
-            {t.cart.discount}: -{discountAmount} kr
+          <h4 className="checkout-discount">
+            {t.cart.discount}: [{discount.code}] -{discountAmount} kr
           </h4>
         )}
 
@@ -219,6 +221,13 @@ function CheckoutPage() {
         <h4 className="vat">
           {t.cart.VAT}(25%): {getVATAmount(finalTotal)} kr
         </h4>
+
+        {orderNote && orderNote.trim() !== "" && (
+          <div className="checkout-order-note">
+            <strong>{t.cart.noteLabel || "Note for your order"}:</strong>
+            <p>{orderNote}</p>
+          </div>
+        )}
       </div>
 
       <div className="checkout-notice">
