@@ -1,32 +1,24 @@
 require("dotenv").config();
 
-const express =
-  require("express");
+const express = require("express");
 
-const cors =
-  require("cors");
+const cors = require("cors");
 
-const {
-  createClient
-} = require(
-  "@supabase/supabase-js"
-);
+const { createClient } = require("@supabase/supabase-js");
 
 /*--------------------
         ROUTES
 --------------------*/
 
-const stockRoutes =
-  require("./routes/stock");
+const stockRoutes = require("./routes/stock");
 
-const productRoutes =
-  require("./routes/products");
+const productRoutes = require("./routes/products");
 
-const discountRoutes =
-  require("./routes/discount");
+const discountRoutes = require("./routes/discount");
 
-const shippingRoutes =
-  require("./routes/shipping");
+const shippingRoutes = require("./routes/shipping");
+
+const contactRoutes = require("./routes/contact");
 
 /*--------------------
         APP
@@ -46,98 +38,59 @@ app.use(express.json());
       DATABASE
 --------------------*/
 
-const supabase =
-  createClient(
-    process.env.SUPABASE_URL,
-    process.env
-      .SUPABASE_SERVICE_ROLE_KEY
-  );
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+);
 
 /*--------------------
         ROUTES
 --------------------*/
 
 // PRODUCTS
-app.use(
-  "/api/products",
-  productRoutes(
-    supabase
-  )
-);
+app.use("/api/products", productRoutes(supabase));
 
 // STOCK
-app.use(
-  "/api",
-  stockRoutes(
-    supabase
-  )
-);
+app.use("/api", stockRoutes(supabase));
 
 // DISCOUNTS
-app.use(
-  "/api/discount",
-  discountRoutes(
-    supabase
-  )
-);
+app.use("/api/discount", discountRoutes(supabase));
 
 // SHIPPING
-app.use(
-  "/api/shipping",
-  shippingRoutes(
-    supabase
-  )
-);
+app.use("/api/shipping", shippingRoutes(supabase));
+
+//CONTACT
+app.use("/api/contact", contactRoutes());
 
 /*--------------------
       HEALTH CHECK
 --------------------*/
 
 app.get("/", (req, res) => {
-
   res.json({
     status: "OK",
-    message:
-      "Backend running"
+    message: "Backend running",
   });
-
 });
 
 /*--------------------
     GLOBAL ERRORS
 --------------------*/
 
-app.use(
-  (
-    err,
-    req,
-    res,
-    next
-  ) => {
+app.use((err, req, res, next) => {
+  console.error("UNHANDLED ERROR:", err);
 
-    console.error(
-      "UNHANDLED ERROR:",
-      err
-    );
-
-    res.status(500).json({
-      error:
-        "Internal server error"
-    });
-  }
-);
+  res.status(500).json({
+    error: "Internal server error",
+  });
+});
 
 /*--------------------
         SERVER
 --------------------*/
 
-const PORT =
-  process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-
-  console.log(
-    `Server running on port ${PORT}`
-  );
-
+  console.log(`Server running on port ${PORT}`);
 });
