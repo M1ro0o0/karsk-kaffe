@@ -30,7 +30,13 @@ const app = express();
       MIDDLEWARE
 --------------------*/
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://karskkaffe.dk",
+    "https://www.karskkaffe.dk"
+  ],
+  credentials: true // if you're using cookies/sessions
+}))
 
 app.use(express.json());
 
