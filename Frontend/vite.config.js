@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://karsk-kaffe.onrender.com",
+        target: "https://api.karskkaffe.dk",
         changeOrigin: true
       }
     }
