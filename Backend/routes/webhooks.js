@@ -30,14 +30,6 @@ module.exports = (supabase) => {
       const providedSignatures = signatureHeader.split(",").map(s => s.trim());
       const isValid = providedSignatures.some(sig => sig === `v1=${expectedSignature}`);
 
-console.log("=== WEBHOOK DEBUG ===");
-console.log("Received timestamp:", timestamp);
-console.log("Received signature header:", signatureHeader);
-console.log("Raw payload received:", rawPayload);
-console.log("Payload length:", rawPayload.length);
-console.log("Expected signature:", expectedSignature);
-console.log("======================");
-
       if (!isValid) {
         console.warn("Invalid Revolut webhook signature");
         return res.status(401).send("Invalid signature");
@@ -45,20 +37,22 @@ console.log("======================");
 
       const event = JSON.parse(rawPayload);
 
+      console.log("=== WEBHOOK EVENT ===", event);
+
       if (event.event !== "ORDER_COMPLETED") {
         return res.status(200).send("Ignored");
       }
 
-      const orderId = event.merchant_order_ext_ref;
+      const revolutOrderId = event.order_id;
 
       const { data: order, error } = await supabase
         .from("Orders")
         .select("*")
-        .eq("id", orderId)
+        .eq("revolutOrderId", revolutOrderId)
         .single();
 
       if (error || !order) {
-        console.error("Webhook: order not found for ID", orderId);
+        console.error("Webhook: order not found for revolutOrderId", revolutOrderId);
         return res.status(404).send("Order not found");
       }
 
@@ -69,7 +63,7 @@ console.log("======================");
       await supabase
         .from("Orders")
         .update({ status: "paid" })
-        .eq("id", orderId);
+        .eq("id", order.id);
 
       // TODO next: redeem discount code, push to Zoho, create Shipmondo shipment, send emails
 
