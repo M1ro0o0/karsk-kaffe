@@ -73,8 +73,8 @@ module.exports = (supabase) => {
         .update({ revolutOrderId: revolutOrder.id })
         .eq("id", pendingOrder.id);
 
-      res.json({ checkoutUrl: revolutOrder.checkout_url });
-
+      res.json({ checkoutUrl: revolutOrder.checkout_url, orderId: pendingOrder.id });
+      
     } catch (err) {
       console.error("Checkout error:", err.message);
       res.status(400).json({ error: err.message });

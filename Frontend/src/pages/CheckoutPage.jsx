@@ -131,10 +131,36 @@ function CheckoutPage() {
         throw new Error(data.error || "Checkout failed");
       }
 
-      // Redirect to Revolut's hosted payment page.
-      // Cart is intentionally NOT cleared here — only after payment actually
-      // succeeds, on the success/return page, not just because checkout started.
-      window.location.href = data.checkoutUrl;
+      // Try opening Revolut checkout as a popup
+      const popup = window.open(data.checkoutUrl, "revolut-checkout", "width=480,height=720");
+
+      if (!popup || popup.closed || typeof popup.closed === "undefined") {
+        // Popup was blocked — fall back to a normal full-page redirect
+        window.location.href = data.checkoutUrl;
+        return;
+      }
+
+      // Poll our backend while the popup is open, watching for payment confirmation
+      const pollInterval = setInterval(async () => {
+        try {
+          const statusRes = await fetch(`${API_URL}/api/orders/${data.orderId}/status`);
+          const statusData = await statusRes.json();
+
+          if (statusData.status === "paid") {
+            clearInterval(pollInterval);
+            popup.close();
+            window.location.href = `/order-success?orderId=${data.orderId}`;
+            return;
+          }
+        } catch (err) {
+          // ignore transient poll errors, keep trying
+        }
+
+        if (popup.closed) {
+          clearInterval(pollInterval);
+          setIsSubmitting(false); // customer closed the popup without paying — let them retry
+        }
+      }, 1500);
 
     } catch (err) {
       console.error("Checkout error:", err);
