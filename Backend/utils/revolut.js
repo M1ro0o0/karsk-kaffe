@@ -1,5 +1,4 @@
-const REVOLUT_API_URL = "https://merchant.revolut.com/api/orders"; // sandbox: https://sandbox-merchant.revolut.com/api/orders
-
+// Backend/utils/revolut.js
 async function createRevolutOrder({ amount, currency, customerEmail, customerName, merchantOrderExtRef }) {
   const response = await fetch(REVOLUT_API_URL, {
     method: "POST",
@@ -12,11 +11,10 @@ async function createRevolutOrder({ amount, currency, customerEmail, customerNam
       amount,
       currency,
       merchant_order_ext_ref: merchantOrderExtRef,
-      customer: {
-        email: customerEmail,
-        full_name: customerName
-      },
-      capture_mode: "automatic"
+      customer: { email: customerEmail, full_name: customerName },
+      capture_mode: "automatic",
+      success_url: `https://karskkaffe.dk/order-success?orderId=${merchantOrderExtRef}`,
+      cancel_url: "https://karskkaffe.dk/checkout"
     })
   });
 

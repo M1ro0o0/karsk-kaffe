@@ -2,12 +2,12 @@
 const crypto = require("crypto");
 const fs = require("fs");
 
-const secret = "YOUR_REVOLUT_WEBHOOK_SECRET";
+const secret = "wsk_gwJPrkL8QRR7PDb6q1fK7IMDQNGoUzch";
 const timestamp = Date.now().toString();
 const payload = JSON.stringify({
   event: "ORDER_COMPLETED",
   order_id: "test-order-id",
-  merchant_order_ext_ref: "6a5f8bb5-664e-ad10-9742-7a5778fde4e4"
+  merchant_order_ext_ref: "b3a11c78-70f2-4d55-bef0-1fd8615be5a9"
 });
 
 const signature = crypto

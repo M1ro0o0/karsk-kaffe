@@ -28,6 +28,7 @@ function App() {
           <Route path="/category/:tag" element={<CategoryPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/order-success" element={<OrderSuccessPage />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/legal" element={<LegalPage />} />
           <Route path="*" element={<ErrorPage />} />

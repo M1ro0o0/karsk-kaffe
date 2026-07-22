@@ -81,6 +81,9 @@ app.use("/api/contact", contactRoutes());
 // CHECKOUT
 app.use("/api/checkout", checkoutRoutes(supabase));
 
+// ORDER
+app.use("/api/orders", ordersRoutes(supabase)); 
+
 /*--------------------
       HEALTH CHECK
 --------------------*/
