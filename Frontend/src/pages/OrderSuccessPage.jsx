@@ -2,7 +2,16 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { API_URL } from "../config";
-//import "../css/OrderSuccessPage.css";
+import "../css/OrderSuccessPage.css";
+
+const STATUS_STEPS = ["paid", "packaged", "shipped", "delivered"];
+
+const STATUS_LABELS = {
+  paid: "Payment confirmed",
+  packaged: "Order packaged",
+  shipped: "Shipped",
+  delivered: "Delivered",
+};
 
 function OrderSuccessPage() {
   const [searchParams] = useSearchParams();
@@ -20,7 +29,7 @@ function OrderSuccessPage() {
     }
 
     let attempts = 0;
-    const maxAttempts = 6; // ~12 seconds of polling, webhook usually lands within a few seconds
+    const maxAttempts = 6;
 
     const checkStatus = async () => {
       try {
@@ -28,18 +37,18 @@ function OrderSuccessPage() {
         if (!res.ok) throw new Error("Order not found");
         const data = await res.json();
 
-        if (data.status === "paid") {
-          setStatus("paid");
+        if (STATUS_STEPS.includes(data.status)) {
+          setStatus("paid"); // "paid" here just means "confirmed, ready to display" — actual step shown below
           setOrder(data);
-          clearCart(); // only clear once genuinely confirmed paid
+          clearCart();
           return;
         }
 
         attempts++;
         if (attempts < maxAttempts) {
-          setTimeout(checkStatus, 2000); // retry every 2s while webhook may still be processing
+          setTimeout(checkStatus, 2000);
         } else {
-          setStatus("pending"); // webhook hasn't landed yet — reassure, don't alarm
+          setStatus("pending");
         }
       } catch (err) {
         setStatus("error");
@@ -49,14 +58,38 @@ function OrderSuccessPage() {
     checkStatus();
   }, [orderId, navigate, clearCart]);
 
+  const currentStepIndex = order ? STATUS_STEPS.indexOf(order.status) : -1;
+
   return (
     <div className="page order-success">
       {status === "checking" && <p>Confirming your payment...</p>}
 
-      {status === "paid" && (
+      {status === "paid" && order && (
         <>
           <h1>Thank you for your order!</h1>
+          <p className="order-number">Order #{order.id}</p>
           <p>Hi {order.customerName}, your payment of {order.totalAmount} kr was successful.</p>
+
+          <div className="order-status-tracker">
+            {STATUS_STEPS.map((step, index) => (
+              <div
+                key={step}
+                className={`status-step ${index <= currentStepIndex ? "active" : ""}`}
+              >
+                <span className="status-dot" />
+                <span className="status-label">{STATUS_LABELS[step]}</span>
+              </div>
+            ))}
+          </div>
+
+          {order.trackingURL && (
+            <p>
+              <a href={order.trackingURL} target="_blank" rel="noreferrer">
+                Track your delivery
+              </a>
+            </p>
+          )}
+
           <p>A confirmation email with your invoice is on its way.</p>
         </>
       )}
