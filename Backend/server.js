@@ -15,6 +15,7 @@ const shippingRoutes = require("./routes/shipping");
 const contactRoutes = require("./routes/contact");
 const checkoutRoutes = require("./routes/checkout");
 const webhookRoutes = require("./routes/webhooks");
+const ordersRoutes = require("./routes/orders");
 
 /*--------------------
         APP
