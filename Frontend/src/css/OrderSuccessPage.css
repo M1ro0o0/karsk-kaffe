@@ -1,0 +1,178 @@
+.order-success {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 20px 80px;
+  font-family: inherit;
+  color: #3a2a22;
+}
+
+.order-success h1 {
+  font-size: 2rem;
+  margin-bottom: 4px;
+  color: #8f5445;
+}
+
+.order-success h2 {
+  font-size: 1.3rem;
+  margin: 32px 0 16px;
+  color: #8f5445;
+}
+
+.order-number {
+  font-size: 0.95rem;
+  color: #7a6a62;
+  margin-bottom: 20px;
+  letter-spacing: 0.02em;
+}
+
+/* =========================
+   STATUS TRACKER
+   ========================= */
+
+.order-status-tracker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0 32px;
+}
+
+.status-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #f3ece9;
+  opacity: 0.45;
+  transition: opacity 0.2s ease;
+}
+
+.status-step.active {
+  opacity: 1;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Color-coded status badges */
+.status-step.active .status-label,
+.status-step.active .status-dot {
+  color: inherit;
+}
+
+.status-step[data-status="pending"].active {
+  background: #fff6d6;
+  color: #8a6d00;
+}
+
+.status-step[data-status="paid"].active {
+  background: #e3f5e1;
+  color: #2f7a34;
+}
+
+.status-step[data-status="packaged"].active {
+  background: #ede3f7;
+  color: #6b3fa0;
+}
+
+.status-step[data-status="shipped"].active {
+  background: #ffe8d1;
+  color: #b5601a;
+}
+
+.status-step[data-status="delivered"].active {
+  background: #d3ead1;
+  color: #1e5c22;
+}
+
+/* =========================
+   ORDER OVERVIEW
+   ========================= */
+
+.order-overview {
+  border-top: 1px solid #e6dcd7;
+  padding-top: 24px;
+  margin-top: 32px;
+}
+
+.order-overview-item {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f0e8e4;
+}
+
+.order-overview-item img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #f3ece9;
+  flex-shrink: 0;
+}
+
+.order-overview-item strong {
+  display: block;
+  font-size: 1rem;
+  color: #3a2a22;
+  margin-bottom: 4px;
+}
+
+.order-overview-item p {
+  margin: 2px 0;
+  font-size: 0.85rem;
+  color: #7a6a62;
+}
+
+.order-overview-discount {
+  margin-top: 16px;
+  color: #2f7a34;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.order-overview-shipping {
+  margin-top: 8px;
+  color: #7a6a62;
+  font-size: 0.9rem;
+}
+
+.order-overview-total {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e6dcd7;
+  font-size: 1.3rem;
+  color: #8f5445;
+}
+
+/* =========================
+   MISC STATES
+   ========================= */
+
+.order-success p {
+  line-height: 1.5;
+  color: #5a4a42;
+}
+
+.order-success a {
+  color: #8f5445;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .order-status-tracker {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
