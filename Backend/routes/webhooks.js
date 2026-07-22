@@ -30,6 +30,14 @@ module.exports = (supabase) => {
       const providedSignatures = signatureHeader.split(",").map(s => s.trim());
       const isValid = providedSignatures.some(sig => sig === `v1=${expectedSignature}`);
 
+console.log("=== WEBHOOK DEBUG ===");
+console.log("Received timestamp:", timestamp);
+console.log("Received signature header:", signatureHeader);
+console.log("Raw payload received:", rawPayload);
+console.log("Payload length:", rawPayload.length);
+console.log("Expected signature:", expectedSignature);
+console.log("======================");
+
       if (!isValid) {
         console.warn("Invalid Revolut webhook signature");
         return res.status(401).send("Invalid signature");
