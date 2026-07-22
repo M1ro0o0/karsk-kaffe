@@ -82,6 +82,38 @@ function OrderSuccessPage() {
             ))}
           </div>
 
+          {order.cartItems && order.cartItems.length > 0 && (
+  <div className="order-overview">
+    <h2>Order summary</h2>
+    {order.cartItems.map((item) => (
+      <div key={item.id + JSON.stringify(item.options)} className="order-overview-item">
+        <img src={item.image} alt={item.name} />
+        <div>
+          <strong>{item.name}</strong>
+          <p>
+            {Object.entries(item.options || {}).map(([key, value]) => (
+              <span key={key}>
+                <strong>{key}:</strong> {value}{" "}
+              </span>
+            ))}
+          </p>
+          <p>
+            {item.quantity} × {item.selectedPrice?.price ?? item.price} kr
+          </p>
+        </div>
+      </div>
+    ))}
+
+    {order.discountCode && (
+      <p className="order-overview-discount">Discount applied: {order.discountCode}</p>
+    )}
+
+    <p className="order-overview-shipping">Shipping: {order.shippingCost} kr</p>
+
+    <h3 className="order-overview-total">Total: {order.totalAmount} kr</h3>
+  </div>
+)}
+
           {order.trackingURL && (
             <p>
               <a href={order.trackingURL} target="_blank" rel="noreferrer">
