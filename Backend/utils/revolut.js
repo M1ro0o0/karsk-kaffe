@@ -30,3 +30,5 @@ async function createRevolutOrder({ amount, currency, customerEmail, customerNam
 
   return response.json();
 }
+
+module.exports = { createRevolutOrder };
