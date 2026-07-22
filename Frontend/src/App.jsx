@@ -12,6 +12,7 @@ import CategoryPage from "./pages/CategoryPage";
 import Contact from "./pages/Contact";
 import LegalPage from "./pages/LegalPage";
 import ErrorPage from "./pages/ErrorPage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
 
 
 
