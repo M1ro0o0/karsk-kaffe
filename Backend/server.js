@@ -35,19 +35,26 @@ const supabase = createClient(
       MIDDLEWARE
 --------------------*/
 
-app.use(cors({
-  origin: [
-    "https://karskkaffe.dk",
-    "https://www.karskkaffe.dk"
-  ],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: [
+      "https://karskkaffe.dk",
+      "https://www.karskkaffe.dk",
+      "http://localhost:5173",
+    ],
+    credentials: true,
+  }),
+);
 
 // IMPORTANT: webhook route needs RAW body for signature verification,
 // so it must be mounted BEFORE express.json() and use its own raw parser.
 // If this were mounted after express.json(), req.body would already be
 // parsed into an object, and signature verification would fail.
-app.use("/api/webhooks", express.raw({ type: "application/json" }), webhookRoutes(supabase));
+app.use(
+  "/api/webhooks",
+  express.raw({ type: "application/json" }),
+  webhookRoutes(supabase),
+);
 
 // Normal JSON parsing for every other route, mounted after the webhook route
 app.use(express.json());

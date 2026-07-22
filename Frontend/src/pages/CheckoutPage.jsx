@@ -7,6 +7,7 @@ import AddressForm from "../components/AddressForm";
 import { getVATAmount } from "../utils/pricing.js";
 import { useLanguage } from "../context/LanguageContext";
 import ShippingSelector from "../components/ShippingSelector";
+import { API_URL } from "../config";
 
 function CheckoutPage() {
   const {
@@ -27,6 +28,9 @@ function CheckoutPage() {
 
   const [shippingData, setShippingData] = useState(null);
   const [pickupPoint, setPickupPoint] = useState(null);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [checkoutError, setCheckoutError] = useState(null);
 
   // =========================
   // ADDRESSES
@@ -99,28 +103,44 @@ function CheckoutPage() {
   // =========================
   // SUBMIT ORDER
   // =========================
-  const handleSubmit = () => {
-    const order = {
-      items: cart,
-      productsTotal,
-      discount,
-      discountAmount,
-      shippingPrice,
-      finalTotal,
-      shippingMethod: shippingData,
-      pickupPoint: pickupPoint || null,
-      billingAddress,
-      shippingAddress,
-      orderNote,
-      createdAt: new Date().toISOString(),
-    };
+  const handleSubmit = async () => {
+    setCheckoutError(null);
+    setIsSubmitting(true);
 
-    console.log("ORDER:", order);
+    try {
+      const response = await fetch(`${API_URL}/api/checkout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cartItems: cart,
+          discountCode: discount.code || null,
+          shippingCost: shippingPrice,
+          customerEmail: billingAddress.email,
+          customerName: `${billingAddress.firstName} ${billingAddress.lastName}`,
+          billingAddress,
+          shippingAddress: sameAsBilling ? billingAddress : shippingAddress,
+          shippingMethod: shippingData,
+          pickupPoint: pickupPoint || null,
+          orderNote,
+        }),
+      });
 
-    clearCart();
-    setShippingPrice(0);
+      const data = await response.json();
 
-    alert("Order placed successfully!");
+      if (!response.ok) {
+        throw new Error(data.error || "Checkout failed");
+      }
+
+      // Redirect to Revolut's hosted payment page.
+      // Cart is intentionally NOT cleared here — only after payment actually
+      // succeeds, on the success/return page, not just because checkout started.
+      window.location.href = data.checkoutUrl;
+
+    } catch (err) {
+      console.error("Checkout error:", err);
+      setCheckoutError(err.message || "Something went wrong. Please try again.");
+      setIsSubmitting(false);
+    }
   };
 
   // Redirect if empty cart
@@ -235,13 +255,19 @@ function CheckoutPage() {
         <p className="checkout-terms">{t.checkout.terms}</p>
       </div>
 
+      {checkoutError && (
+        <p className="checkout-error" style={{ color: "red" }}>
+          {checkoutError}
+        </p>
+      )}
+
       {/* PLACE ORDER */}
       <button
         className="checkout-button"
-        disabled={isDisabled}
+        disabled={isDisabled || isSubmitting}
         onClick={handleSubmit}
       >
-        {t.checkout.placeOrder}
+        {isSubmitting ? "..." : t.checkout.placeOrder}
       </button>
     </div>
   );

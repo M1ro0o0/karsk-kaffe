@@ -1,9 +1,6 @@
-import fetch from "node-fetch"; // skip this import if your Node version has fetch built-in (Node 18+)
+const REVOLUT_API_URL = "https://merchant.revolut.com/api/orders"; // sandbox: https://sandbox-merchant.revolut.com/api/orders
 
-//const REVOLUT_API_URL = "https://merchant.revolut.com/api/orders"; //Production
-const REVOLUT_API_URL = "https://sandbox-merchant.revolut.com/api/orders"; //Testing
-
-export async function createRevolutOrder({ amount, currency, customerEmail, customerName }) {
+async function createRevolutOrder({ amount, currency, customerEmail, customerName, merchantOrderExtRef }) {
   const response = await fetch(REVOLUT_API_URL, {
     method: "POST",
     headers: {
@@ -12,13 +9,14 @@ export async function createRevolutOrder({ amount, currency, customerEmail, cust
       "Revolut-Api-Version": "2026-04-20"
     },
     body: JSON.stringify({
-      amount, // in minor units, e.g. 4999 = 49.99
-      currency, // e.g. "DKK"
+      amount,
+      currency,
+      merchant_order_ext_ref: merchantOrderExtRef,
       customer: {
         email: customerEmail,
         full_name: customerName
       },
-      capture_mode: "AUTOMATIC"
+      capture_mode: "automatic"
     })
   });
 
@@ -27,5 +25,7 @@ export async function createRevolutOrder({ amount, currency, customerEmail, cust
     throw new Error(`Revolut order creation failed: ${response.status} ${errorBody}`);
   }
 
-  return response.json(); // includes checkout_url, id, etc.
+  return response.json();
 }
+
+module.exports = { createRevolutOrder };

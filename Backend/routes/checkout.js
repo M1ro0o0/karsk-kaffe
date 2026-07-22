@@ -7,13 +7,30 @@ module.exports = (supabase) => {
 
   router.post("/", async (req, res) => {
     try {
-      const { cartItems, discountCode, shippingCost, customerEmail, customerName } = req.body;
+      const {
+        cartItems,
+        discountCode,
+        shippingCost,
+        customerEmail,
+        customerName,
+        billingAddress,
+        shippingAddress,
+        shippingMethod,
+        pickupPoint,
+        orderNote,
+      } = req.body;
 
       if (!cartItems || cartItems.length === 0) {
         return res.status(400).json({ error: "Cart is empty" });
       }
       if (!customerEmail || !customerName) {
         return res.status(400).json({ error: "Missing customer details" });
+      }
+      if (!billingAddress || !shippingAddress) {
+        return res.status(400).json({ error: "Missing address details" });
+      }
+      if (!shippingMethod) {
+        return res.status(400).json({ error: "Missing shipping method" });
       }
 
       const { totalInMinorUnits, total } = await calculateOrderTotal(
@@ -31,7 +48,12 @@ module.exports = (supabase) => {
           cartItems,
           discountCode: discountCode || null,
           shippingCost: shippingCost || 0,
-          totalAmount: total
+          totalAmount: total,
+          billingAddress,
+          shippingAddress,
+          shippingMethod,
+          pickupPoint: pickupPoint || null,
+          orderNote: orderNote || null,
         })
         .select()
         .single();

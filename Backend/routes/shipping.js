@@ -27,8 +27,8 @@ function shippingRoutes() {
       methods: [
         {
           id: "home",
-          name: "Home Delivery",
-          price: { under1kg: 43, over1kg: 53 },
+          name: "Home Delivery - TEST/ DO NOT USE",
+          price: { under1kg: 0, over1kg: 53 },
         },
         {
           id: "shop",

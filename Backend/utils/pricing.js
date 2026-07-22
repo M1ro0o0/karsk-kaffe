@@ -6,9 +6,7 @@ const supabase = createClient(
 );
 
 async function calculateOrderTotal(cartItems, discountCode, shippingCost = 0) {
-  // 1. Fetch real product + price data — never trust cart's own price/finalPrice fields
   const productIds = [...new Set(cartItems.map((item) => item.id))];
-  const priceIds = [...new Set(cartItems.map((item) => item.selectedPrice?.id))];
 
   const { data: products, error: productsError } = await supabase
     .from("Products")
@@ -19,10 +17,9 @@ async function calculateOrderTotal(cartItems, discountCode, shippingCost = 0) {
   const { data: prices, error: pricesError } = await supabase
     .from("ProductPrices")
     .select("id, productID, label, price")
-    .in("id", priceIds);
+    .in("productID", productIds);
   if (pricesError) throw new Error(`Failed to fetch prices: ${pricesError.message}`);
 
-  // 2. Recalculate subtotal from real DB values only
   let subtotal = 0;
 
   for (const item of cartItems) {
@@ -30,10 +27,11 @@ async function calculateOrderTotal(cartItems, discountCode, shippingCost = 0) {
     if (!product) throw new Error(`Product ${item.id} not found`);
     if (!product.active) throw new Error(`Product ${item.id} is no longer available`);
 
+    // Match by productID + label, since cart items don't carry the ProductPrices row id
     const priceRow = prices.find(
-      (p) => p.id === item.selectedPrice?.id && p.productID === item.id
+      (p) => p.productID === item.id && String(p.label) === String(item.selectedPrice?.label)
     );
-    if (!priceRow) throw new Error(`Price option for product ${item.id} not found`);
+    if (!priceRow) throw new Error(`Price option for product ${item.id}, label ${item.selectedPrice?.label} not found`);
 
     const quantity = Number(item.quantity) || 0;
     if (quantity <= 0) throw new Error(`Invalid quantity for product ${item.id}`);
