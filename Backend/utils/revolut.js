@@ -1,4 +1,5 @@
-// Backend/utils/revolut.js
+const REVOLUT_API_URL = "https://merchant.revolut.com/api/orders";
+
 async function createRevolutOrder({ amount, currency, customerEmail, customerName, merchantOrderExtRef }) {
   const response = await fetch(REVOLUT_API_URL, {
     method: "POST",
