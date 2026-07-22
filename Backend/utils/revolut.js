@@ -1,3 +1,5 @@
+const REVOLUT_API_URL = "https://merchant.revolut.com/api/orders";
+
 async function createRevolutOrder({ amount, currency, customerEmail, customerName, merchantOrderExtRef }) {
   const requestBody = {
     amount,
