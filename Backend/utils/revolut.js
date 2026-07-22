@@ -1,6 +1,16 @@
-const REVOLUT_API_URL = "https://merchant.revolut.com/api/orders";
-
 async function createRevolutOrder({ amount, currency, customerEmail, customerName, merchantOrderExtRef }) {
+  const requestBody = {
+    amount,
+    currency,
+    merchant_order_ext_ref: merchantOrderExtRef,
+    customer: { email: customerEmail, full_name: customerName },
+    capture_mode: "automatic",
+    success_url: `https://karskkaffe.dk/order-success?orderId=${merchantOrderExtRef}`,
+    cancel_url: "https://karskkaffe.dk/checkout"
+  };
+
+  console.log("=== REVOLUT ORDER REQUEST ===", JSON.stringify(requestBody, null, 2));
+
   const response = await fetch(REVOLUT_API_URL, {
     method: "POST",
     headers: {
@@ -8,15 +18,7 @@ async function createRevolutOrder({ amount, currency, customerEmail, customerNam
       "Authorization": `Bearer ${process.env.REVOLUT_SECRET_KEY}`,
       "Revolut-Api-Version": "2026-04-20"
     },
-    body: JSON.stringify({
-      amount,
-      currency,
-      merchant_order_ext_ref: merchantOrderExtRef,
-      customer: { email: customerEmail, full_name: customerName },
-      capture_mode: "automatic",
-      success_url: `https://karskkaffe.dk/order-success?orderId=${merchantOrderExtRef}`,
-      cancel_url: "https://karskkaffe.dk/checkout"
-    })
+    body: JSON.stringify(requestBody)
   });
 
   if (!response.ok) {
@@ -26,5 +28,3 @@ async function createRevolutOrder({ amount, currency, customerEmail, customerNam
 
   return response.json();
 }
-
-module.exports = { createRevolutOrder };
