@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { API_URL } from "../config";
-import "../css/OrderSuccessPage.css";
+//import "../css/OrderSuccessPage.css";
 
 function OrderSuccessPage() {
   const [searchParams] = useSearchParams();
