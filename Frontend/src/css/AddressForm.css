@@ -65,43 +65,74 @@
   cursor: not-allowed;
 }
 
+/* ================= PHONE INPUT ================= */
 
 /* ================= PHONE INPUT ================= */
 
-.PhoneInput {
+.address-form .PhoneInput {
   display: flex;
   align-items: center;
   width: 100%;
-  margin-bottom: 15px;
+  height: 40px;
+  margin-bottom: 12px;
 }
 
-.PhoneInputCountry {
-  margin-right: 8px;
-}
+/* Country dropdown */
+.address-form .PhoneInputCountry {
+  display: flex;
+  align-items: center;
+  height: 40px;
 
-.PhoneInputCountrySelect {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: white;
-  height: 42px;
   padding: 0 8px;
-  font-family: inherit;
+  margin-right: 8px;
+
+  background: transparent;
+  border: none;
 }
 
-.PhoneInputInput {
-  flex: 1;
-  height: 42px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+/* Dropdown */
+.address-form .PhoneInputCountrySelect {
+  height: 36px;
+  border: none;
+  background: transparent;
+
+  font-size: 18px;
   font-family: inherit;
-  font-size: 14px;
+
+  cursor: pointer;
+  padding-left: 5px;
 }
 
-.PhoneInputInput:focus,
-.PhoneInputCountrySelect:focus {
+.address-form .PhoneInputCountrySelect:focus {
   outline: none;
-  border-color: #8F5445;
+}
+
+/* Bigger flag */
+.address-form .PhoneInputCountryIcon {
+  width: 32px;
+  height: 24px;
+}
+
+/* Phone number field */
+.address-form .PhoneInputInput {
+  height: 40px;
+  flex: 1;
+
+  border: solid 2px #8f5445;
+  border-radius: 8px;
+
+  font-size: 18px;
+  font-family: inherit;
+
+  padding: 0 10px;
+}
+
+.address-form .PhoneInputInput:focus {
+  outline: none;
+  border-color: #8f5445;
+  box-shadow:
+    0 4px 8px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 /* Flag */
@@ -109,7 +140,6 @@
   width: 24px;
   height: 18px;
 }
-
 
 /* Phone number text field */
 .address-form .PhoneInputInput {
@@ -133,14 +163,12 @@
     0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-
 /* Disabled phone field */
 .address-form .PhoneInputInput:disabled,
 .address-form .PhoneInputCountry:has(.PhoneInputCountrySelect:disabled) {
   background-color: #f0f0f0;
   border-color: #000;
 }
-
 
 /* ================= ERROR ================= */
 
@@ -150,7 +178,6 @@
   margin-top: -8px;
   margin-bottom: 12px;
 }
-
 
 /* ================= RESPONSIVE ================= */
 
