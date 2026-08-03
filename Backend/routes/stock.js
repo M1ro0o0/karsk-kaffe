@@ -1,16 +1,12 @@
 const express = require("express");
 
-const { buildSku } =
-  require("../utils/sku");
-
-const {
-  getItem
-} = require("../utils/zoho");
+const { computeSku } = require("../utils/sku");
+const { getZohoIdForSku } = require("../utils/zoho-sku-lookup");
+const { getItem } = require("../utils/zoho");
 
 module.exports = (supabase) => {
 
-  const router =
-    express.Router();
+  const router = express.Router();
 
   router.post(
     "/stock-check",
@@ -33,90 +29,67 @@ module.exports = (supabase) => {
             });
         }
 
-        let sku;
-
         /*--------------------
-            BOX PRODUCTS
+            LOAD PRODUCT OPTIONS
+            (only needed for coffee products, but cheap enough to always fetch —
+            computeSku() ignores it for box products anyway)
         --------------------*/
 
-        if (
-          productId.startsWith(
-            "BO-"
-          )
-        ) {
+        const {
+          data: optionsFromDb,
+          error: optionsError
+        } = await supabase
+          .from("ProductOptions")
+          .select("*");
 
-          // BOX ID IS SKU
-          sku = productId;
+        if (optionsError) {
 
-        } else {
-
-          /*--------------------
-              COFFEE PRODUCTS
-          --------------------*/
-
-          const {
-            data: optionsFromDb,
-            error:
-              optionsError
-          } = await supabase
-            .from(
-              "ProductOptions"
-            )
-            .select("*");
-
-          if (
+          console.error(
+            "OPTIONS ERROR:",
             optionsError
-          ) {
+          );
 
-            console.error(
-              "OPTIONS ERROR:",
-              optionsError
-            );
+          return res
+            .status(500)
+            .json({
+              error:
+                "Failed to load product options"
+            });
+        }
 
-            return res
-              .status(500)
-              .json({
-                error:
-                  "Failed to load product options"
-              });
-          }
+        let sku;
 
-          sku = buildSku(
+        try {
+          sku = computeSku(
             productId,
             selectedOptions,
             optionsFromDb
           );
+        } catch (skuErr) {
+
+          console.error(
+            "SKU BUILD ERROR:",
+            skuErr
+          );
+
+          return res
+            .status(400)
+            .json({
+              error: skuErr.message
+            });
         }
 
         /*--------------------
             FIND ZOHO ID
         --------------------*/
 
-        const {
-          data: product,
-          error:
-            productError
-        } = await supabase
-          .from(
-            "ZohoInventory"
-          )
-          .select(
-            "ZohoID"
-          )
-          .eq(
-            "ProductSKU",
-            sku
-          )
-          .single();
+        const zohoId = await getZohoIdForSku(supabase, sku);
 
-        if (
-          productError ||
-          !product
-        ) {
+        if (!zohoId) {
 
           console.error(
-            "SKU MAP ERROR:",
-            productError
+            "SKU MAP ERROR: no ZohoInventory row for SKU",
+            sku
           );
 
           return res
@@ -132,12 +105,7 @@ module.exports = (supabase) => {
             FETCH ZOHO ITEM
         --------------------*/
 
-        const item =
-          await getItem(
-            String(
-              product.ZohoID
-            ).trim()
-          );
+        const item = await getItem(zohoId);
 
         /*--------------------
               RETURN
@@ -146,10 +114,8 @@ module.exports = (supabase) => {
         return res.json({
           sku,
           stock:
-            item
-              ?.available_stock ??
-            item
-              ?.stock_on_hand ??
+            item?.available_stock ??
+            item?.stock_on_hand ??
             0
         });
 
@@ -163,8 +129,7 @@ module.exports = (supabase) => {
         return res
           .status(500)
           .json({
-            error:
-              err.message
+            error: err.message
           });
       }
     }

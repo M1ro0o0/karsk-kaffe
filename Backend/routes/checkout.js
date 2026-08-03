@@ -33,11 +33,8 @@ module.exports = (supabase) => {
         return res.status(400).json({ error: "Missing shipping method" });
       }
 
-      const { totalInMinorUnits, total } = await calculateOrderTotal(
-        cartItems,
-        discountCode,
-        shippingCost || 0
-      );
+      const { totalInMinorUnits, total, discountAmount } =
+        await calculateOrderTotal(cartItems, discountCode, shippingCost || 0);
 
       const { data: pendingOrder, error: insertError } = await supabase
         .from("Orders")
@@ -46,7 +43,12 @@ module.exports = (supabase) => {
           customerName,
           status: "pending",
           cartItems,
-          discountCode: discountCode || null,
+          discount: discountCode
+            ? {
+                code: discountCode,
+                amount: Number(discountAmount.toFixed(2)),
+              }
+            : null,
           shippingCost: shippingCost || 0,
           totalAmount: total,
           billingAddress,
@@ -58,14 +60,17 @@ module.exports = (supabase) => {
         .select()
         .single();
 
-      if (insertError) throw new Error(`Failed to create pending order: ${insertError.message}`);
+      if (insertError)
+        throw new Error(
+          `Failed to create pending order: ${insertError.message}`,
+        );
 
       const revolutOrder = await createRevolutOrder({
         amount: totalInMinorUnits,
         currency: "DKK",
         customerEmail,
         customerName,
-        merchantOrderExtRef: pendingOrder.id
+        merchantOrderExtRef: pendingOrder.id,
       });
 
       await supabase
@@ -73,8 +78,10 @@ module.exports = (supabase) => {
         .update({ revolutOrderId: revolutOrder.id })
         .eq("id", pendingOrder.id);
 
-      res.json({ checkoutUrl: revolutOrder.checkout_url, orderId: pendingOrder.id });
-      
+      res.json({
+        checkoutUrl: revolutOrder.checkout_url,
+        orderId: pendingOrder.id,
+      });
     } catch (err) {
       console.error("Checkout error:", err.message);
       res.status(400).json({ error: err.message });

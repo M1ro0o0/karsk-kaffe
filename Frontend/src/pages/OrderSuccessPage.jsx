@@ -104,9 +104,11 @@ function OrderSuccessPage() {
       </div>
     ))}
 
-    {order.discountCode && (
-      <p className="order-overview-discount">Discount applied: {order.discountCode}</p>
-    )}
+   {order.discount?.code && (
+  <p className="order-overview-discount">
+    Discount applied: {order.discount.code} (-{order.discount.amount.toFixed(2)} kr)
+  </p>
+)}
 
     <p className="order-overview-shipping">Shipping: {order.shippingCost} kr</p>
 

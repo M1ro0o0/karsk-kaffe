@@ -18,6 +18,7 @@
     "express": "^5.2.1",
     "node-fetch": "^2.7.0",
     "nodemailer": "^8.0.3",
-    "resend": "^6.17.2"
+    "pdf-lib": "^1.17.1",
+    "resend": "^6.18.0"
   }
 }

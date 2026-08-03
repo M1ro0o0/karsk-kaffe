@@ -1,6 +1,8 @@
 const express = require("express");
 const crypto = require("crypto");
 
+const { processOrder } = require("../utils/process-order");
+
 module.exports = (supabase) => {
   const router = express.Router();
 
@@ -65,13 +67,25 @@ module.exports = (supabase) => {
         .update({ status: "paid" })
         .eq("id", order.id);
 
-      // TODO next: redeem discount code, push to Zoho, create Shipmondo shipment, send emails
-
+      // Respond to Revolut immediately — don't make it wait on Shipmondo/Zoho/email calls.
+      // If any of those fail, processOrder() already isolates them internally (Promise.allSettled)
+      // and logs the failure; it does not throw. We still wrap in try/catch as a last-resort net.
       res.status(200).send("OK");
+
+      // TODO next: redeem discount code (order.discountCode) once it's actually used.
+
+      processOrder(order, supabase).catch((err) => {
+        // processOrder() is designed not to throw (each step is isolated), so reaching this
+        // means something outside that isolation broke — worth a loud log since the HTTP
+        // response has already been sent and there's no other place this surfaces.
+        console.error(`processOrder threw unexpectedly for order ${order.id}:`, err);
+      });
 
     } catch (err) {
       console.error("Webhook processing error:", err);
-      res.status(500).send("Server error");
+      if (!res.headersSent) {
+        res.status(500).send("Server error");
+      }
     }
   });
 

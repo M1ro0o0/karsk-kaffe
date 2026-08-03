@@ -67,12 +67,14 @@ async function calculateOrderTotal(cartItems, discountCode, shippingCost = 0) {
     discountCodeRow = codeRow;
   }
 
-  const discountedSubtotal = subtotal * (1 - discountPercent / 100);
+  const discountAmount = subtotal * (discountPercent / 100);
+  const discountedSubtotal = subtotal - discountAmount;
   const total = discountedSubtotal + shippingCost;
 
   return {
     totalInMinorUnits: Math.round(total * 100), // for Revolut
     subtotal,
+    discountAmount,
     discountedSubtotal,
     total,
     discountCodeRow // returned so checkout route can call /redeem after payment succeeds

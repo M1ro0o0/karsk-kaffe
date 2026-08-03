@@ -114,6 +114,7 @@ function CheckoutPage() {
         body: JSON.stringify({
           cartItems: cart,
           discountCode: discount.code || null,
+          discoundAmount: discountAmount || 0,
           shippingCost: shippingPrice,
           customerEmail: billingAddress.email,
           customerName: `${billingAddress.firstName} ${billingAddress.lastName}`,

@@ -7,7 +7,7 @@ router.get("/:id/status", async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("Orders")
-      .select("id, status, customerName, totalAmount, trackingURL, cartItems, shippingCost, discountCode")
+      .select("id, status, customerName, totalAmount, trackingURL, cartItems, shippingCost, discount")
       .eq("id", req.params.id)
       .single();
 
