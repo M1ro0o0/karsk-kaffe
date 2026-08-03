@@ -17,6 +17,8 @@
   margin-bottom: 5px;
 }
 
+/* ================= NORMAL INPUTS ================= */
+
 .address-form input {
   height: 40px;
   width: 100%;
@@ -25,9 +27,11 @@
   font-size: 18px;
   padding: 0 10px;
   margin-bottom: 12px;
+  font-family: inherit;
 }
 
 .address-form input:focus {
+  outline: none;
   border-color: #8f5445;
   box-shadow:
     0 4px 8px 0 rgba(0, 0, 0, 0.2),
@@ -47,7 +51,7 @@
 
 .address-row input {
   flex: 1;
-  min-width: 0; /* prevents flex children from overflowing the row */
+  min-width: 0;
 }
 
 .address-form input.small {
@@ -61,35 +65,43 @@
   cursor: not-allowed;
 }
 
+
 /* ================= PHONE INPUT ================= */
 
-.address-form .PhoneInput {
-  display: flex;
-  width: 100%;
-  height: 40px;
-  margin-bottom: 12px;
-}
-
-/* Country dropdown */
-.address-form .PhoneInputCountry {
+.PhoneInput {
   display: flex;
   align-items: center;
-  border: 2px solid #8f5445;
-  border-radius: 8px;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.PhoneInputCountry {
   margin-right: 8px;
+}
+
+.PhoneInputCountrySelect {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  height: 42px;
   padding: 0 8px;
-  background-color: white;
+  font-family: inherit;
 }
 
-.address-form .PhoneInputCountrySelect {
-  border: none;
-  background: transparent;
-  font-size: 18px;
-  cursor: pointer;
+.PhoneInputInput {
+  flex: 1;
+  height: 42px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
 }
 
-.address-form .PhoneInputCountrySelect:focus {
+.PhoneInputInput:focus,
+.PhoneInputCountrySelect:focus {
   outline: none;
+  border-color: #8F5445;
 }
 
 /* Flag */
@@ -98,14 +110,18 @@
   height: 18px;
 }
 
-/* Phone number field */
+
+/* Phone number text field */
 .address-form .PhoneInputInput {
   height: 40px;
-  flex: 1;
   width: 100%;
-  border: 2px solid #8f5445;
+
+  border: solid 2px #8f5445;
   border-radius: 8px;
+
   font-size: 18px;
+  font-family: inherit;
+
   padding: 0 10px;
 }
 
@@ -117,13 +133,32 @@
     0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+
+/* Disabled phone field */
+.address-form .PhoneInputInput:disabled,
+.address-form .PhoneInputCountry:has(.PhoneInputCountrySelect:disabled) {
+  background-color: #f0f0f0;
+  border-color: #000;
+}
+
+
+/* ================= ERROR ================= */
+
+.address-form .error {
+  display: block;
+  color: #b00020;
+  margin-top: -8px;
+  margin-bottom: 12px;
+}
+
+
 /* ================= RESPONSIVE ================= */
+
 @media (max-width: 480px) {
   .address-form input {
     font-size: 16px;
   }
 
-  /* Stack name fields and stack postal/city vertically; keep phone code beside number */
   .address-row {
     flex-wrap: wrap;
   }
@@ -134,5 +169,10 @@
 
   .address-row input.small {
     flex: 0 0 90px;
+  }
+
+  .address-form .PhoneInputCountrySelect,
+  .address-form .PhoneInputInput {
+    font-size: 16px;
   }
 }
