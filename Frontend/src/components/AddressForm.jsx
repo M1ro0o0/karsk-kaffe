@@ -24,14 +24,6 @@ function AddressForm({ title, data, onChange, disabled = false }) {
     onChange(updated);
   };
 
-  const handlePhoneChange = (phone) => {
-    onChange({
-      ...data,
-      phone: phone,
-      phoneValid: phone ? isValidPhoneNumber(phone) : false,
-    });
-  };
-
   const { t } = useLanguage();
 
   return (
