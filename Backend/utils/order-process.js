@@ -2,7 +2,7 @@ const { generateInvoicePdf } = require("./invoice");
 const { createShipment } = require("./shipmondo");
 const { createSalesOrder } = require("./zoho");
 const { sendOrderConfirmation, sendNewOrderAlert } = require("./emails");
-const { generateOrderNumber } = require("./utils/invoice-number-generation");
+const { generateOrderNumber } = require("./invoice-number-generation");
 
 /**
  * Runs the full post-payment order flow:
