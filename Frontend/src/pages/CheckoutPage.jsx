@@ -81,38 +81,51 @@ function CheckoutPage() {
   };
 
   // =========================
-// VALIDATION
-// =========================
-const isValidPostcodeDK = (postcode) => /^\d{4}$/.test(postcode);
-const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  // VALIDATION
+  // =========================
 
-const isValidPhone = (phone) => {
-  return phone && isValidPhoneNumber(phone);
+  const isValidPostcodeDK = (postcode) => /^\d{4}$/.test(postcode);
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const isValidPhone = (phone) => {
+  try {
+    return phone ? isValidPhoneNumber(phone) : false;
+  } catch {
+    return false;
+  }
 };
 
-const isAddressValid = (data) =>
-  data.firstName &&
-  data.lastName &&
-  isValidEmail(data.email) &&
-  isValidPhone(data.phone) &&
-  data.address &&
-  isValidPostcodeDK(data.postalCode) &&
-  data.city &&
-  data.country;
+  const isAddressValid = (data) =>
+    data.firstName &&
+    data.lastName &&
+    isValidEmail(data.email) &&
+    isValidPhone(data.phone) &&
+    data.address &&
+    isValidPostcodeDK(data.postalCode) &&
+    data.city &&
+    data.country;
 
-const requiresPickupPoint = shippingData?.method?.id === "shop";
+  const requiresPickupPoint = shippingData?.method?.id === "shop";
 
-const isDisabled =
-  !isAddressValid(billingAddress) ||
-  (!sameAsBilling && !isAddressValid(shippingAddress)) ||
-  cart.length === 0 ||
-  !shippingData?.method ||
-  (requiresPickupPoint && !pickupPoint);
+  const isDisabled =
+    cart.length === 0 ||
+    !shippingData?.method ||
+    (requiresPickupPoint && !pickupPoint);
 
   // =========================
   // SUBMIT ORDER
   // =========================
   const handleSubmit = async () => {
+    if (!isAddressValid(billingAddress)) {
+      setCheckoutError("Please check your billing address.");
+      return;
+    }
+
+    if (!sameAsBilling && !isAddressValid(shippingAddress)) {
+      setCheckoutError("Please check your shipping address.");
+      return;
+    }
+
     setCheckoutError(null);
     setIsSubmitting(true);
 
