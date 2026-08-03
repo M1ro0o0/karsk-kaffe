@@ -9,7 +9,6 @@ import { useLanguage } from "../context/LanguageContext";
 import ShippingSelector from "../components/ShippingSelector";
 import { API_URL } from "../config";
 import { isValidPhoneNumber } from "libphonenumber-js";
-console.log("validator:", isValidPhoneNumber);
 
 function CheckoutPage() {
   const {
