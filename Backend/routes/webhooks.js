@@ -1,7 +1,7 @@
 const express = require("express");
 const crypto = require("crypto");
 
-const { processOrder } = require("../utils/process-order");
+const { processOrder } = require("../utils/order-process");
 
 module.exports = (supabase) => {
   const router = express.Router();
