@@ -8,6 +8,7 @@ import { getVATAmount } from "../utils/pricing.js";
 import { useLanguage } from "../context/LanguageContext";
 import ShippingSelector from "../components/ShippingSelector";
 import { API_URL } from "../config";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 function CheckoutPage() {
   const {
@@ -39,8 +40,7 @@ function CheckoutPage() {
     firstName: "",
     lastName: "",
     email: "",
-    phoneCode: "+45",
-    phoneNumber: "",
+    phone: "",
     address: "",
     postalCode: "",
     city: "",
@@ -51,8 +51,7 @@ function CheckoutPage() {
     firstName: "",
     lastName: "",
     email: "",
-    phoneCode: "+45",
-    phoneNumber: "",
+    phone: "",
     address: "",
     postalCode: "",
     city: "",
@@ -70,36 +69,45 @@ function CheckoutPage() {
   // =========================
   // SHIPPING SELECTION
   // =========================
-  const handleShippingChange = ({ provider, method, shippingPrice, pickupPoint }) => {
+  const handleShippingChange = ({
+    provider,
+    method,
+    shippingPrice,
+    pickupPoint,
+  }) => {
     setShippingData({ provider, method });
     setShippingPrice(shippingPrice);
     setPickupPoint(pickupPoint || null);
   };
 
   // =========================
-  // VALIDATION
-  // =========================
-  const isValidPostcodeDK = (postcode) => /^\d{4}$/.test(postcode);
-  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
- 
-  const isAddressValid = (data) =>
-    data.firstName &&
-    data.lastName &&
-    isValidEmail(data.email) &&
-    data.phoneNumber &&
-    data.address &&
-    isValidPostcodeDK(data.postalCode) &&
-    data.city &&
-    data.country;
+// VALIDATION
+// =========================
+const isValidPostcodeDK = (postcode) => /^\d{4}$/.test(postcode);
+const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const requiresPickupPoint = shippingData?.method?.id === "shop";
+const isValidPhone = (phone) => {
+  return phone && isValidPhoneNumber(phone);
+};
 
-  const isDisabled =
-    !isAddressValid(billingAddress) ||
-    (!sameAsBilling && !isAddressValid(shippingAddress)) ||
-    cart.length === 0 ||
-    !shippingData?.method ||
-    (requiresPickupPoint && !pickupPoint);
+const isAddressValid = (data) =>
+  data.firstName &&
+  data.lastName &&
+  isValidEmail(data.email) &&
+  isValidPhone(data.phone) &&
+  data.address &&
+  isValidPostcodeDK(data.postalCode) &&
+  data.city &&
+  data.country;
+
+const requiresPickupPoint = shippingData?.method?.id === "shop";
+
+const isDisabled =
+  !isAddressValid(billingAddress) ||
+  (!sameAsBilling && !isAddressValid(shippingAddress)) ||
+  cart.length === 0 ||
+  !shippingData?.method ||
+  (requiresPickupPoint && !pickupPoint);
 
   // =========================
   // SUBMIT ORDER
@@ -134,7 +142,11 @@ function CheckoutPage() {
       }
 
       // Try opening Revolut checkout as a popup
-      const popup = window.open(data.checkoutUrl, "revolut-checkout", "width=480,height=720");
+      const popup = window.open(
+        data.checkoutUrl,
+        "revolut-checkout",
+        "width=480,height=720",
+      );
 
       if (!popup || popup.closed || typeof popup.closed === "undefined") {
         // Popup was blocked — fall back to a normal full-page redirect
@@ -145,7 +157,9 @@ function CheckoutPage() {
       // Poll our backend while the popup is open, watching for payment confirmation
       const pollInterval = setInterval(async () => {
         try {
-          const statusRes = await fetch(`${API_URL}/api/orders/${data.orderId}/status`);
+          const statusRes = await fetch(
+            `${API_URL}/api/orders/${data.orderId}/status`,
+          );
           const statusData = await statusRes.json();
 
           if (statusData.status === "paid") {
@@ -163,10 +177,11 @@ function CheckoutPage() {
           setIsSubmitting(false); // customer closed the popup without paying — let them retry
         }
       }, 1500);
-
     } catch (err) {
       console.error("Checkout error:", err);
-      setCheckoutError(err.message || "Something went wrong. Please try again.");
+      setCheckoutError(
+        err.message || "Something went wrong. Please try again.",
+      );
       setIsSubmitting(false);
     }
   };
@@ -239,7 +254,8 @@ function CheckoutPage() {
                 ))}
               </p>
               <p className="total-price">
-                {item.quantity} × {item.price} kr ({item.quantity * item.price} kr)
+                {item.quantity} × {item.price} kr ({item.quantity * item.price}{" "}
+                kr)
               </p>
               <p className="vat">
                 {t.cart.VAT}(25%): {getVATAmount(item.price) * item.quantity} kr
