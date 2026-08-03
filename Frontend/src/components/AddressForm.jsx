@@ -24,6 +24,13 @@ function AddressForm({ title, data, onChange, disabled = false }) {
     onChange(updated);
   };
 
+const handlePhoneChange = (phone) => {
+  onChange({
+    ...data,
+    phone,
+  });
+};
+
   const { t } = useLanguage();
 
   return (
