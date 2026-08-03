@@ -80,11 +80,12 @@ function CheckoutPage() {
   // VALIDATION
   // =========================
   const isValidPostcodeDK = (postcode) => /^\d{4}$/.test(postcode);
-
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+ 
   const isAddressValid = (data) =>
     data.firstName &&
     data.lastName &&
-    data.email &&
+    isValidEmail(data.email) &&
     data.phoneNumber &&
     data.address &&
     isValidPostcodeDK(data.postalCode) &&

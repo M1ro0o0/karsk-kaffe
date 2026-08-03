@@ -1,10 +1,26 @@
 import "../css/AddressForm.css"
 
 import { useLanguage } from "../context/LanguageContext";
+import postalCodes from "../data/postal-codes.json";
 
 function AddressForm({ title, data, onChange, disabled = false }){
   const handleChange = (field, value) => {
-    onChange({ ...data, [field]: value });
+  const updated = {
+    ...data,
+    [field]: value,
+  };
+
+  if (field === "postalCode") {
+    // Only allow 4 digits
+    const zip = value.replace(/\D/g, "").slice(0, 4);
+
+    updated.postalCode = zip;
+    updated.city = zip.length === 4
+      ? (postalCodes[zip] || "")
+      : "";
+  }
+
+  onChange(updated);
 };
 
     const { t } = useLanguage();
