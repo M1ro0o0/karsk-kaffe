@@ -1,6 +1,7 @@
 const express = require("express");
 const { calculateOrderTotal } = require("../utils/pricing");
 const { createRevolutOrder } = require("../utils/revolut");
+const { generateOrderNumber } = require("../utils/invoice-number-generation");
 
 module.exports = (supabase) => {
   const router = express.Router();

@@ -48,7 +48,6 @@ async function generateInvoicePdf(order) {
     logoHeight = 22;
   }
 
-
   // =========================
   // INVOICE HEADER (RIGHT)
   // =========================
@@ -62,7 +61,7 @@ async function generateInvoicePdf(order) {
     color: darkText,
   });
 
-  page.drawText(`Ordre #${order.id}`, {
+  page.drawText(`Ordre #${order.orderID}`, {
     x: headerX,
     y: height - 80,
     size: 10,
@@ -70,17 +69,13 @@ async function generateInvoicePdf(order) {
     color: grayText,
   });
 
-  page.drawText(
-    new Date(order.createdAt).toLocaleDateString("da-DK"),
-    {
-      x: headerX,
-      y: height - 94,
-      size: 10,
-      font,
-      color: grayText,
-    }
-  );
-
+  page.drawText(new Date(order.createdAt).toLocaleDateString("da-DK"), {
+    x: headerX,
+    y: height - 94,
+    size: 10,
+    font,
+    color: grayText,
+  });
 
   // =========================
   // COMPANY INFO (UNDER HEADER)
@@ -110,7 +105,6 @@ async function generateInvoicePdf(order) {
 
     companyY -= 12;
   });
-
 
   // =========================
   // BILLING INFO (UNDER LOGO)
@@ -147,147 +141,138 @@ async function generateInvoicePdf(order) {
     customerY -= 14;
   });
 
-
   // =========================
   // DETERMINE TABLE START POSITION
   // =========================
   y = Math.min(customerY, companyY) - 25;
 
-
   // =========================
-// TABLE HEADER
-// =========================
-page.drawRectangle({
-  x: 50,
-  y: y - 6,
-  width: width - 100,
-  height: 22,
-  color: rgb(0.95, 0.92, 0.9),
-});
+  // TABLE HEADER
+  // =========================
+  page.drawRectangle({
+    x: 50,
+    y: y - 6,
+    width: width - 100,
+    height: 22,
+    color: rgb(0.95, 0.92, 0.9),
+  });
 
-page.drawText("Vare", {
-  x: 56,
-  y,
-  size: 10,
-  font: bold,
-  color: darkText,
-});
+  page.drawText("Vare", {
+    x: 56,
+    y,
+    size: 10,
+    font: bold,
+    color: darkText,
+  });
 
-page.drawText("Antal", {
-  x: 250,
-  y,
-  size: 10,
-  font: bold,
-  color: darkText,
-});
+  page.drawText("Antal", {
+    x: 250,
+    y,
+    size: 10,
+    font: bold,
+    color: darkText,
+  });
 
-page.drawText("Pris ekskl.", {
-  x: 300,
-  y,
-  size: 10,
-  font: bold,
-  color: darkText,
-});
+  page.drawText("Pris ekskl.", {
+    x: 300,
+    y,
+    size: 10,
+    font: bold,
+    color: darkText,
+  });
 
-page.drawText("Moms", {
-  x: 405,
-  y,
-  size: 10,
-  font: bold,
-  color: darkText,
-});
+  page.drawText("Moms", {
+    x: 405,
+    y,
+    size: 10,
+    font: bold,
+    color: darkText,
+  });
 
-page.drawText("I alt", {
-  x: 475,
-  y,
-  size: 10,
-  font: bold,
-  color: darkText,
-});
+  page.drawText("I alt", {
+    x: 475,
+    y,
+    size: 10,
+    font: bold,
+    color: darkText,
+  });
 
-y -= 28;
+  y -= 28;
 
   // =========================
   // LINE ITEMS
   // =========================
   const VAT_RATE = 0.25;
 
-for (const item of order.cartItems) {
+  for (const item of order.cartItems) {
+    const unitPriceIncl = item.selectedPrice?.price ?? item.price;
 
-  const unitPriceIncl =
-    item.selectedPrice?.price ?? item.price;
+    const unitPriceExcl = unitPriceIncl / (1 + VAT_RATE);
 
-  const unitPriceExcl =
-    unitPriceIncl / (1 + VAT_RATE);
+    const unitVat = unitPriceIncl - unitPriceExcl;
 
-  const unitVat =
-    unitPriceIncl - unitPriceExcl;
+    const lineTotalIncl = unitPriceIncl * item.quantity;
 
-  const lineTotalIncl =
-    unitPriceIncl * item.quantity;
+    const lineVat = unitVat * item.quantity;
 
-  const lineVat =
-    unitVat * item.quantity;
-
-  page.drawText(item.name, {
-    x: 56,
-    y,
-    size: 10,
-    font,
-    color: darkText,
-  });
-
-  page.drawText(String(item.quantity), {
-    x: 250,
-    y,
-    size: 10,
-    font,
-    color: darkText,
-  });
-
-  page.drawText(`${unitPriceExcl.toFixed(2)} kr`, {
-    x: 300,
-    y,
-    size: 10,
-    font,
-    color: darkText,
-  });
-
-  page.drawText(`${lineVat.toFixed(2)} kr`, {
-    x: 405,
-    y,
-    size: 10,
-    font,
-    color: darkText,
-  });
-
-  page.drawText(`${lineTotalIncl.toFixed(2)} kr`, {
-    x: 475,
-    y,
-    size: 10,
-    font,
-    color: darkText,
-  });
-
-  y -= 18;
-
-  const optionsText = Object.entries(item.options || {})
-    .map(([k, v]) => `${k}: ${v}`)
-    .join("  ·  ");
-
-  if (optionsText) {
-    page.drawText(optionsText, {
+    page.drawText(item.name, {
       x: 56,
       y,
-      size: 8,
+      size: 10,
       font,
-      color: grayText,
+      color: darkText,
     });
 
-    y -= 16;
-  }
-}
+    page.drawText(String(item.quantity), {
+      x: 250,
+      y,
+      size: 10,
+      font,
+      color: darkText,
+    });
 
+    page.drawText(`${unitPriceExcl.toFixed(2)} kr`, {
+      x: 300,
+      y,
+      size: 10,
+      font,
+      color: darkText,
+    });
+
+    page.drawText(`${lineVat.toFixed(2)} kr`, {
+      x: 405,
+      y,
+      size: 10,
+      font,
+      color: darkText,
+    });
+
+    page.drawText(`${lineTotalIncl.toFixed(2)} kr`, {
+      x: 475,
+      y,
+      size: 10,
+      font,
+      color: darkText,
+    });
+
+    y -= 18;
+
+    const optionsText = Object.entries(item.options || {})
+      .map(([k, v]) => `${k}: ${v}`)
+      .join("  ·  ");
+
+    if (optionsText) {
+      page.drawText(optionsText, {
+        x: 56,
+        y,
+        size: 8,
+        font,
+        color: grayText,
+      });
+
+      y -= 16;
+    }
+  }
 
   y -= 10;
 
@@ -306,108 +291,78 @@ for (const item of order.cartItems) {
 
   y -= 24;
 
-
   // =========================
   // TOTALS
   // =========================
   const drawTotalRow = (label, value, isBold = false) => {
+    const labelWidth = font.widthOfTextAtSize(label, 10);
 
-  const labelWidth = font.widthOfTextAtSize(
-    label,
-    10
-  );
+    page.drawText(label, {
+      x: 350,
+      y,
+      size: 10,
+      font: isBold ? bold : font,
+      color: darkText,
+    });
 
-  page.drawText(label, {
-    x: 350,
-    y,
-    size: 10,
-    font: isBold ? bold : font,
-    color: darkText,
-  });
+    page.drawText(value, {
+      x: 480,
+      y,
+      size: 10,
+      font: isBold ? bold : font,
+      color: darkText,
+    });
 
-  page.drawText(value, {
-    x: 480,
-    y,
-    size: 10,
-    font: isBold ? bold : font,
-    color: darkText,
-  });
+    y -= 18;
+  };
 
-  y -= 18;
-};
+  if (order.discount?.code) {
+    drawTotalRow(`Rabat kode (${order.discount.code})`, "anvendt");
 
-
-  if (order.discountCode) {
-    drawTotalRow(
-      `Rabat (${order.discountCode})`,
-      "anvendt"
-    );
+    drawTotalRow("Rabat", `- ${Number(order.discount.amount).toFixed(2)} kr`);
   }
 
+  drawTotalRow("Fragt", `${order.shippingCost} kr`);
 
-  drawTotalRow(
-    "Fragt",
-    `${order.shippingCost} kr`
-  );
+  const totalExclVat = order.totalAmount / (1 + VAT_RATE);
 
-  const totalExclVat =
-    order.totalAmount / (1 + VAT_RATE);
+  const vatAmount = order.totalAmount - totalExclVat;
 
-  const vatAmount =
-    order.totalAmount - totalExclVat;
+  drawTotalRow("I alt ekskl. moms", `${totalExclVat.toFixed(2)} kr`);
 
+  drawTotalRow("Moms (25%)", `${vatAmount.toFixed(2)} kr`);
 
-  drawTotalRow(
-    "I alt ekskl. moms",
-    `${totalExclVat.toFixed(2)} kr`
-  );
-
-  drawTotalRow(
-    "Moms (25%)",
-    `${vatAmount.toFixed(2)} kr`
-  );
-
-  drawTotalRow(
-    "I alt inkl. moms",
-    `${order.totalAmount} kr`,
-    true
-  );
-
+  drawTotalRow("I alt inkl. moms", `${order.totalAmount} kr`, true);
 
   // =========================
-// REFUND / CLAIM NOTICE
-// =========================
+  // REFUND / CLAIM NOTICE
+  // =========================
 
-y -= 35;
+  y -= 35;
 
-const noticeLines = [
-  "Reklamation",
-  `Hvis din ordre (#${order.id}) er ankommet beskadiget eller ikke er komplet,`,
-  "kan du gøre krav på refusion eller kompensation ved at kontakte os på",
-  "return@karskkaffe.dk.",
-];
+  const noticeLines = [
+    "Reklamation",
+    `Hvis din ordre (#${order.orderID}) er ankommet beskadiget eller ikke er komplet,`,
+    "kan du gøre krav på refusion eller kompensation ved at kontakte os på",
+    "return@karskkaffe.dk.",
+  ];
 
+  noticeLines.forEach((line, i) => {
+    const size = i === 0 ? 10 : 9;
+    const usedFont = i === 0 ? bold : font;
 
-noticeLines.forEach((line, i) => {
+    const textWidth = usedFont.widthOfTextAtSize(line, size);
 
-  const size = i === 0 ? 10 : 9;
-  const usedFont = i === 0 ? bold : font;
+    page.drawText(line, {
+      x: (width - textWidth) / 2,
+      y,
+      size,
+      font: usedFont,
+      color: i === 0 ? darkText : grayText,
+    });
 
-  const textWidth = usedFont.widthOfTextAtSize(
-    line,
-    size
-  );
-
-  page.drawText(line, {
-    x: (width - textWidth) / 2,
-    y,
-    size,
-    font: usedFont,
-    color: i === 0 ? darkText : grayText,
+    y -= i === 0 ? 16 : 13;
   });
-
-  y -= i === 0 ? 16 : 13;
-});
   // =========================
   // FOOTER
   // =========================
@@ -417,7 +372,6 @@ noticeLines.forEach((line, i) => {
     "CVR: 46276043 • Moms/VAT nr.: DK46276043",
     "info@karskkaffe.dk • www.karskkaffe.dk",
   ];
-
 
   let footerY = 45;
 
@@ -435,7 +389,6 @@ noticeLines.forEach((line, i) => {
     footerY -= 11;
   });
 
-
   // =========================
   // EXPORT PDF
   // =========================
@@ -443,7 +396,6 @@ noticeLines.forEach((line, i) => {
 
   return Buffer.from(pdfBytes);
 }
-
 
 module.exports = {
   generateInvoicePdf,

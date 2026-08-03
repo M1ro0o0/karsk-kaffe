@@ -1,14 +1,11 @@
 const fs = require("fs");
 const path = require("path");
 
-const {
-  generateInvoicePdf,
-} = require("../invoice"); // adjust path if necessary
+const { generateInvoicePdf } = require("../invoice"); // adjust path if necessary
 
 async function run() {
-
   const order = {
-    id: 12345,
+    orderID: "03AUG26AX0000",
 
     createdAt: new Date(),
 
@@ -50,7 +47,7 @@ async function run() {
 
     shippingCost: 39,
 
-    discountCode: "WELCOME10",
+    discount: { code: "Welcome10", amount: 35 },
 
     totalAmount: 396,
   };
