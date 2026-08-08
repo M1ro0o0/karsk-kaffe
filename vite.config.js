@@ -3,8 +3,17 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+
+  build: {
+    sourcemap: true,
+  },
+
   server: {
-    host: true,   // allow connections from any interface
-    port: 5173    // or your preferred port
+    proxy: {
+      "/api": {
+        target: "https://api.karskkaffe.dk",
+        changeOrigin: true
+      }
+    }
   }
 })

@@ -1,0 +1,27 @@
+# Karsk Kaffe
+
+> Kvalitetskaffe fra Slovakiet til Danmark – fra hjerte til kop.
+
+Karsk Kaffe is a Danish coffee webshop offering selected coffee from Slovakia,
+delivered to customers in Denmark.
+
+## Website
+
+- https://karskkaffe.dk/ — Main webshop
+- https://karskkaffe.dk/products — Coffee products
+- https://karskkaffe.dk/about — About Karsk Kaffe
+- https://karskkaffe.dk/contact — Contact
+
+## Products
+
+Karsk Kaffe offers selected Slovak coffee, including coffee blends and
+degustation boxes.
+
+## Languages
+
+The website is available in Danish, English, Slovak and Polish.
+
+## Business
+
+Karsk Kaffe
+Sønderborg, Denmark
