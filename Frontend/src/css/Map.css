@@ -24,6 +24,7 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
+
 /* ============================
    HEADER
    ============================ */
@@ -61,6 +62,7 @@
   color: #8F5445;
 }
 
+
 /* ============================
    SEARCH
    ============================ */
@@ -84,7 +86,7 @@
 
 .map-search button {
   padding: 0.45rem 1rem;
-  background: #C7A9A2;
+  background: #8F5445;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -92,10 +94,15 @@
   font-size: 0.9rem;
 }
 
+.map-search button:hover {
+  background: #C7A9A2;
+}
+
 .map-search button:disabled {
   background: #aaa;
   cursor: not-allowed;
 }
+
 
 /* ============================
    MAP
@@ -104,6 +111,7 @@
   flex: 1;
   min-height: 0;
 }
+
 
 /* ============================
    STATUS
@@ -119,6 +127,7 @@
   color: #c0392b;
 }
 
+
 /* ============================
    POPUP SELECT BUTTON
    ============================ */
@@ -133,6 +142,11 @@
   font-size: 0.85rem;
   width: 100%;
 }
+
+.map-select-btn:hover {
+  background: #C7A9A2;
+}
+
 
 /* ============================
    FOOTER
@@ -177,7 +191,7 @@
 
 .map-confirm-btn {
   padding: 0.55rem 1.25rem;
-  background: #C7A9A2;
+  background: #8F5445;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -187,9 +201,13 @@
 }
 
 .map-confirm-btn:hover {
-  background: #8F5445;
+  background: #C7A9A2;
 }
 
+
+/* ============================
+   MARKERS
+   ============================ */
 .marker-selected {
   filter: hue-rotate(120deg);
 }
@@ -198,6 +216,7 @@
   background: none;
   border: none;
 }
+
 
 /* ============================
    MOBILE
