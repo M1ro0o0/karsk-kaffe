@@ -8,6 +8,7 @@ import CoffeeProduct from "../components/products/CoffeeProduct";
 import SimpleProduct from "../components/products/SimpleProduct";
 import BoxProduct from "../components/products/BoxProduct";
 import RandomProducts from "../components/RandomProducts";
+import ProductStructuredData from "../components/seo/ProductStructuredData";
 
 const productComponents = {
   coffee: CoffeeProduct,
@@ -29,6 +30,8 @@ function ProductPage() {
       });
   }, [id, lang]);
 
+  console.log(product);
+
   if (!product)
     return <p style={{ textAlign: "center" }}>{t.product.loading}...</p>;
 
@@ -36,6 +39,8 @@ function ProductPage() {
 
   return (
     <>
+    <ProductStructuredData product={product} />
+    
       <Component product={product} />
 
       <h2 style={{ textAlign: "center" }}>{t.product.like}</h2>
