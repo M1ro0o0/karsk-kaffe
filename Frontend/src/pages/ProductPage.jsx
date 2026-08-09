@@ -1,4 +1,5 @@
 import { API_URL } from "../config";
+import SEO from "../components/seo/SEO";
 
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -39,8 +40,15 @@ function ProductPage() {
 
   return (
     <>
-    <ProductStructuredData product={product} />
-    
+      <SEO
+        title={`${product.name} – Karsk Kaffe`}
+        description={product.description}
+        canonical={`/product/${product.id}`}
+        image={product.image}
+      />
+
+      <ProductStructuredData product={product} />
+
       <Component product={product} />
 
       <h2 style={{ textAlign: "center" }}>{t.product.like}</h2>

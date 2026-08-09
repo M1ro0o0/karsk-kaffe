@@ -1,5 +1,6 @@
 import { API_URL } from "../config";
 import "../css/CategoryPage.css";
+import SEO from "../components/seo/SEO";
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -32,6 +33,12 @@ function CategoryPage() {
 
   return (
     <div className="category-page">
+      <SEO
+        title={`${tag} – Karsk Kaffe`}
+        description={`Se vores udvalg af ${tag.toLowerCase()} hos Karsk Kaffe.`}
+        canonical={`/category/${tag}`}
+      />
+
       <h1 className="category-title">
         {tag.charAt(0).toUpperCase() + tag.slice(1)}
       </h1>

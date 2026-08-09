@@ -1,5 +1,6 @@
 import { API_URL } from "../config";
 import "../css/Home.css";
+import SEO from "../components/seo/SEO";
 
 import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
@@ -28,6 +29,12 @@ function Home() {
 
   return (
     <div>
+      <SEO
+        title="Karsk Kaffe – Kaffe fra Slovakiet"
+        description="Kvalitetskaffe fra Slovakiet til Danmark – friskristet kaffe og nøje udvalgte kaffebønner."
+        canonical="/"
+      />
+
       <Popup />
       <Banner />
 

@@ -1,12 +1,14 @@
+import "../css/LegalPage.css";
+import SEO from "../components/seo/SEO";
+
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 import ReactMarkdown from "react-markdown";
-import "../css/LegalPage.css"; 
 
 export default function LegalPage() {
-const [searchParams] = useSearchParams();
-const doc = searchParams.get("doc");
+  const [searchParams] = useSearchParams();
+  const doc = searchParams.get("doc");
 
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
@@ -39,18 +41,20 @@ const doc = searchParams.get("doc");
             setLoading(false);
           });
       });
-
   }, [doc, lang]);
 
   if (!doc) return <p>No document selected</p>;
 
   return (
     <div className="legal-container">
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <ReactMarkdown>{content}</ReactMarkdown>
-      )}
+      
+      <SEO
+        title="Handelsbetingelser og privatliv – Karsk Kaffe"
+        description="Læs Karsk Kaffes handelsbetingelser, privatlivspolitik og øvrige juridiske oplysninger."
+        canonical="/legal"
+      />
+
+      {loading ? <p>Loading...</p> : <ReactMarkdown>{content}</ReactMarkdown>}
     </div>
   );
 }

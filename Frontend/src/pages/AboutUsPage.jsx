@@ -1,4 +1,6 @@
 import "../css/AboutUsPage.css";
+import SEO from "../components/seo/SEO";
+
 import React from "react";
 import { useLanguage } from "../context/LanguageContext";
 import { Link } from "react-router-dom";
@@ -8,6 +10,11 @@ function About() {
 
   return (
     <div className="about">
+      <SEO
+        title="Om Karsk Kaffe"
+        description="Læs om Karsk Kaffe og vores passion for kvalitetskaffe fra Slovakiet til Danmark."
+        canonical="/about"
+      />
 
       {/* HERO */}
       <section className="about-hero">
@@ -15,7 +22,6 @@ function About() {
       </section>
 
       <div className="about-container">
-
         {/* OUR STORY */}
         <section className="about-section centered">
           <h2>{t.about.subtitle1}</h2>
@@ -27,11 +33,23 @@ function About() {
         <section className="about-section about-roastery">
           {/* Left Images */}
           <div className="about-images">
-            <img src="/images/Roastery.jpg" alt="Roastery" className="roastery" />
-            
+            <img
+              src="/images/Roastery.jpg"
+              alt="Roastery"
+              className="roastery"
+            />
+
             <div className="detva-container">
-              <img src="/images/Detva.jpg" alt="Detva Panorama" className="detva" />
-              <img src="/images/Folk.jpg" alt="Detva Folk" className="folk-overlay" />
+              <img
+                src="/images/Detva.jpg"
+                alt="Detva Panorama"
+                className="detva"
+              />
+              <img
+                src="/images/Folk.jpg"
+                alt="Detva Folk"
+                className="folk-overlay"
+              />
             </div>
           </div>
 
@@ -57,9 +75,21 @@ function About() {
         <section className="about-section about-roastery">
           {/* Left Images */}
           <div className="about-images">
-            <img src="/images/Frisna.jpg" alt="Frisna Kava Team" className="roastery" />
-            <img src="/images/Master.jpg" alt="Rasting Master" className="roastery" />
-            <img src="/images/Colombia.jpg" alt="Colombia" className="roastery" />
+            <img
+              src="/images/Frisna.jpg"
+              alt="Frisna Kava Team"
+              className="roastery"
+            />
+            <img
+              src="/images/Master.jpg"
+              alt="Rasting Master"
+              className="roastery"
+            />
+            <img
+              src="/images/Colombia.jpg"
+              alt="Colombia"
+              className="roastery"
+            />
           </div>
 
           {/* Right Text */}
@@ -72,7 +102,6 @@ function About() {
             <p>{t.about.text45}</p>
             <p>{t.about.text46}</p>
           </div>
-
         </section>
 
         {/* WHY NOT Eco */}
@@ -104,7 +133,6 @@ function About() {
             {t.about.contact}
           </Link>
         </section>
-
       </div>
     </div>
   );
