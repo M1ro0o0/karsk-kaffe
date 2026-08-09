@@ -88,12 +88,12 @@ function CheckoutPage() {
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const isValidPhone = (phone) => {
-  try {
-    return phone ? isValidPhoneNumber(phone) : false;
-  } catch {
-    return false;
-  }
-};
+    try {
+      return phone ? isValidPhoneNumber(phone) : false;
+    } catch {
+      return false;
+    }
+  };
 
   const isAddressValid = (data) =>
     data.firstName &&
@@ -106,6 +106,54 @@ function CheckoutPage() {
     data.country;
 
   const requiresPickupPoint = shippingData?.method?.id === "shop";
+
+  const checkCartAvailability = async () => {
+    const results = await Promise.all(
+      cart.map(async (item) => {
+        const response = await fetch(`${API_URL}/api/stock-check`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            productId: item.id,
+            selectedOptions: item.options || {},
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || `Could not check stock for ${item.name}`,
+          );
+        }
+
+        return {
+          ...item,
+          sku: data.sku,
+          stock: Number(data.stock) || 0,
+        };
+      }),
+    );
+
+    const unavailable = results.filter((item) => item.stock < item.quantity);
+
+    if (unavailable.length > 0) {
+      const message = unavailable
+        .map(
+          (item) =>
+            `${item.name} (${item.quantity} requested, ${item.stock} available)`,
+        )
+        .join(", ");
+
+      throw new Error(
+        `Some products are no longer available in the requested quantity: ${message}`,
+      );
+    }
+
+    return results;
+  };
 
   const isDisabled =
     cart.length === 0 ||
@@ -130,6 +178,8 @@ function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
+      await checkCartAvailability();
+
       const response = await fetch(`${API_URL}/api/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
