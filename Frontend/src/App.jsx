@@ -1,3 +1,5 @@
+import SiteStructuredData from "./components/seo/SiteStructureData";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
@@ -19,6 +21,8 @@ import OrderSuccessPage from "./pages/OrderSuccessPage";
 function App() {
   return (
     <>
+      <SiteStructuredData />
+
       <ScrollToTop />
       <Navbar  />
       <ErrorBoundary>
