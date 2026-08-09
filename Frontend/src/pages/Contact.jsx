@@ -2,6 +2,7 @@ import { API_URL } from "../config";
 import "../css/Contact.css";
 
 import React, { useState } from "react";
+import { useLanguage } from "../context/LanguageContext";
 
 const CONTACT_TYPES = [
   { value: "general", label: "General question" },
@@ -13,13 +14,14 @@ const CONTACT_TYPES = [
 const MAX_IMAGES = 5;
 
 function ContactPage() {
+  const { lang } = useLanguage();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
     type: "general",
     message: "",
-    orderNumber: "",
-    lang: "da"
+    orderNumber: ""
   });
 
   const [images, setImages] = useState([]);
@@ -50,7 +52,7 @@ function ContactPage() {
       formData.append("email", form.email);
       formData.append("type", form.type);
       formData.append("message", form.message);
-      formData.append("lang", form.lang);
+      formData.append("lang", lang);
       if (form.orderNumber) formData.append("orderNumber", form.orderNumber);
       images.forEach((file) => formData.append("images", file));
 
@@ -63,7 +65,7 @@ function ContactPage() {
 
       if (res.ok) {
         setStatus("success");
-        setForm({ name: "", email: "", type: "general", message: "", orderNumber: "", lang: "da" });
+        setForm({ name: "", email: "", type: "general", message: "", orderNumber: "" });
         setImages([]);
       } else {
         setStatus("error");
