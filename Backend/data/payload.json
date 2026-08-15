@@ -1,0 +1,33 @@
+{
+  "own_agreement": false,
+  "product_code": "BRI_PP",
+  "service_codes": "EMAIL_NT",
+  "reference": "Manual test 1",
+  "label_format": "compact_pdf",
+  "service_point_id": "108332",
+  "parties": [
+    {
+      "type": "sender",
+      "name": "Karsk Kaffe",
+      "address1": "Ellegårdvej 18C",
+      "postal_code": "6400",
+      "city": "Sønderborg",
+      "country_code": "DK",
+      "email": "orders@karskkaffe.dk",
+      "phone": "12345678"
+    },
+    {
+      "type": "receiver",
+      "name": "Test Customer",
+      "address1": "Testvej 1",
+      "postal_code": "2100",
+      "city": "København Ø",
+      "country_code": "DK",
+      "email": "test@example.com",
+      "phone": "12345678"
+    }
+  ],
+  "parcels": [{ "weight": 500 }]
+}
+
+

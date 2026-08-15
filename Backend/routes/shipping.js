@@ -85,7 +85,7 @@ function shippingRoutes() {
     gls: "gls",
     dao: "dao",
     bring: "bring",
-    postnord: "post_nord",
+    postnord: "pdk",
   };
 
   const SHIPMONDO_BASE_URL = "https://app.shipmondo.com/api/public/v3";

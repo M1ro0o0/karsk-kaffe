@@ -24,7 +24,7 @@ const LABEL_FORMAT = process.env.SHIPMONDO_LABEL_FORMAT || "compact_pdf";
 
 // You don't have your own carrier agreements, so this should stay false — you're booking
 // against Shipmondo's own bundled agreements, which is the default here and needs no .env entry.
-const OWN_AGREEMENT = process.env.SHIPMONDO_OWN_AGREEMENT === "false";
+const OWN_AGREEMENT = process.env.SHIPMONDO_OWN_AGREEMENT === "true";
 
 function authHeader() {
   const creds = `${process.env.SHIPMONDO_API_USER}:${process.env.SHIPMONDO_API_KEY}`;
@@ -66,37 +66,45 @@ const SENDER = {
 const DELIVERY_METHODS = {
   gls_home: {
     productCode: "GLSDK_HD",
-    serviceCodes: "EMAIL_NT",
+    serviceCodes: "EMAIL_NT,SMS_NT",
     servicePoint: false,
   },
   gls_parcelshop: {
     productCode: "GLSDK_SD",
-    serviceCodes: "EMAIL_NT",
+    serviceCodes: "EMAIL_NT,SMS_NT",
     servicePoint: true,
     carrierCode: "gls",
   },
-  dao_home: { productCode: "DAO_STH", serviceCodes: "", servicePoint: false },
+  dao_home: {
+    productCode: "DAO_STH",
+    serviceCodes: "EMAIL_NT",
+    servicePoint: false,
+  },
   dao_parcelshop: {
     productCode: "DAO_STS",
-    serviceCodes: "",
+    serviceCodes: "EMAIL_NT",
     servicePoint: true,
     carrierCode: "dao",
   },
   postnord_home: {
     productCode: "PDK_MH",
-    serviceCodes: "",
+    serviceCodes: "EMAIL_NT",
     servicePoint: false,
   },
   postnord_parcelshop: {
     productCode: "PDK_MC",
-    serviceCodes: "",
+    serviceCodes: "EMAIL_NT",
     servicePoint: true,
     carrierCode: "pdk",
   },
-  bring_home: { productCode: "BRI_HDP", serviceCodes: "", servicePoint: false },
+  bring_home: {
+    productCode: "BRI_HDP",
+    serviceCodes: "EMAIL_NT",
+    servicePoint: false,
+  },
   bring_parcelshop: {
     productCode: "BRI_PP",
-    serviceCodes: "",
+    serviceCodes: "EMAIL_NT",
     servicePoint: true,
     carrierCode: "bring",
   },
@@ -386,22 +394,6 @@ async function dumpProducts(countryCode = "DK") {
   return products;
 }
 
-async function getCarriers() {
-  const res = await shipmondoRequest("/carrierssender_country_code=DK&receiver_country_code=DK");
-
-  if (!res.ok) {
-    throw new Error(
-      `Shipmondo get carriers failed (${res.status}): ${await res.text()}`,
-    );
-  }
-
-  const carriers = await res.json();
-
-  console.log(JSON.stringify(carriers, null, 2));
-
-  return carriers;
-}
-
 module.exports = {
   createShipment,
   fetchShipmentLabel,
@@ -410,6 +402,5 @@ module.exports = {
   checkWeightFits,
   validateShippingSetup,
   dumpProducts,
-  getCarriers,
   totalWeightGrams,
 };
