@@ -3,6 +3,7 @@ import "../css/AddressForm.css";
 import { useLanguage } from "../context/LanguageContext";
 import postalCodes from "../data/postal-codes.json";
 
+import { isValidPhoneNumber } from "libphonenumber-js";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
@@ -24,12 +25,23 @@ function AddressForm({ title, data, onChange, disabled = false }) {
     onChange(updated);
   };
 
-const handlePhoneChange = (phone) => {
-  onChange({
-    ...data,
-    phone,
-  });
-};
+  const handlePhoneChange = (phone) => {
+    onChange({
+      ...data,
+      phone,
+      phoneTouched: false,
+    });
+  };
+
+  const handlePhoneBlur = () => {
+    const phoneValid = data.phone ? isValidPhoneNumber(data.phone) : false;
+
+    onChange({
+      ...data,
+      phoneValid,
+      phoneTouched: true,
+    });
+  };
 
   const { t } = useLanguage();
 
@@ -69,9 +81,11 @@ const handlePhoneChange = (phone) => {
         value={data.phone}
         disabled={disabled}
         onChange={handlePhoneChange}
+        onBlur={handlePhoneBlur}
+        countryOptionsOrder={["DK", "SK", "CZ", "PL", "DE", "SE", "NO", "FI","|", "..."]}
       />
 
-      {data.phone && !data.phoneValid && (
+      {data.phoneTouched && data.phone && !data.phoneValid && (
         <small className="error">Invalid phone number</small>
       )}
 
