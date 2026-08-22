@@ -13,8 +13,8 @@ const fetch = require("node-fetch");
 const { computeSku } = require("./sku");
 const { getZohoIdForSku } = require("./zoho-sku-lookup");
 
-const ZOHO_ACCOUNTS_BASE = "https://accounts.zoho.eu";
-const ZOHO_API_BASE = "https://www.zohoapis.eu/inventory/v1";
+const ZOHO_ACCOUNTS_BASE = process.env.ZOHO_ACCOUNT_BASE;
+const ZOHO_API_BASE = process.env.ZOHO_API_BASE;
 const ORG_ID = process.env.ZOHO_ORG_ID;
 
 /*--------------------------------------------------
@@ -62,7 +62,7 @@ async function getZohoAccessToken() {
 
 /**
  * Generic authenticated request helper for anything not already covered
- * by getItem / createSalesOrder below.
+ * by getItem below.
  */
 async function zohoRequest(path, options = {}) {
 
@@ -209,13 +209,7 @@ async function lineItemsFromOrder(order, supabase) {
   return lineItems;
 }
 
-/**
- * Creates a Sales Order in Zoho Inventory for the given order.
- * @param {object} order
- * @param {object} supabase - needed to resolve each cart item's SKU to a Zoho item_id
- * @returns {Promise<object>} the created salesorder object from Zoho
- */
-async function createSalesOrder(order, supabase) {
+async function buildSalesOrderPayload(order, supabase) {
 
   const contactId = await findOrCreateContact(order);
   const lineItems = await lineItemsFromOrder(order, supabase);
@@ -228,16 +222,75 @@ async function createSalesOrder(order, supabase) {
     shipping_charge: order.shippingCost || 0
   };
 
+  // Assuming `discount` is a flat currency amount, not a percentage — Zoho expects
+  // a "%" suffix for percentage discounts, so double-check this against how you
+  // populate the column before relying on it.
+  if (order.discount) {
+    payload.discount = order.discount;
+    payload.discount_type = "entity_level";
+  }
+
+  return { contactId, payload };
+}
+
+async function createSalesOrder(order, supabase) {
+
+  const { payload } = await buildSalesOrderPayload(order, supabase);
+
   const result = await zohoRequest(`/salesorders`, {
     method: "POST",
     body: JSON.stringify(payload)
   });
 
-  return result.salesorder;
+  const salesOrder = result.salesorder;
+
+  await zohoRequest(`/salesorders/${salesOrder.salesorder_id}/status/confirmed`, {
+    method: "POST"
+  });
+
+  return salesOrder;
+}
+
+async function voidSalesOrder(zohoOrderID) {
+  await zohoRequest(`/salesorders/${zohoOrderID}/status/void`, {
+    method: "POST"
+  });
+}
+
+/**
+ * @param {object} order - must include zohoOrderID and invoiceNumber
+ */
+async function finalizeSalesOrder(order, supabase, { trackingNumber } = {}) {
+
+  if (!order.zohoOrderID) {
+    throw new Error(`Order ${order.id} has no zohoOrderID — cannot finalize a reservation that doesn't exist.`);
+  }
+
+  const { payload } = await buildSalesOrderPayload(order, supabase);
+
+  // Zoho's Update endpoint requires salesorder_number even though we're not
+  // changing it, and we don't store it separately — so fetch it live.
+  const current = await zohoRequest(`/salesorders/${order.zohoOrderID}`);
+
+  const notesLines = [`Invoice: ${order.invoiceNumber}`];
+  if (trackingNumber) {
+    notesLines.push(`Tracking: ${trackingNumber}`);
+  }
+
+  await zohoRequest(`/salesorders/${order.zohoOrderID}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      ...payload,
+      salesorder_number: current.salesorder.salesorder_number,
+      notes: notesLines.join(" | ")
+    })
+  });
 }
 
 module.exports = {
   getZohoAccessToken,
   getItem,
-  createSalesOrder
+  createSalesOrder,
+  voidSalesOrder,
+  finalizeSalesOrder
 };

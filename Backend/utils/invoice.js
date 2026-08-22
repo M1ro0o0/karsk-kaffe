@@ -61,7 +61,7 @@ async function generateInvoicePdf(order) {
     color: darkText,
   });
 
-  page.drawText(`Ordre #${order.orderID}`, {
+  page.drawText(`Ordre #${order.invoiceNumber}`, {
     x: headerX,
     y: height - 80,
     size: 10,
@@ -342,7 +342,7 @@ async function generateInvoicePdf(order) {
 
   const noticeLines = [
     "Reklamation",
-    `Hvis din ordre (#${order.orderID}) er ankommet beskadiget eller ikke er komplet,`,
+    `Hvis din ordre (#${order.invoiceNumber}) er ankommet beskadiget eller ikke er komplet,`,
     "kan du gøre krav på refusion eller kompensation ved at kontakte os på",
     "return@karskkaffe.dk.",
   ];

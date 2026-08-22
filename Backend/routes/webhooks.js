@@ -62,11 +62,6 @@ module.exports = (supabase) => {
         return res.status(200).send("Already processed");
       }
 
-      await supabase
-        .from("Orders")
-        .update({ status: "paid" })
-        .eq("id", order.id);
-
       // Respond to Revolut immediately — don't make it wait on Shipmondo/Zoho/email calls.
       // If any of those fail, processOrder() already isolates them internally (Promise.allSettled)
       // and logs the failure; it does not throw. We still wrap in try/catch as a last-resort net.

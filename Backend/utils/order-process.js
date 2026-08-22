@@ -1,75 +1,82 @@
-const { generateInvoicePdf } = require("./invoice");
-const { createShipment } = require("./shipmondo");
-const { createSalesOrder } = require("./zoho");
-const { sendOrderConfirmation, sendNewOrderAlert } = require("./emails");
+const { generateInvoicePdf } = require("../invoice");
+const { createShipment } = require("../shipmondo");
+const { finalizeSalesOrder } = require("./zoho");
+const { sendOrderConfirmation, sendNewOrderAlert } = require("../emails");
 const { generateOrderNumber } = require("./invoice-number-generation");
 
 /**
- * Runs the full post-payment order flow:
- *  1. Generate the invoice PDF (once, reused by both emails)
- *  2. Create the shipment in Shipmondo -> get the shipping label
- *  3. Push the order into Zoho Inventory as a sales order
- *  4. Email the customer their confirmation + invoice
- *  5. Email you (orders@karskkaffe.dk) the new-order alert with invoice + label attached
- *
- * Shipmondo and Zoho run in parallel and are isolated with try/catch so that one failing
- * doesn't stop the other, or stop the customer's confirmation email from going out.
+ * @param {object} order - fetched fresh from the DB by the caller (webhooks.js) —
+ *   don't pass a stale copy, since the "already paid" guard depends on it.
+ * @param {object} supabase
  */
-
 async function processOrder(order, supabase) {
-  if (order.invoiceNumber) {
-    console.log(`Order ${order.id} already processed as ${order.orderNumber}`);
+
+  if (order.status === "paid") {
+    console.log(`Order ${order.id} already processed as paid.`);
     return;
   }
 
-  // Generate invoice/order number only after successful payment
-  const invoiceNumber = await generateInvoiceNumber(supabase);
+  const invoiceNumber = await generateOrderNumber(supabase);
 
-  await supabase
+  const { error: paidUpdateError } = await supabase
     .from("Orders")
-    .update({
-      invoiceNumber,
-      status: "paid",
-    })
+    .update({ status: "paid", invoiceNumber })
     .eq("id", order.id);
 
-  // Update local object so the rest of the process uses it
+  if (paidUpdateError) {
+    throw new Error(`Failed to mark order ${order.id} as paid: ${JSON.stringify(paidUpdateError)}`);
+  }
+
+  order.status = "paid";
   order.invoiceNumber = invoiceNumber;
 
   const invoicePdfBuffer = await generateInvoicePdf(order);
 
-  const [shipmentResult, salesOrderResult] = await Promise.allSettled([
-    createShipment(order),
-    createSalesOrder(order, supabase),
-  ]);
+  let shipment = null;
 
-  if (shipmentResult.status === "rejected") {
-    console.error(
-      `Shipmondo shipment failed for order ${order.id}:`,
-      shipmentResult.reason,
-    );
+  try {
+    shipment = await createShipment(order);
+
+    const { error: shipmentUpdateError } = await supabase
+      .from("Orders")
+      .update({
+        trackingURL: shipment.trackingUrl,
+        shipmondoShipmentID: shipment.shipmentId
+      })
+      .eq("id", order.id);
+
+    if (shipmentUpdateError) {
+      console.error(`Failed to save shipment info for order ${order.id}:`, shipmentUpdateError);
+    }
+  } catch (err) {
+    console.error(`Shipmondo shipment failed for order ${order.id}:`, err);
   }
-  if (salesOrderResult.status === "rejected") {
-    console.error(
-      `Zoho sales order failed for order ${order.id}:`,
-      salesOrderResult.reason,
-    );
+
+  try {
+    await finalizeSalesOrder(order, supabase, {
+      trackingNumber: shipment?.trackingNumber
+    });
+  } catch (err) {
+    console.error(`Zoho finalize failed for order ${order.id}:`, err);
   }
 
-  const shipment =
-    shipmentResult.status === "fulfilled" ? shipmentResult.value : null;
-  const salesOrder =
-    salesOrderResult.status === "fulfilled" ? salesOrderResult.value : null;
+  try {
+    await sendOrderConfirmation(order, invoicePdfBuffer);
+  } catch (err) {
+    console.error(`Customer confirmation email failed for order ${order.id}:`, err);
+  }
 
-  await sendOrderConfirmation(order, invoicePdfBuffer);
+  try {
+    await sendNewOrderAlert(order, {
+      invoicePdfBuffer,
+      labelPdfBuffer: shipment?.labelPdfBuffer ?? null,
+      trackingNumber: shipment?.trackingNumber ?? null
+    });
+  } catch (err) {
+    console.error(`Internal order alert failed for order ${order.id}:`, err);
+  }
 
-  await sendNewOrderAlert(order, {
-    invoicePdfBuffer,
-    labelPdfBuffer: shipment?.labelPdfBuffer ?? null,
-    trackingNumber: shipment?.trackingNumber ?? null,
-  });
-
-  return { shipment, salesOrder };
+  return { shipment };
 }
 
 module.exports = { processOrder };

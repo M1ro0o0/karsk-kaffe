@@ -74,7 +74,11 @@ module.exports = (supabase) => {
 
       return res.json({
         sku,
-        stock: item?.available_stock ?? item?.stock_on_hand ?? 0,
+        stock:
+          item?.available_for_sale_stock ??
+          item?.available_stock ??
+          item?.stock_on_hand ??
+          0,
       });
     } catch (err) {
       console.error("STOCK CHECK ERROR:", err);

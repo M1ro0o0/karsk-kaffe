@@ -111,7 +111,7 @@ const DELIVERY_METHODS = {
 };
 
 function resolveDeliveryMethod(order) {
-  const key = order.shipping?.method;
+  const key = order.shippingMethod;
   const method = DELIVERY_METHODS[key];
 
   if (!method) {
@@ -290,9 +290,9 @@ async function createShipment(order) {
   };
 
   if (method.servicePoint) {
-    if (!order.shipping?.servicePointId) {
+    if (!order.pickupPoint) {
       throw new Error(
-        `Order ${order.id} uses parcel-shop method "${order.shipping?.method}" but has no ` +
+        `Order ${order.id} uses parcel-shop method "${order.shippingMethod}" but has no ` +
           `shipping.servicePointId — look one up with findServicePoints() at checkout.`,
       );
     }
