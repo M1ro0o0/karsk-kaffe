@@ -8,6 +8,7 @@ import { getVATAmount } from "../utils/pricing.js";
 import { useLanguage } from "../context/LanguageContext";
 import ShippingSelector from "../components/ShippingSelector";
 import { API_URL } from "../config";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 function CheckoutPage() {
   const {
@@ -104,7 +105,7 @@ function CheckoutPage() {
     data.city &&
     data.country;
 
-  const requiresPickupPoint = shippingData?.method?.id === "shop";
+  const requiresPickupPoint = shippingData?.method?.id === "parcelshop";
 
   const checkCartAvailability = async () => {
     const results = await Promise.all(
@@ -185,7 +186,7 @@ function CheckoutPage() {
         body: JSON.stringify({
           cartItems: cart,
           discountCode: discount.code || null,
-          discoundAmount: discountAmount || 0,
+          discountAmount: discountAmount || 0,
           shippingCost: shippingPrice,
           customerEmail: billingAddress.email,
           customerName: `${billingAddress.firstName} ${billingAddress.lastName}`,
