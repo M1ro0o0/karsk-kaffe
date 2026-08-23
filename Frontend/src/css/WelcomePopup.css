@@ -1,0 +1,337 @@
+/* =========================================================
+   WELCOME POPUP
+   Rustic chalkboard style
+   ========================================================= */
+
+@font-face {
+  font-family: "ChalkFont";
+  src: url("../assets/fonts/Gincu.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.welcome-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.65);
+
+  animation: welcomeOverlayFade 0.3s ease-out;
+}
+
+
+/* =========================================================
+   POPUP / BLACKBOARD
+   ========================================================= */
+
+.welcome-popup {
+  position: relative;
+
+  width: min(600px, 100%);
+  padding: 55px 55px 45px;
+
+  text-align: center;
+
+  color: #f1eee4;
+
+  background:
+    radial-gradient(
+      ellipse at 20% 15%,
+      rgba(255, 255, 255, 0.035),
+      transparent 35%
+    ),
+    radial-gradient(
+      ellipse at 80% 85%,
+      rgba(255, 255, 255, 0.025),
+      transparent 40%
+    ),
+    linear-gradient(
+      rgba(255, 255, 255, 0.015),
+      rgba(0, 0, 0, 0.08)
+    ),
+    #252622;
+
+  border: 12px solid #684b35;
+  border-radius: 5px;
+
+  box-shadow:
+    0 20px 45px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 3px rgba(0, 0, 0, 0.35),
+    inset 0 0 35px rgba(0, 0, 0, 0.35);
+
+  animation: welcomePopupIn 0.35s ease-out;
+}
+
+
+/* Wooden frame highlights */
+
+.welcome-popup::before {
+  content: "";
+
+  position: absolute;
+  inset: -12px;
+
+  border: 2px solid rgba(193, 153, 112, 0.35);
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   CLOSE BUTTON
+   ========================================================= */
+
+.welcome-close {
+  position: absolute;
+
+  top: 12px;
+  right: 12px;
+
+  width: 34px;
+  height: 34px;
+
+  border: 2px solid rgba(241, 238, 228, 0.65);
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: #f1eee4;
+
+  font-family: Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 28px;
+
+  cursor: pointer;
+
+  opacity: 0.8;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.welcome-close:hover {
+  opacity: 1;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  transform: rotate(8deg) scale(1.05);
+}
+
+
+/* =========================================================
+   TEXT
+   ========================================================= */
+
+.welcome-popup h2,
+.welcome-popup p,
+.chalk-coffee {
+  font-family: "ChalkFont", cursive;
+}
+
+.welcome-popup h2 {
+  margin: 0 0 20px;
+
+  font-size: clamp(2rem, 4.5vw, 2.6rem);
+  font-weight: 700;
+
+  letter-spacing: 0.02em;
+
+  color: #f4f0e4;
+
+  /* Subtle chalk effect */
+  text-shadow:
+    1px 1px 0 rgba(255, 255, 255, 0.08),
+    -1px 0 0 rgba(255, 255, 255, 0.05);
+
+  transform: rotate(-1deg);
+}
+
+.welcome-popup h2 span {
+  font-family: Arial, sans-serif;
+  font-size: 0.8em;
+}
+
+
+/* =========================================================
+   BODY TEXT
+   ========================================================= */
+
+.welcome-popup p {
+  margin: 22px 0;
+
+  font-size: clamp(1.25rem, 2.8vw, 1.5rem);
+  line-height: 1.7;
+
+  color: #e9e5d9;
+
+  /* Gives the text a slightly dusty/chalky appearance */
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 0.4),
+    1px 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+.welcome-popup .english-text {
+  margin-top: 28px;
+
+  font-size: clamp(1.15rem, 2.6vw, 1.35rem);
+
+  opacity: 0.9;
+
+  transform: rotate(0.5deg);
+}
+
+
+/* =========================================================
+   CHALK LINES
+   ========================================================= */
+
+.chalk-line {
+  width: 75%;
+  height: 2px;
+
+  margin: 0 auto;
+
+  background: rgba(239, 235, 223, 0.55);
+
+  box-shadow:
+    0 1px 0 rgba(239, 235, 223, 0.15),
+    3px 0 0 rgba(239, 235, 223, 0.08),
+    -4px 0 0 rgba(239, 235, 223, 0.08);
+
+  transform: rotate(-0.5deg);
+}
+
+.bottom-line {
+  width: 55%;
+
+  margin-top: 30px;
+
+  transform: rotate(1deg);
+}
+
+
+/* =========================================================
+   DECORATIVE CHALK ELEMENTS
+   ========================================================= */
+
+.chalk-decoration {
+  position: absolute;
+
+  font-family: "ChalkFont", cursive;
+
+  color: rgba(241, 238, 228, 0.7);
+
+  pointer-events: none;
+}
+
+.top-left {
+  top: 30px;
+  left: 32px;
+
+  font-size: 25px;
+
+  transform: rotate(-15deg);
+}
+
+.top-right {
+  top: 28px;
+  right: 55px;
+
+  font-size: 27px;
+
+  opacity: 0.75;
+
+  transform: rotate(8deg);
+}
+
+
+/* =========================================================
+   BRANDING
+   ========================================================= */
+
+.chalk-coffee {
+  margin-top: 22px;
+
+  font-size: 1.3rem;
+
+  letter-spacing: 0.12em;
+
+  color: rgba(241, 238, 228, 0.75);
+
+  transform: rotate(-1deg);
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes welcomeOverlayFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes welcomePopupIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94) rotate(-1deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+  .welcome-overlay {
+    padding: 15px;
+  }
+
+  .welcome-popup {
+    padding: 50px 25px 35px;
+
+    border-width: 8px;
+  }
+
+  .welcome-popup h2 {
+    font-size: 1.8rem;
+  }
+
+  .welcome-popup p {
+    font-size: 1.15rem;
+  }
+
+  .welcome-popup .english-text {
+    font-size: 1.05rem;
+  }
+
+  .chalk-decoration {
+    display: none;
+  }
+
+  .welcome-close {
+    top: 8px;
+    right: 8px;
+  }
+}

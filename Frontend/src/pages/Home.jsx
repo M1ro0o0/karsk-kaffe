@@ -4,7 +4,7 @@ import SEO from "../components/seo/SEO";
 
 import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
-import Popup from "../components/Popup";
+import Popup from "../components/WelcomePopup";
 import Banner from "../components/Banner";
 import { useLanguage } from "../context/LanguageContext";
 
