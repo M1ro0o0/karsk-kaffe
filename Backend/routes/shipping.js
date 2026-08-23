@@ -1,7 +1,7 @@
 const express = require("express");
 
 const shippingConfig = require("./../data/shipping-prices.json");
-const { findServicePoints, getCarrierCode } = require("../utils/shipmondo");
+const { findServicePoints, getCarrierCode } = require("./../utils/shipmondo");
 
 function shippingRoutes() {
   const router = express.Router();
