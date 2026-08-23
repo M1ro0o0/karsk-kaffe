@@ -221,24 +221,29 @@
 /* ================= RESPONSIVE ================= */
 
 @media (max-width: 480px) {
+
   .address-form input {
     font-size: 16px;
   }
 
   .address-row {
-    flex-wrap: wrap;
-  }
-
-  .address-row input:not(.small) {
-    flex: 1 1 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
   }
 
   .address-row input.small {
     flex: 0 0 90px;
   }
 
+  .address-row input.town {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
   .address-form .PhoneInputCountrySelect,
   .address-form .PhoneInputInput {
     font-size: 16px;
   }
+
 }

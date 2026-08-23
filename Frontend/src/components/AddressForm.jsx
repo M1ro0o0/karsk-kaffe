@@ -82,7 +82,18 @@ function AddressForm({ title, data, onChange, disabled = false }) {
         disabled={disabled}
         onChange={handlePhoneChange}
         onBlur={handlePhoneBlur}
-        countryOptionsOrder={["DK", "SK", "CZ", "PL", "DE", "SE", "NO", "FI","|", "..."]}
+        countryOptionsOrder={[
+          "DK",
+          "SK",
+          "CZ",
+          "PL",
+          "DE",
+          "SE",
+          "NO",
+          "FI",
+          "|",
+          "...",
+        ]}
       />
 
       {data.phoneTouched && data.phone && !data.phoneValid && (
@@ -107,6 +118,7 @@ function AddressForm({ title, data, onChange, disabled = false }) {
         />
 
         <input
+          className="town"
           placeholder={t.address.city}
           value={data.city}
           disabled={disabled}

@@ -319,6 +319,10 @@
     text-align: center;
   }
 
+  .cart-summary .total-price{
+    text-align: right;
+  }
+
   .discount-code {
     flex-wrap: wrap;
   }
