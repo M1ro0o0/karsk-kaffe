@@ -80,24 +80,55 @@ async function createPendingOrder(orderData, supabase) {
  * Safe to call even if the order was never successfully reserved in Zoho (e.g. the
  * reservation itself failed) — it just no-ops the Zoho call in that case.
  *
+ * Atomically claims the order (status must currently be "pending") before touching Zoho, so
+ * this can't race the Revolut webhook: if processOrder() already flipped the order to "paid"
+ * (e.g. payment actually completed in the instant before the customer's browser reported the
+ * popup as closed), the conditional update below matches zero rows and this becomes a no-op
+ * instead of voiding a reservation behind a completed sale's back.
+ *
  * @param {object} order - must include id, and zohoOrderID if a reservation exists
  * @param {object} supabase
  * @param {string} [reason] - stored as the order's new status
+ * @returns {Promise<{released: boolean}>} released is false if the order was no longer
+ *   "pending" by the time this ran (already paid, already released, etc.)
  */
 async function releaseOrder(order, supabase, reason = "abandoned") {
 
-  if (order.zohoOrderID) {
-    await voidSalesOrder(order.zohoOrderID);
-  }
-
-  const { error } = await supabase
+  const { data: claimed, error: claimError } = await supabase
     .from("Orders")
     .update({ status: reason })
-    .eq("id", order.id);
+    .eq("id", order.id)
+    .eq("status", "pending")
+    .select()
+    .maybeSingle();
 
-  if (error) {
-    throw new Error(`Failed to update order ${order.id} status to "${reason}": ${JSON.stringify(error)}`);
+  if (claimError) {
+    throw new Error(`Failed to update order ${order.id} status to "${reason}": ${JSON.stringify(claimError)}`);
   }
+
+  if (!claimed) {
+    // Someone else (almost certainly the payment webhook) already moved this order off
+    // "pending" — nothing to release.
+    return { released: false };
+  }
+
+  if (order.zohoOrderID) {
+    try {
+      await voidSalesOrder(order.zohoOrderID);
+    } catch (err) {
+      // The order is correctly marked as released either way — a customer who abandoned
+      // checkout should never see this order as "pending" again. But if the void itself
+      // failed, the Zoho reservation is still holding stock and nothing will retry it
+      // automatically, so this needs a loud, actionable log rather than a silent swallow.
+      console.error(
+        `CRITICAL: order ${order.id} marked "${reason}" but its Zoho reservation ${order.zohoOrderID} ` +
+          `could not be voided — stock stays reserved until this is fixed manually:`,
+        err
+      );
+    }
+  }
+
+  return { released: true };
 }
 
 /**

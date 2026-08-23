@@ -185,7 +185,7 @@ function CheckoutPage() {
         body: JSON.stringify({
           cartItems: cart,
           discountCode: discount.code || null,
-          discountAmount: discountAmount || 0,
+          discoundAmount: discountAmount || 0,
           shippingCost: shippingPrice,
           customerEmail: billingAddress.email,
           customerName: `${billingAddress.firstName} ${billingAddress.lastName}`,
@@ -237,6 +237,16 @@ function CheckoutPage() {
         if (popup.closed) {
           clearInterval(pollInterval);
           setIsSubmitting(false); // customer closed the popup without paying — let them retry
+
+          // Release the stock reservation now rather than leaving it held until the backend's
+          // stale-order sweep eventually catches it. Fire-and-forget: this is a courtesy
+          // cleanup, not something the customer needs to wait on, and releaseOrder() on the
+          // backend safely no-ops if payment actually completed in the same instant.
+          fetch(`${API_URL}/api/orders/${data.orderId}/cancel`, {
+            method: "POST",
+          }).catch((err) => {
+            console.error("Failed to release abandoned order reservation:", err);
+          });
         }
       }, 1500);
     } catch (err) {
