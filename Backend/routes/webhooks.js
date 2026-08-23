@@ -2,12 +2,25 @@ const express = require("express");
 const crypto = require("crypto");
 
 const { processOrder } = require("../utils/order-process");
+const { releaseOrder } = require("../utils/order-reservation");
 
 module.exports = (supabase) => {
   const router = express.Router();
 
   router.post("/revolut", async (req, res) => {
     try {
+      if (!Buffer.isBuffer(req.body)) {
+        // If this fires, this route is mounted behind express.json() (or similar) instead
+        // of express.raw() — req.body is already a parsed object, and re-stringifying it
+        // won't reproduce the exact bytes Revolut signed, so every signature check below
+        // would silently fail. Fail loudly here instead of debugging "invalid signature"
+        // for real webhooks later.
+        console.error(
+          "Revolut webhook route received a non-Buffer body — mount this route with express.raw({ type: '*/*' }) BEFORE any express.json() middleware."
+        );
+        return res.status(500).send("Server misconfiguration");
+      }
+
       const signatureHeader = req.headers["revolut-signature"];
       const timestamp = req.headers["revolut-request-timestamp"];
       const rawPayload = req.body.toString("utf8");
@@ -41,11 +54,35 @@ module.exports = (supabase) => {
 
       console.log("=== WEBHOOK EVENT ===", event);
 
-      if (event.event !== "ORDER_COMPLETED") {
+      const revolutOrderId = event.order_id;
+
+      // ORDER_CANCELLED / ORDER_FAILED are Revolut's *final* unsuccessful states (per their
+      // docs) — release the reservation right away instead of waiting on the frontend's
+      // popup-closed poll or the stale-order sweep. ORDER_PAYMENT_DECLINED / ORDER_PAYMENT_FAILED
+      // are individual attempt failures, not final states — the customer can still retry on the
+      // same order/popup, so we deliberately do NOT release the reservation for those.
+      if (event.event === "ORDER_CANCELLED" || event.event === "ORDER_FAILED") {
+        const { data: failedOrder, error: failedLookupError } = await supabase
+          .from("Orders")
+          .select("*")
+          .eq("revolutOrderId", revolutOrderId)
+          .single();
+
+        if (failedLookupError || !failedOrder) {
+          console.error(`Webhook (${event.event}): order not found for revolutOrderId`, revolutOrderId);
+          return res.status(200).send("Ignored");
+        }
+
+        releaseOrder(failedOrder, supabase, "payment_failed").catch((err) => {
+          console.error(`Failed to release order ${failedOrder.id} after ${event.event}:`, err);
+        });
+
         return res.status(200).send("Ignored");
       }
 
-      const revolutOrderId = event.order_id;
+      if (event.event !== "ORDER_COMPLETED") {
+        return res.status(200).send("Ignored");
+      }
 
       const { data: order, error } = await supabase
         .from("Orders")
@@ -66,8 +103,6 @@ module.exports = (supabase) => {
       // If any of those fail, processOrder() already isolates them internally (Promise.allSettled)
       // and logs the failure; it does not throw. We still wrap in try/catch as a last-resort net.
       res.status(200).send("OK");
-
-      // TODO next: redeem discount code (order.discountCode) once it's actually used.
 
       processOrder(order, supabase).catch((err) => {
         // processOrder() is designed not to throw (each step is isolated), so reaching this

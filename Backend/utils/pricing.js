@@ -2,7 +2,7 @@ const { createClient } = require("@supabase/supabase-js");
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
 );
 
 async function calculateOrderTotal(cartItems, discountCode, shippingCost = 0) {
@@ -12,31 +12,56 @@ async function calculateOrderTotal(cartItems, discountCode, shippingCost = 0) {
     .from("Products")
     .select("id, baseDiscount, active")
     .in("id", productIds);
-  if (productsError) throw new Error(`Failed to fetch products: ${productsError.message}`);
+  if (productsError)
+    throw new Error(`Failed to fetch products: ${productsError.message}`);
 
   const { data: prices, error: pricesError } = await supabase
     .from("ProductPrices")
     .select("id, productID, label, price")
     .in("productID", productIds);
-  if (pricesError) throw new Error(`Failed to fetch prices: ${pricesError.message}`);
+  if (pricesError)
+    throw new Error(`Failed to fetch prices: ${pricesError.message}`);
 
   let subtotal = 0;
+
+  // Server-computed cart, with each item's price overwritten by the authoritative
+  // DB-derived unit price. The caller should persist THIS array on the order (not the
+  // raw client cartItems) so that everything downstream — the invoice PDF and the Zoho
+  // sales order line items, both of which read item.selectedPrice?.price ?? item.price —
+  // reflects what was actually charged, not whatever the client happened to send.
+  const pricedItems = [];
 
   for (const item of cartItems) {
     const product = products.find((p) => p.id === item.id);
     if (!product) throw new Error(`Product ${item.id} not found`);
-    if (!product.active) throw new Error(`Product ${item.id} is no longer available`);
+    if (!product.active)
+      throw new Error(`Product ${item.id} is no longer available`);
 
     // Match by productID + label, since cart items don't carry the ProductPrices row id
     const priceRow = prices.find(
-      (p) => p.productID === item.id && String(p.label) === String(item.selectedPrice?.label)
+      (p) =>
+        p.productID === item.id &&
+        String(p.label) === String(item.selectedPrice?.label),
     );
-    if (!priceRow) throw new Error(`Price option for product ${item.id}, label ${item.selectedPrice?.label} not found`);
+    if (!priceRow)
+      throw new Error(
+        `Price option for product ${item.id}, label ${item.selectedPrice?.label} not found`,
+      );
 
     const quantity = Number(item.quantity) || 0;
-    if (quantity <= 0) throw new Error(`Invalid quantity for product ${item.id}`);
+    if (quantity <= 0)
+      throw new Error(`Invalid quantity for product ${item.id}`);
 
-    subtotal += priceRow.price * product.baseDiscount * quantity;
+    const unitPrice = priceRow.price * product.baseDiscount;
+    subtotal += unitPrice * quantity;
+
+    pricedItems.push({
+      ...item,
+      price: unitPrice,
+      selectedPrice: item.selectedPrice
+        ? { ...item.selectedPrice, price: unitPrice }
+        : item.selectedPrice,
+    });
   }
 
   // 3. Apply discount code (percentage off subtotal only — shipping untouched)
@@ -54,9 +79,11 @@ async function calculateOrderTotal(cartItems, discountCode, shippingCost = 0) {
     if (!codeRow.isValid) throw new Error("Discount code is no longer valid");
 
     if (codeRow.type === "limited") {
-      const expired = codeRow.expiresAt && new Date(codeRow.expiresAt) < new Date();
+      const expired =
+        codeRow.expiresAt && new Date(codeRow.expiresAt) < new Date();
       const outOfUses = codeRow.usesLeft !== null && codeRow.usesLeft <= 0;
-      if (expired || outOfUses) throw new Error("Discount code is no longer valid");
+      if (expired || outOfUses)
+        throw new Error("Discount code is no longer valid");
     }
 
     if (codeRow.type === "single-use" && codeRow.usedAt) {
@@ -77,7 +104,8 @@ async function calculateOrderTotal(cartItems, discountCode, shippingCost = 0) {
     discountAmount,
     discountedSubtotal,
     total,
-    discountCodeRow // returned so checkout route can call /redeem after payment succeeds
+    discountCodeRow, // returned so checkout route can call /redeem after payment succeeds
+    pricedItems, // authoritative cart items — persist these on the order instead of the raw client cartItems
   };
 }
 

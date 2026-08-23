@@ -7,7 +7,10 @@ const { resolveDeliveryMethodKey } = require("../utils/shipmondo");
 const { computeSku } = require("../utils/sku");
 const { getZohoIdForSku } = require("../utils/zoho-sku-lookup");
 const { getItem } = require("../utils/zoho");
-const { createPendingOrder, releaseOrder } = require("../utils/order-reservation");
+const {
+  createPendingOrder,
+  releaseOrder,
+} = require("../utils/order-reservation");
 
 module.exports = (supabase) => {
   const router = express.Router();
@@ -56,11 +59,28 @@ module.exports = (supabase) => {
       try {
         shippingMethodKey = resolveDeliveryMethodKey(
           shippingMethod?.provider?.id,
-          shippingMethod?.method?.id
+          shippingMethod?.method?.id,
         );
       } catch (shippingErr) {
-        console.error("Invalid shipping method on checkout:", shippingErr.message);
-        return res.status(400).json({ error: "Invalid shipping method selected." });
+        console.error(
+          "Invalid shipping method on checkout:",
+          shippingErr.message,
+        );
+        return res
+          .status(400)
+          .json({ error: "Invalid shipping method selected." });
+      }
+
+      // The frontend disables the "place order" button until a pickup point is chosen for
+      // parcelshop methods, but that's a UX guard only — enforce it here too, since this is
+      // the only place that gates whether payment even starts. Without this, a bypassed
+      // frontend check (or a direct API call) produces a paid order with no pickup point,
+      // which createShipment() in shipmondo.js only discovers AFTER payment, when it's too
+      // late to stop the sale.
+      if (shippingMethod?.method?.id === "parcelshop" && !pickupPoint?.id) {
+        return res
+          .status(400)
+          .json({ error: "Please select a pickup point to continue." });
       }
 
       // =========================
@@ -72,7 +92,9 @@ module.exports = (supabase) => {
         .select("*");
 
       if (optionsError) {
-        throw new Error(`Failed to load product options: ${optionsError.message}`);
+        throw new Error(
+          `Failed to load product options: ${optionsError.message}`,
+        );
       }
 
       // =========================
@@ -88,7 +110,9 @@ module.exports = (supabase) => {
         try {
           sku = computeSku(item.id, item.options || {}, optionsFromDb);
         } catch (skuError) {
-          throw new Error(`Could not determine SKU for ${item.name}: ${skuError.message}`);
+          throw new Error(
+            `Could not determine SKU for ${item.name}: ${skuError.message}`,
+          );
         }
 
         const zohoId = await getZohoIdForSku(supabase, sku);
@@ -101,9 +125,9 @@ module.exports = (supabase) => {
 
         const availableStock = Number(
           stockItem?.available_for_sale_stock ??
-          stockItem?.available_stock ??
-          stockItem?.stock_on_hand ??
-          0
+            stockItem?.available_stock ??
+            stockItem?.stock_on_hand ??
+            0,
         );
 
         const requestedQuantity = Number(item.quantity);
@@ -116,7 +140,9 @@ module.exports = (supabase) => {
           if (availableStock === 0) {
             throw new Error(`${item.name} is no longer available.`);
           }
-          throw new Error(`Only ${availableStock} of ${item.name} are available, but ${requestedQuantity} were requested.`);
+          throw new Error(
+            `Only ${availableStock} of ${item.name} are available, but ${requestedQuantity} were requested.`,
+          );
         }
       }
 
@@ -124,11 +150,8 @@ module.exports = (supabase) => {
       // CALCULATE ORDER TOTAL
       // =========================
 
-      const { totalInMinorUnits, total, discountAmount } = await calculateOrderTotal(
-        cartItems,
-        discountCode,
-        shippingCost || 0
-      );
+      const { totalInMinorUnits, total, discountAmount, pricedItems } =
+        await calculateOrderTotal(cartItems, discountCode, shippingCost || 0);
 
       // =========================
       // CREATE PENDING ORDER + RESERVE STOCK IN ZOHO
@@ -146,9 +169,15 @@ module.exports = (supabase) => {
           {
             customerEmail,
             customerName,
-            cartItems,
+            // Use the server-priced items (authoritative unit prices from the DB), not the
+            // raw client `cartItems` — this is what invoice.js and zoho.js will later read
+            // via item.selectedPrice?.price ?? item.price, so it must never come from the client.
+            cartItems: pricedItems,
             discount: discountCode
-              ? { code: discountCode, amount: Number(discountAmount.toFixed(2)) }
+              ? {
+                  code: discountCode,
+                  amount: Number(discountAmount.toFixed(2)),
+                }
               : null,
             shippingCost: shippingCost || 0,
             totalAmount: total,
@@ -158,13 +187,14 @@ module.exports = (supabase) => {
             pickupPoint: pickupPoint || null,
             orderNote: orderNote || null,
           },
-          supabase
+          supabase,
         );
       } catch (reservationErr) {
         console.error("Order reservation failed:", reservationErr);
 
         return res.status(409).json({
-          error: "One or more items in your cart just went out of stock. Please review your cart and try again.",
+          error:
+            "One or more items in your cart just went out of stock. Please review your cart and try again.",
         });
       }
 
@@ -183,16 +213,24 @@ module.exports = (supabase) => {
           merchantOrderExtRef: pendingOrder.id,
         });
       } catch (revolutErr) {
-        console.error(`Revolut order creation failed for order ${pendingOrder.id}:`, revolutErr);
+        console.error(
+          `Revolut order creation failed for order ${pendingOrder.id}:`,
+          revolutErr,
+        );
 
         // Don't leave stock reserved for a payment session that never got created.
         try {
           await releaseOrder(pendingOrder, supabase, "checkout_failed");
         } catch (releaseErr) {
-          console.error(`Failed to release order ${pendingOrder.id} after Revolut failure:`, releaseErr);
+          console.error(
+            `Failed to release order ${pendingOrder.id} after Revolut failure:`,
+            releaseErr,
+          );
         }
 
-        return res.status(502).json({ error: "Could not start payment. Please try again." });
+        return res
+          .status(502)
+          .json({ error: "Could not start payment. Please try again." });
       }
 
       await supabase
@@ -208,7 +246,6 @@ module.exports = (supabase) => {
         checkoutUrl: revolutOrder.checkout_url,
         orderId: pendingOrder.id,
       });
-
     } catch (err) {
       console.error("Checkout error:", err.message);
       res.status(400).json({ error: err.message });
