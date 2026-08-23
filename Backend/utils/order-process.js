@@ -2,7 +2,7 @@ const { generateInvoicePdf } = require("./invoice");
 const { createShipment } = require("./shipmondo");
 const { finalizeSalesOrder } = require("./zoho");
 const { sendOrderConfirmation, sendNewOrderAlert } = require("./emails");
-const { generateOrderNumber } = require("./invoice-number-generation");
+const { generateInvoiceNumber } = require("./invoice-number-generation");
 
 /**
  * @param {object} order - fetched fresh from the DB by the caller (webhooks.js) —
@@ -16,7 +16,7 @@ async function processOrder(order, supabase) {
     return;
   }
 
-  const invoiceNumber = await generateOrderNumber(supabase);
+  const invoiceNumber = await generateInvoiceNumber(supabase);
 
   const { error: paidUpdateError } = await supabase
     .from("Orders")
