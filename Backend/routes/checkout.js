@@ -2,10 +2,12 @@ const express = require("express");
 
 const { calculateOrderTotal } = require("../utils/pricing");
 const { createRevolutOrder } = require("../utils/revolut");
+const { resolveDeliveryMethodKey } = require("../utils/shipmondo");
 
 const { computeSku } = require("../utils/sku");
 const { getZohoIdForSku } = require("../utils/zoho-sku-lookup");
-const { getItem, createSalesOrder, voidSalesOrder } = require("../utils/zoho");
+const { getItem } = require("../utils/zoho");
+const { createPendingOrder, releaseOrder } = require("../utils/order-reservation");
 
 module.exports = (supabase) => {
   const router = express.Router();
@@ -43,6 +45,22 @@ module.exports = (supabase) => {
 
       if (!shippingMethod) {
         return res.status(400).json({ error: "Missing shipping method" });
+      }
+
+      // shippingMethod arrives from ShippingSelector.jsx as { provider: {id, ...}, method: {id, ...} }.
+      // Resolve it to the plain DELIVERY_METHODS key Shipmondo needs *now*, at checkout time,
+      // rather than discovering an invalid combination after payment when order-process.js
+      // tries to book the shipment.
+      let shippingMethodKey;
+
+      try {
+        shippingMethodKey = resolveDeliveryMethodKey(
+          shippingMethod?.provider?.id,
+          shippingMethod?.method?.id
+        );
+      } catch (shippingErr) {
+        console.error("Invalid shipping method on checkout:", shippingErr.message);
+        return res.status(400).json({ error: "Invalid shipping method selected." });
       }
 
       // =========================
@@ -113,62 +131,42 @@ module.exports = (supabase) => {
       );
 
       // =========================
-      // CREATE PENDING ORDER
+      // CREATE PENDING ORDER + RESERVE STOCK IN ZOHO
+      // Delegated to order-reservation.js so this stays the single implementation of the
+      // pending-order/reservation lifecycle (createPendingOrder logs the order, then creates
+      // + confirms a Zoho sales order that commits these items so they can't be sold to anyone
+      // else while this customer is on the payment page). If the Zoho reservation fails,
+      // createPendingOrder already marks the order "reservation_failed" and throws.
       // =========================
 
-      const { data: pendingOrder, error: insertError } = await supabase
-        .from("Orders")
-        .insert({
-          customerEmail,
-          customerName,
-          status: "pending",
-          cartItems,
-          discount: discountCode
-            ? { code: discountCode, amount: Number(discountAmount.toFixed(2)) }
-            : null,
-          shippingCost: shippingCost || 0,
-          totalAmount: total,
-          billingAddress,
-          shippingAddress,
-          shippingMethod,
-          pickupPoint: pickupPoint || null,
-          orderNote: orderNote || null,
-        })
-        .select()
-        .single();
-
-      if (insertError) {
-        throw new Error(`Failed to create pending order: ${insertError.message}`);
-      }
-
-      // =========================
-      // RESERVE STOCK IN ZOHO
-      // Creates + confirms a sales order, which commits this order's items so
-      // they can't be sold to anyone else while this customer is on the payment
-      // page. Reversible via voidSalesOrder if payment doesn't go through.
-      // =========================
-
-      let salesOrder;
+      let pendingOrder;
 
       try {
-        salesOrder = await createSalesOrder(pendingOrder, supabase);
-      } catch (zohoErr) {
-        console.error(`Zoho reservation failed for order ${pendingOrder.id}:`, zohoErr);
-
-        await supabase
-          .from("Orders")
-          .update({ status: "reservation_failed" })
-          .eq("id", pendingOrder.id);
+        pendingOrder = await createPendingOrder(
+          {
+            customerEmail,
+            customerName,
+            cartItems,
+            discount: discountCode
+              ? { code: discountCode, amount: Number(discountAmount.toFixed(2)) }
+              : null,
+            shippingCost: shippingCost || 0,
+            totalAmount: total,
+            billingAddress,
+            shippingAddress,
+            shippingMethod: shippingMethodKey,
+            pickupPoint: pickupPoint || null,
+            orderNote: orderNote || null,
+          },
+          supabase
+        );
+      } catch (reservationErr) {
+        console.error("Order reservation failed:", reservationErr);
 
         return res.status(409).json({
           error: "One or more items in your cart just went out of stock. Please review your cart and try again.",
         });
       }
-
-      await supabase
-        .from("Orders")
-        .update({ zohoOrderID: salesOrder.salesorder_id })
-        .eq("id", pendingOrder.id);
 
       // =========================
       // CREATE REVOLUT ORDER
@@ -189,15 +187,10 @@ module.exports = (supabase) => {
 
         // Don't leave stock reserved for a payment session that never got created.
         try {
-          await voidSalesOrder(salesOrder.salesorder_id);
-        } catch (voidErr) {
-          console.error(`Failed to void orphaned Zoho reservation ${salesOrder.salesorder_id}:`, voidErr);
+          await releaseOrder(pendingOrder, supabase, "checkout_failed");
+        } catch (releaseErr) {
+          console.error(`Failed to release order ${pendingOrder.id} after Revolut failure:`, releaseErr);
         }
-
-        await supabase
-          .from("Orders")
-          .update({ status: "checkout_failed" })
-          .eq("id", pendingOrder.id);
 
         return res.status(502).json({ error: "Could not start payment. Please try again." });
       }

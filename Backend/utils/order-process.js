@@ -3,6 +3,7 @@ const { createShipment } = require("./shipmondo");
 const { finalizeSalesOrder } = require("./zoho");
 const { sendOrderConfirmation, sendNewOrderAlert } = require("./emails");
 const { generateInvoiceNumber } = require("./invoice-number-generation");
+const { redeemDiscountCode } = require("./pricing");
 
 /**
  * @param {object} order - fetched fresh from the DB by the caller (webhooks.js) —
@@ -29,6 +30,18 @@ async function processOrder(order, supabase) {
 
   order.status = "paid";
   order.invoiceNumber = invoiceNumber;
+
+  // Payment is now confirmed and irrecoverable-abandonment risk is gone, so this is the right
+  // moment to actually consume the discount code (not at checkout, where the reservation could
+  // still fail or the customer could abandon payment). processOrder() only ever reaches here
+  // once per order (see the "already paid" guard above), so this can't double-redeem on retry.
+  if (order.discount?.code) {
+    try {
+      await redeemDiscountCode(supabase, order.discount.code);
+    } catch (err) {
+      console.error(`Discount code redemption failed for order ${order.id}:`, err);
+    }
+  }
 
   const invoicePdfBuffer = await generateInvoicePdf(order);
 

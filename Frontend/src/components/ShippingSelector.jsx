@@ -43,7 +43,7 @@ export default function ShippingSelector({ onChange, postalCode }) {
     fetchShipping();
   }, []);
 
-  const requiresPickupPoint = selectedMethod?.id === "shop";
+  const requiresPickupPoint = selectedMethod?.id === "parcelshop";
 
   useEffect(() => {
     if (!selectedMethod) return;
@@ -59,11 +59,11 @@ export default function ShippingSelector({ onChange, postalCode }) {
       provider: selectedProvider,
       method: selectedMethod,
       shippingPrice: numericPrice,
-      pickupPoint: selectedMethod.id === "shop" ? pickupPoint : null,
+      pickupPoint: selectedMethod.id === "parcelshop" ? pickupPoint : null,
     });
 
     // If this method requires a pickup point, open the map automatically
-    if (selectedMethod.id === "shop" && !pickupPoint) {
+    if (selectedMethod.id === "parcelshop" && !pickupPoint) {
       setMapOpen(true);
     }
   }, [selectedProvider, selectedMethod, isOver1kg, pickupPoint]);
@@ -118,7 +118,7 @@ export default function ShippingSelector({ onChange, postalCode }) {
                 }`}
                 onClick={() => {
                   setSelectedMethod(method);
-                  if (method.id !== "shop") setPickupPoint(null);
+                  if (method.id !== "parcelshop") setPickupPoint(null);
                 }}
               >
                 <span className="method-name">{method.name}</span>

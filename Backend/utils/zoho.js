@@ -226,7 +226,7 @@ async function buildSalesOrderPayload(order, supabase) {
   // a "%" suffix for percentage discounts, so double-check this against how you
   // populate the column before relying on it.
   if (order.discount) {
-    payload.discount = order.discount;
+    payload.discount = order.discount.amount;
     payload.discount_type = "entity_level";
   }
 

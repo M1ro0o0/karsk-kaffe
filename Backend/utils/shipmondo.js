@@ -56,7 +56,7 @@ const SENDER = {
 
 /**
  * One entry per delivery option your checkout lets customers pick. `key` is whatever value you
- * store on order.shipping.method (e.g. from a radio group: GLS home / GLS parcel shop / dao
+ * store on order.shippingMethod (e.g. from a radio group: GLS home / GLS parcel shop / dao
  * parcel shop / PostNord parcel shop / Bring home ...).
  *
  * TODO: productCode is account-specific — fill these in with real values from:
@@ -110,6 +110,39 @@ const DELIVERY_METHODS = {
   },
 };
 
+/**
+ * Turns what the frontend sends (order.shippingMethod = { provider: {id: "gls", ...},
+ * method: {id: "home"|"parcelshop", ...} } — see ShippingSelector.jsx / shipping-prices.json)
+ * into the compound key DELIVERY_METHODS is keyed by. As of shipping-prices.json, the
+ * frontend's provider id and method id already spell "parcelshop" the same way this file
+ * does, so this is a plain join + validation — no naming translation needed. Kept as its own
+ * function (rather than inlined in checkout.js) so there's one place that owns the key format
+ * and fails loudly if the two ever drift again.
+ *
+ * @param {string} providerId - e.g. "gls", "dao", "postnord", "bring"
+ * @param {string} methodTypeId - e.g. "home" or "parcelshop"
+ * @returns {string} a valid DELIVERY_METHODS key
+ * @throws if the combination doesn't map to a configured delivery method
+ */
+function resolveDeliveryMethodKey(providerId, methodTypeId) {
+  if (!providerId || !methodTypeId) {
+    throw new Error(
+      `Missing providerId ("${providerId}") or methodTypeId ("${methodTypeId}") when resolving delivery method.`,
+    );
+  }
+
+  const key = `${providerId}_${methodTypeId}`;
+
+  if (!DELIVERY_METHODS[key]) {
+    throw new Error(
+      `No delivery method configured for provider "${providerId}" + type "${methodTypeId}" ` +
+        `(looked for key "${key}"). Valid keys: ${Object.keys(DELIVERY_METHODS).join(", ")}`,
+    );
+  }
+
+  return key;
+}
+
 function resolveDeliveryMethod(order) {
   const key = order.shippingMethod;
   const method = DELIVERY_METHODS[key];
@@ -125,6 +158,29 @@ function resolveDeliveryMethod(order) {
     );
   }
   return method;
+}
+
+/**
+ * Looks up the Shipmondo carrier_code for a provider, from the same DELIVERY_METHODS table
+ * everything else in this file reads — so routes that need a carrier_code (e.g. the
+ * pickup-points endpoint) don't keep their own separate provider->carrier map that can drift
+ * from this one.
+ *
+ * @param {string} providerId - e.g. "gls", "dao", "postnord", "bring"
+ * @returns {string} the Shipmondo carrier_code (e.g. "pdk" for postnord)
+ * @throws if the provider has no configured parcel-shop method (and therefore no carrierCode)
+ */
+function getCarrierCode(providerId) {
+  const method = DELIVERY_METHODS[`${providerId}_parcelshop`];
+
+  if (!method?.carrierCode) {
+    throw new Error(
+      `No carrierCode configured for provider "${providerId}" ` +
+        `(looked at DELIVERY_METHODS["${providerId}_parcelshop"]).`,
+    );
+  }
+
+  return method.carrierCode;
 }
 
 /*--------------------------------------------------
@@ -266,9 +322,10 @@ async function findServicePoints({ carrierCode, countryCode = "DK", zipcode }) {
    ========================================================= */
 
 /**
- * Books a shipment for the order's chosen delivery method (order.shipping.method) and, for
- * parcel-shop methods, its chosen service point (order.shipping.servicePointId). Validates the
- * weight against the product's weight_intervals first.
+ * Books a shipment for the order's chosen delivery method (order.shippingMethod, a
+ * DELIVERY_METHODS key — see resolveDeliveryMethodKey) and, for parcel-shop methods, its
+ * chosen pickup point (order.pickupPoint.id). Validates the weight against the product's
+ * weight_intervals first.
  *
  * @param {object} order
  * @returns {Promise<{shipmentId: string, trackingNumber: string|null, trackingUrl: string|null, labelPdfBuffer: Buffer|null, raw: object}>}
@@ -290,13 +347,14 @@ async function createShipment(order) {
   };
 
   if (method.servicePoint) {
-    if (!order.pickupPoint) {
+    if (!order.pickupPoint?.id) {
       throw new Error(
         `Order ${order.id} uses parcel-shop method "${order.shippingMethod}" but has no ` +
-          `shipping.servicePointId — look one up with findServicePoints() at checkout.`,
+          `pickupPoint.id — the frontend should have collected one via the pickup-points ` +
+          `endpoint before checkout.`,
       );
     }
-    payload.service_point_id = order.shipping.servicePointId;
+    payload.service_point_id = order.pickupPoint.id;
   }
 
   const res = await shipmondoRequest(`/shipments`, {
@@ -403,4 +461,7 @@ module.exports = {
   validateShippingSetup,
   dumpProducts,
   totalWeightGrams,
+  resolveDeliveryMethodKey,
+  getCarrierCode,
+  DELIVERY_METHODS,
 };

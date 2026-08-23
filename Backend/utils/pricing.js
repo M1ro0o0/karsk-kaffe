@@ -81,4 +81,61 @@ async function calculateOrderTotal(cartItems, discountCode, shippingCost = 0) {
   };
 }
 
-module.exports = { calculateOrderTotal };
+/**
+ * Marks a discount code as used once its order has actually been paid for — never at checkout
+ * time, since a reservation can still be abandoned or fail payment. Called from
+ * order-process.js right after an order is marked "paid" (which only ever runs once per order,
+ * since processOrder() short-circuits on order.status === "paid").
+ *
+ * - "single-use" codes: stamp usedAt so calculateOrderTotal()'s `codeRow.usedAt` check rejects
+ *   it on the next attempt.
+ * - "limited" codes: decrement usesLeft (floored at 0) so calculateOrderTotal()'s
+ *   `usesLeft <= 0` check rejects it once exhausted.
+ * - anything else (e.g. unlimited/standing codes): no-op.
+ *
+ * Never throws — a redemption-bookkeeping failure shouldn't block the rest of order
+ * fulfillment. Logs loudly instead, since a silently-unredeemed code is a real (if minor)
+ * revenue leak worth noticing.
+ *
+ * @param {object} supabase
+ * @param {string} code
+ */
+async function redeemDiscountCode(supabase, code) {
+  if (!code) return;
+
+  const { data: codeRow, error } = await supabase
+    .from("DiscountCodes")
+    .select("*")
+    .eq("code", code)
+    .single();
+
+  if (error || !codeRow) {
+    console.error(`Could not find discount code "${code}" to redeem:`, error);
+    return;
+  }
+
+  const updates = {};
+
+  if (codeRow.type === "single-use") {
+    updates.usedAt = new Date().toISOString();
+  }
+
+  if (codeRow.type === "limited" && codeRow.usesLeft !== null) {
+    updates.usesLeft = Math.max(0, Number(codeRow.usesLeft) - 1);
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return;
+  }
+
+  const { error: updateError } = await supabase
+    .from("DiscountCodes")
+    .update(updates)
+    .eq("code", code);
+
+  if (updateError) {
+    console.error(`Failed to redeem discount code "${code}":`, updateError);
+  }
+}
+
+module.exports = { calculateOrderTotal, redeemDiscountCode };

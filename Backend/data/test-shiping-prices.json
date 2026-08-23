@@ -13,7 +13,7 @@
           }
         },
         {
-          "id": "shop",
+          "id": "parcelshop",
           "name": "Pakkeshop",
           "price": {
             "under1kg": 0,
@@ -35,7 +35,7 @@
           }
         },
         {
-          "id": "shop",
+          "id": "parcelshop",
           "name": "Pakkeshop",
           "price": {
             "under1kg": 0,
@@ -57,7 +57,7 @@
           }
         },
         {
-          "id": "shop",
+          "id": "parcelshop",
           "name": "Pakkeshop",
           "price": {
             "under1kg": 0,
@@ -79,7 +79,7 @@
           }
         },
         {
-          "id": "shop",
+          "id": "parcelshop",
           "name": "Pakkeshop",
           "price": {
             "under1kg": 0,
