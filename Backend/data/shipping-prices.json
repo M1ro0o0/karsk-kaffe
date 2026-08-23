@@ -1,0 +1,92 @@
+{
+  "providers": [
+    {
+      "id": "gls",
+      "name": "GLS",
+      "methods": [
+        {
+          "id": "home",
+          "name": "Home Delivery",
+          "price": {
+            "under1kg": 75,
+            "over1kg": 85
+          }
+        },
+        {
+          "id": "shop",
+          "name": "Pakkeshop",
+          "price": {
+            "under1kg": 43.5,
+            "over1kg": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": "dao",
+      "name": "DAO",
+      "methods": [
+        {
+          "id": "home",
+          "name": "Home Delivery",
+          "price": {
+            "under1kg": 53.5,
+            "over1kg": 66
+          }
+        },
+        {
+          "id": "shop",
+          "name": "Pakkeshop",
+          "price": {
+            "under1kg": 48.5,
+            "over1kg": 58.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "bring",
+      "name": "Bring",
+      "methods": [
+        {
+          "id": "home",
+          "name": "Home Delivery",
+          "price": {
+            "under1kg": 144,
+            "over1kg": 149
+          }
+        },
+        {
+          "id": "shop",
+          "name": "Pakkeshop",
+          "price": {
+            "under1kg": 50,
+            "over1kg": 61.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "postnord",
+      "name": "PostNord",
+      "methods": [
+        {
+          "id": "home",
+          "name": "Home Delivery",
+          "price": {
+            "under1kg": 74,
+            "over1kg": 84
+          }
+        },
+        {
+          "id": "shop",
+          "name": "Pakkeshop",
+          "price": {
+            "under1kg": 47.5,
+            "over1kg": 64
+          }
+        }
+      ]
+    }
+  ]
+}

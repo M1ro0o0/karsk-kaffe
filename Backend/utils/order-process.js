@@ -1,7 +1,7 @@
-const { generateInvoicePdf } = require("../invoice");
-const { createShipment } = require("../shipmondo");
+const { generateInvoicePdf } = require("./invoice");
+const { createShipment } = require("./shipmondo");
 const { finalizeSalesOrder } = require("./zoho");
-const { sendOrderConfirmation, sendNewOrderAlert } = require("../emails");
+const { sendOrderConfirmation, sendNewOrderAlert } = require("./emails");
 const { generateOrderNumber } = require("./invoice-number-generation");
 
 /**

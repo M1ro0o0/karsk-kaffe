@@ -1,0 +1,92 @@
+{
+  "providers": [
+    {
+      "id": "gls",
+      "name": "GLS",
+      "methods": [
+        {
+          "id": "home",
+          "name": "Home Delivery",
+          "price": {
+            "under1kg": 0,
+            "over1kg": 0
+          }
+        },
+        {
+          "id": "shop",
+          "name": "Pakkeshop",
+          "price": {
+            "under1kg": 0,
+            "over1kg": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "dao",
+      "name": "DAO",
+      "methods": [
+        {
+          "id": "home",
+          "name": "Home Delivery",
+          "price": {
+            "under1kg": 0,
+            "over1kg": 0
+          }
+        },
+        {
+          "id": "shop",
+          "name": "Pakkeshop",
+          "price": {
+            "under1kg": 0,
+            "over1kg": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "bring",
+      "name": "Bring",
+      "methods": [
+        {
+          "id": "home",
+          "name": "Home Delivery",
+          "price": {
+            "under1kg": 0,
+            "over1kg": 0
+          }
+        },
+        {
+          "id": "shop",
+          "name": "Pakkeshop",
+          "price": {
+            "under1kg": 0,
+            "over1kg": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "postnord",
+      "name": "PostNord",
+      "methods": [
+        {
+          "id": "home",
+          "name": "Home Delivery",
+          "price": {
+            "under1kg": 0,
+            "over1kg": 0
+          }
+        },
+        {
+          "id": "shop",
+          "name": "Pakkeshop",
+          "price": {
+            "under1kg": 0,
+            "over1kg": 0
+          }
+        }
+      ]
+    }
+  ]
+}
