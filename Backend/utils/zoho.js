@@ -130,17 +130,25 @@ async function findOrCreateContact(order) {
     return search.contacts[0].contact_id;
   }
 
+  const address = {
+    address: order.shippingAddress.address,
+    zip: order.shippingAddress.postalCode,
+    city: order.shippingAddress.city,
+    country: "Denmark"
+  };
+
   const created = await zohoRequest(`/contacts`, {
     method: "POST",
     body: JSON.stringify({
       contact_name: order.customerName,
       email: order.customerEmail,
-      billing_address: {
-        address: order.shippingAddress.address,
-        zip: order.shippingAddress.postalCode,
-        city: order.shippingAddress.city,
-        country: "Denmark"
-      }
+      // Without this, Zoho defaults new contacts to "business" — these are
+      // consumer storefront orders, so "individual" unless you add a real B2B flow.
+      customer_sub_type: "individual",
+      // Same address for both since checkout only collects one. If you ever add
+      // a separate billing address field, pass that here instead of reusing shippingAddress.
+      billing_address: address,
+      shipping_address: address
     })
   });
 
@@ -219,12 +227,12 @@ async function buildSalesOrderPayload(order, supabase) {
     reference_number: String(order.id),
     date: (order.createdAt || new Date().toISOString()).slice(0, 10),
     line_items: lineItems,
-    shipping_charge: order.shippingCost || 0
+    shipping_charge: order.shippingCost || 0,
+    // Your prices already include VAT — without this, Zoho adds VAT on top
+    // of prices that already have it baked in.
+    is_inclusive_tax: true
   };
 
-  // Assuming `discount` is a flat currency amount, not a percentage — Zoho expects
-  // a "%" suffix for percentage discounts, so double-check this against how you
-  // populate the column before relying on it.
   if (order.discount) {
     payload.discount = order.discount.amount;
     payload.discount_type = "entity_level";

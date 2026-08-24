@@ -54,8 +54,7 @@ async function createPendingOrder(orderData, supabase) {
   const { error: updateError } = await supabase
     .from("Orders")
     .update({
-      zohoOrderID: salesOrder.salesorder_id,
-      zohoSalesOrderNumber: salesOrder.salesorder_number
+      zohoOrderID: salesOrder.salesorder_id
     })
     .eq("id", order.id);
 

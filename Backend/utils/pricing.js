@@ -37,15 +37,20 @@ async function calculateOrderTotal(cartItems, discountCode, shippingCost = 0) {
     if (!product.active)
       throw new Error(`Product ${item.id} is no longer available`);
 
-    // Match by productID + label, since cart items don't carry the ProductPrices row id
+    // Match by productID + label, since cart items don't carry the ProductPrices row id.
+    // Normalize both sides to null first: products with no labelled variants (e.g. boxes)
+    // store label as NULL in ProductPrices, while their cart items never set
+    // selectedPrice.label at all (there's nothing to select) — comparing those as raw
+    // strings ("null" vs "undefined") failed to match even though both mean "no label".
+    const normalizedItemLabel = item.selectedPrice?.label ?? null;
     const priceRow = prices.find(
       (p) =>
         p.productID === item.id &&
-        String(p.label) === String(item.selectedPrice?.label),
+        String(p.label ?? null) === String(normalizedItemLabel),
     );
     if (!priceRow)
       throw new Error(
-        `Price option for product ${item.id}, label ${item.selectedPrice?.label} not found`,
+        `Price option for product ${item.id}, label ${normalizedItemLabel} not found`,
       );
 
     const quantity = Number(item.quantity) || 0;

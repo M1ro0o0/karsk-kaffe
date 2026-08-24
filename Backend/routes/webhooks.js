@@ -21,6 +21,14 @@ module.exports = (supabase) => {
         return res.status(500).send("Server misconfiguration");
       }
 
+      console.log("=============================");
+      console.log("=== WEBHOOK RECIEVES THIS ===");
+      console.log("=============================");
+      console.log();
+      console.log(req);
+      console.log("=============================");
+      
+      
       const signatureHeader = req.headers["revolut-signature"];
       const timestamp = req.headers["revolut-request-timestamp"];
       const rawPayload = req.body.toString("utf8");
