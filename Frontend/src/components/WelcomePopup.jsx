@@ -30,23 +30,17 @@ export default function WelcomePopup() {
 
         <div className="chalk-line" />
 
-        <p className="danish-text">
-          🛠️ Hjemmesiden er under opbygning,
-          <br />
-          så den virker ikke endnu.
-        </p>
-
         <p className="english-text">
-          🛠️ The website is under construction,
+          Website is undergoing E2E testing
           <br />
-          thus it is not working yet.
+          It's still not fully operational
+          <br />
+          !!PLEASE DO NOT MAKE ORDERS YET!!
         </p>
 
         <div className="chalk-line bottom-line" />
 
-        <div className="chalk-coffee">
-          Karsk Kaffe
-        </div>
+        <div className="chalk-coffee">Karsk Kaffe</div>
       </div>
     </div>
   );
