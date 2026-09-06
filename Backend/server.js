@@ -83,7 +83,7 @@ app.use("/api/contact", contactRoutes());
 app.use("/api/checkout", checkoutRoutes(supabase));
 
 // ORDER
-app.use("/api/orders", ordersRoutes(supabase)); 
+app.use("/api/orders", ordersRoutes(supabase));
 
 /*--------------------
       HEALTH CHECK
@@ -92,7 +92,7 @@ app.use("/api/orders", ordersRoutes(supabase));
 app.get("/", (req, res) => {
   res.json({
     status: "OK",
-    message: "Backend running. And you should be too, fatso",
+    message: "Backend running.",
   });
 });
 
