@@ -16,19 +16,20 @@ module.exports = (supabase) => {
         // would silently fail. Fail loudly here instead of debugging "invalid signature"
         // for real webhooks later.
         console.error(
-          "Revolut webhook route received a non-Buffer body — mount this route with express.raw({ type: '*/*' }) BEFORE any express.json() middleware."
+          "Revolut webhook route received a non-Buffer body — mount this route with express.raw({ type: '*/*' }) BEFORE any express.json() middleware.",
         );
         return res.status(500).send("Server misconfiguration");
       }
 
-      console.log("=============================");
-      console.log("=== WEBHOOK RECIEVES THIS ===");
-      console.log("=============================");
-      console.log();
-      console.log(req);
-      console.log("=============================");
-      
-      
+      console.log("=== Revolut webhook incoming ===", {
+        headers: {
+          "revolut-signature": req.headers["revolut-signature"],
+          "revolut-request-timestamp": req.headers["revolut-request-timestamp"],
+          "content-type": req.headers["content-type"],
+        },
+        bodyLength: req.body.length,
+      });
+
       const signatureHeader = req.headers["revolut-signature"];
       const timestamp = req.headers["revolut-request-timestamp"];
       const rawPayload = req.body.toString("utf8");
@@ -50,8 +51,12 @@ module.exports = (supabase) => {
         .update(payloadToSign)
         .digest("hex");
 
-      const providedSignatures = signatureHeader.split(",").map(s => s.trim());
-      const isValid = providedSignatures.some(sig => sig === `v1=${expectedSignature}`);
+      const providedSignatures = signatureHeader
+        .split(",")
+        .map((s) => s.trim());
+      const isValid = providedSignatures.some(
+        (sig) => sig === `v1=${expectedSignature}`,
+      );
 
       if (!isValid) {
         console.warn("Invalid Revolut webhook signature");
@@ -77,12 +82,18 @@ module.exports = (supabase) => {
           .single();
 
         if (failedLookupError || !failedOrder) {
-          console.error(`Webhook (${event.event}): order not found for revolutOrderId`, revolutOrderId);
+          console.error(
+            `Webhook (${event.event}): order not found for revolutOrderId`,
+            revolutOrderId,
+          );
           return res.status(200).send("Ignored");
         }
 
         releaseOrder(failedOrder, supabase, "payment_failed").catch((err) => {
-          console.error(`Failed to release order ${failedOrder.id} after ${event.event}:`, err);
+          console.error(
+            `Failed to release order ${failedOrder.id} after ${event.event}:`,
+            err,
+          );
         });
 
         return res.status(200).send("Ignored");
@@ -99,7 +110,10 @@ module.exports = (supabase) => {
         .single();
 
       if (error || !order) {
-        console.error("Webhook: order not found for revolutOrderId", revolutOrderId);
+        console.error(
+          "Webhook: order not found for revolutOrderId",
+          revolutOrderId,
+        );
         return res.status(404).send("Order not found");
       }
 
@@ -116,9 +130,11 @@ module.exports = (supabase) => {
         // processOrder() is designed not to throw (each step is isolated), so reaching this
         // means something outside that isolation broke — worth a loud log since the HTTP
         // response has already been sent and there's no other place this surfaces.
-        console.error(`processOrder threw unexpectedly for order ${order.id}:`, err);
+        console.error(
+          `processOrder threw unexpectedly for order ${order.id}:`,
+          err,
+        );
       });
-
     } catch (err) {
       console.error("Webhook processing error:", err);
       if (!res.headersSent) {
